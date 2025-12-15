@@ -12,6 +12,8 @@
         <meta name="author" content="Anselm Paulus">
       
       
+        <link rel="canonical" href="https://a-paulus.github.io/softjax/testing/test/">
+      
       
       
       
@@ -1267,13 +1269,7 @@ Hard max: 1.8
 <pre>Soft max: 1.7999815903777097
 Hard min: -0.1
 Soft min: -0.07291629800981214
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard median: 0.35
+Hard median: 0.35
 </pre>
 </div>
 </div>
@@ -1290,31 +1286,25 @@ Hard top_k: [1.8 0.7 0. ]
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Soft top_k: [ 1.79998159  0.69911281 -0.02640987]
 Hard sort: [-0.1  0.   0.7  1.8]
+Soft sort: [-0.0729163  -0.02640987  0.69911281  1.79998159]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft sort: [-0.0729163  -0.02640987  0.69911281  1.79998159]
-Hard ranking: [0 1 2 3]
+<pre>Hard ranking: [0 1 2 3]
+Soft ranking: [2.73063414e+00 2.26809603e+00 1.00156413e+00 1.67486891e-05]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft ranking: [2.73063414e+00 2.26809603e+00 1.00156413e+00 1.67486891e-05]
-Straight-through sort: [-0.1  0.   0.7  1.8]
+<pre>Straight-through sort: [-0.1  0.   0.7  1.8]
 Hard argmax: 3
 Soft argmax: [5.60270275e-09 1.52297251e-08 1.67014215e-05 9.99983278e-01]
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard argmin: 0
+Hard argmin: 0
 Soft argmin: [7.30879333e-01 2.68875480e-01 2.45182702e-04 4.09496812e-09]
 Hard argmedian: Not implemented in standard JAX
 Soft argmedian: [0.23233226 0.38305115 0.38305115 0.00156544]
@@ -1331,29 +1321,29 @@ Hard heaviside: [0.  0.5 1.  1. ]
 Soft heaviside: [0.26894142 0.5        0.99908895 0.99999998]
 Hard greater: [False  True  True  True]
 Soft greater: [0.04742587 0.99330715 0.88079708 1.        ]
-Hard greater equal: [False  True  True  True]
-Soft greater equal: [0.04742587 0.99330715 0.88079708 1.        ]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard less: [ True False False False]
+<pre>Hard greater equal: [False  True  True  True]
+Soft greater equal: [0.04742587 0.99330715 0.88079708 1.        ]
+Hard less: [ True False False False]
 Soft less: [9.52574127e-01 6.69285092e-03 1.19202922e-01 6.91446900e-13]
 Hard less equal: [ True False False False]
 Soft less equal: [9.52574127e-01 6.69285093e-03 1.19202922e-01 6.91446900e-13]
 Hard equal: [False False False False]
 Soft equal: [4.74258732e-02 6.69285093e-03 1.19202922e-01 6.91446900e-13]
-Hard not equal: [ True  True  True  True]
-Soft not equal: [0.95257413 0.99330715 0.88079708 1.        ]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard isclose: [False False False False]
+<pre>Hard not equal: [ True  True  True  True]
+Soft not equal: [0.95257413 0.99330715 0.88079708 1.        ]
+Hard isclose: [False False False False]
 Soft isclose: [4.74267813e-02 6.69318401e-03 1.19208182e-01 6.91446900e-13]
 </pre>
 </div>
