@@ -1,0 +1,53 @@
+[project]
+name = "softjax"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Anselm Paulus", email = "anselm.paulus@uni-tuebingen.de" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "jax>=0.7.0",
+    "jaxopt>=0.8.5",
+]
+
+[project.scripts]
+softjax = "softjax:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "hippogriffe>=0.2.2",
+    "ipykernel>=6.29.5",
+    "ipython>=9.3.0",
+    "jaxtyping>=0.3.2",
+    "matplotlib>=3.10.3",
+    "mkdocs>=1.6.1",
+    "mkdocs-include-exclude-files>=0.1.0",
+    "mkdocs-ipynb>=0.1.1",
+    "mkdocs-material>=9.6.14",
+    "mkdocstrings>=0.29.1",
+    "mkdocstrings-python>=1.16.12",
+    "ott-jax>=0.5.0",
+    "pymdown-extensions>=10.15",
+    "ruff>=0.11.12",
+]
+
+[tool.ruff]
+extend-include = ["*.ipynb"]
+src = []
+
+[tool.ruff.lint]
+fixable = ["I001", "F401", "UP"]
+ignore = ["E402", "E721", "E731", "E741", "F722", "UP038"]
+select = ["E", "F", "I001", "UP"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+extra-standard-library = ["typing_extensions"]
+lines-after-imports = 2
+order-by-type = false
