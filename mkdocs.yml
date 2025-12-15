@@ -34,6 +34,9 @@ theme:
 site_name: Softjax
 site_description: The documentation for the Softjax software library.
 site_author: Anselm Paulus
+site_url: https://a-paulus.github.io/softjax/
+remote_name: public
+remote_branch: gh-pages
 
 repo_url: https://github.com/a-paulus/softjax
 repo_name: a-paulus/softjax
