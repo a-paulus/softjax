@@ -541,7 +541,9 @@ def ranking(
     if mode == "hard":
         indices = jnp.argsort(x, axis=axis)  # (..., n, ...)
         indices = indices.astype(jnp.float_)
-        rankings = jnp.argsort(jnp.flip(indices, axis=axis), axis=axis)  # (..., n, ...)
+        rankings = jnp.argsort(
+            indices, axis=axis, descending=descending
+        )  # (..., n, ...)
         rankings = rankings.astype(jnp.float_)
     else:
         x = jnp.moveaxis(x, axis, -1)  # (..., ..., n)
