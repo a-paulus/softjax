@@ -25,7 +25,7 @@ pip install softjax
 
 ## Documentation
 
-Available at https://docs.a-paulus.github.io/softjax.
+Available at https://a-paulus.github.io/softjax/.
 
 
 ## Quick example
