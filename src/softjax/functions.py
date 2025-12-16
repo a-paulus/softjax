@@ -1285,10 +1285,13 @@ def round(
 
     - `x`: Input Array of any shape.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
-    - `mode`: If "hard", applies `jnp.round`. Otherwise uses "entropic", "euclidean",
-        "pseudohuber", "cubic", or "quintic" relaxations. Defaults to "entropic".
+    - `mode`: If "hard", applies `jnp.round`. Otherwise uses a sigmoid-based relaxation
+        based on the algorithm described in https://arxiv.org/pdf/2504.19026v1.
+        This function thereby inherits the different sigmoid modes "entropic",
+        "euclidean", "pseudohuber", "cubic", or "quintic".
+        Defaults to "entropic".
     - `neighbor_radius`: Number of neighbors on each side of the floor value to
-        consider for the soft rounding. Defaults to 2.
+        consider for the soft rounding. Defaults to 5.
 
     **Returns:**
 
