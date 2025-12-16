@@ -1322,6 +1322,7 @@ def _softrelu(
         "gated_euclidean",
         "gated_cubic",
         "gated_quintic",
+        "gated_pseudohuber",
     ] = "entropic",
 ) -> Array:
     """Family of soft relaxations to ReLU used by `relu`/`clip`.
@@ -1331,8 +1332,8 @@ def _softrelu(
     - `x`: Input Array.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: Choice of smoothing kernel: "entropic", "euclidean", "quartic",
-        "gated_entropic", "gated_euclidean", "gated_cubic", or "gated_quintic".
-        Defaults to "entropic".
+        "gated_entropic", "gated_euclidean", "gated_cubic", "gated_quintic"
+        or "gated_pseudohuber". Defaults to "entropic".
 
     **Returns:**
 
@@ -1358,6 +1359,8 @@ def _softrelu(
         y = x * _sigmoid(x, mode="cubic")
     elif mode == "gated_quintic":
         y = x * _sigmoid(x, mode="quintic")
+    elif mode == "gated_pseudohuber":
+        y = x * _sigmoid(x, mode="pseudohuber")
     else:
         raise ValueError(f"Unknown mode '{mode}' for _softrelu.")
     y = y * softness
@@ -1376,6 +1379,7 @@ def relu(
         "gated_euclidean",
         "gated_cubic",
         "gated_quintic",
+        "gated_pseudohuber",
     ] = "entropic",
 ) -> Array:
     """Performs a soft version of [jax.nn.relu](https://docs.jax.dev/en/latest/_autosummary/jax.nn.relu.html).
@@ -1385,8 +1389,8 @@ def relu(
     - `x`: Input Array of any shape.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", applies `jax.nn.relu`. Otherwise uses "entropic", "euclidean",
-        "quartic", "gated_entropic", "gated_euclidean", "gated_cubic", or "gated_quintic"
-        relaxations. Defaults to "entropic".
+        "quartic", "gated_entropic", "gated_euclidean", "gated_cubic", "gated_quintic",
+        or "gated_pseudohuber" relaxations. Defaults to "entropic".
 
     **Returns:**
 
@@ -1412,6 +1416,7 @@ def clip(
         "gated_euclidean",
         "gated_cubic",
         "gated_quintic",
+        "gated_pseudohuber",
     ] = "entropic",
 ) -> Array:
     """Performs a soft version of [jax.numpy.clip](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.clip.html).
@@ -1423,8 +1428,8 @@ def clip(
     - `b`: Upper bound scalar.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", applies `jnp.clip`. Otherwise uses "entropic", "euclidean",
-        "quartic", "gated_entropic", "gated_euclidean", "gated_cubic", or "gated_quintic"
-        relaxations. Defaults to "entropic".
+        "quartic", "gated_entropic", "gated_euclidean", "gated_cubic", "gated_quintic",
+        or "gated_pseudohuber" relaxations. Defaults to "entropic".
 
     **Returns:**
 
