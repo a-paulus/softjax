@@ -40,14 +40,7 @@ y = jnp.array([0.2, -0.5, 0.5, -1.0])
 print("Hard ReLU:", jax.nn.relu(x))
 print("Soft ReLU:", sj.relu(x))
 print("Hard Clip:", jnp.clip(x, -0.5, 0.5))
-print(
-    "Soft Clip:",
-    sj.clip(
-        x,
-        -0.5,
-        0.5,
-    ),
-)
+print("Soft Clip:", sj.clip(x, -0.5, 0.5))
 print("Hard Absolute:", jnp.abs(x))
 print("Soft Absolute:", sj.abs(x))
 print("Hard Sign:", jnp.sign(x))
@@ -81,13 +74,7 @@ print("Soft min:", sj.min(x))
 print("Hard median:", jnp.median(x))
 print("Soft median:", sj.median(x))
 print("Hard top_k:", jax.lax.top_k(x, k=3)[0])
-print(
-    "Soft top_k:",
-    sj.top_k(
-        x,
-        k=3,
-    )[0],
-)
+print("Soft top_k:", sj.top_k(x, k=3)[0])
 print("Hard sort:", jnp.sort(x))
 print("Soft sort:", sj.sort(x))
 print("Hard ranking:", jnp.argsort(jnp.argsort(x)))
@@ -204,13 +191,6 @@ print("Straight-through sort:", sj.sort_st(x))
 print("Straight-through argtop_k:", sj.top_k_st(x, k=3)[1])
 print("Straight-through greater:", sj.greater_st(x, y))
 ```
-```
-Straight-through ReLU: [0.  0.  0.3 1. ]
-Straight-through sort: [-1.  -0.2  0.3  1. ]
-Straight-through argtop_k: [[0. 0. 0. 1.]
- [0. 0. 1. 0.]
- [1. 0. 0. 0.]]
-Straight-through greater: [0. 0. 0. 1.]
 ```
 Straight-through ReLU: [0.  0.  0.3 1. ]
 Straight-through sort: [-1.  -0.2  0.3  1. ]
