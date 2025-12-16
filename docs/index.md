@@ -28,69 +28,147 @@ pip install softjax
 import jax.numpy as jnp
 import softjax as sj
 
-softness = 0.1
-x = jnp.array([-0.1, 0.0, 0.7, 1.8])
+x = jnp.array([-0.2, -1.0, 0.3, 1.0])
 y = jnp.array([0.2, -0.5, 0.5, -1.0])
 
 # Elementwise functions
 print("Hard ReLU:", jax.nn.relu(x))
-print("Soft ReLU:", sj.relu(x, softness=softness))
+print("Soft ReLU:", sj.relu(x))
 print("Hard Clip:", jnp.clip(x, -0.5, 0.5))
-print("Soft Clip:", sj.clip(x, -0.5, 0.5, softness=softness))
+print(
+    "Soft Clip:",
+    sj.clip(
+        x,
+        -0.5,
+        0.5,
+    ),
+)
 print("Hard Absolute:", jnp.abs(x))
-print("Soft Absolute:", sj.abs(x, softness=softness))
+print("Soft Absolute:", sj.abs(x))
 print("Hard Sign:", jnp.sign(x))
-print("Soft Sign:", sj.sign(x, softness=softness))
+print("Soft Sign:", sj.sign(x))
 print("Hard round:", jnp.round(x))
-print("Soft round:", sj.round(x, softness=softness))
+print("Soft round:", sj.round(x))
+print("Hard heaviside:", jnp.heaviside(x, 0.5))
+print("Soft heaviside:", sj.heaviside(x))
+```
+```
+Hard ReLU: [0.  0.  0.3 1. ]
+Soft ReLU: [1.26928011e-02 4.53988992e-06 3.04858735e-01 1.00000454e+00]
+Hard Clip: [-0.2 -0.5  0.3  0.5]
+Soft Clip: [-0.19523241 -0.4993285   0.28734074  0.4993285 ]
+Hard Absolute: [0.2 1.  0.3 1. ]
+Soft Absolute: [0.15231883 0.9999092  0.27154448 0.9999092 ]
+Hard Sign: [-1. -1.  1.  1.]
+Soft Sign: [-0.76159416 -0.9999092   0.90514825  0.9999092 ]
+Hard round: [-0. -1.  0.  1.]
+Soft round: [-0.04651704 -1.          0.1188737   1.        ]
+Hard heaviside: [0. 0. 1. 1.]
+Soft heaviside: [1.19202922e-01 4.53978687e-05 9.52574127e-01 9.99954602e-01]
+```
 
+```python
 # Functions on arrays
 print("Hard max:", jnp.max(x))
-print("Soft max:", sj.max(x, softness=softness))
+print("Soft max:", sj.max(x))
 print("Hard min:", jnp.min(x))
-print("Soft min:", sj.min(x, softness=softness))
+print("Soft min:", sj.min(x))
 print("Hard median:", jnp.median(x))
-print("Soft median:", sj.median(x, softness=softness))
+print("Soft median:", sj.median(x))
 print("Hard top_k:", jax.lax.top_k(x, k=3)[0])
-print("Soft top_k:", sj.top_k(x, k=3, softness=softness)[0])
+print(
+    "Soft top_k:",
+    sj.top_k(
+        x,
+        k=3,
+    )[0],
+)
 print("Hard sort:", jnp.sort(x))
-print("Soft sort:", sj.sort(x, softness=softness))
+print("Soft sort:", sj.sort(x))
 print("Hard ranking:", jnp.argsort(jnp.argsort(x)))
-print("Soft ranking:", sj.ranking(x, softness=softness))
+print("Soft ranking:", sj.ranking(x, descending=False))
+```
+```
+Hard max: 1.0
+Soft max: 0.9993548976691374
+Hard min: -1.0
+Soft min: -0.9997287789452775
+Hard median: 0.04999999999999999
+Soft median: 0.05000033589501627
+Hard top_k: [ 1.   0.3 -0.2]
+Soft top_k: [ 0.9993549   0.29728716 -0.19691387]
+Hard sort: [-1.  -0.2  0.3  1. ]
+Soft sort: [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
+Hard ranking: [1 0 2 3]
+Soft ranking: [1.00636968e+00 3.39874686e-04 1.99421369e+00 2.99907667e+00]
+```
 
-# Straight-through estimation: Use hard function on forward and soft on backward
-print("Straight-through sort:", sj.sort_st(x, softness=softness))
-
+```python
 # Functions returning indices
 print("Hard argmax:", jnp.argmax(x))
-print("Soft argmax:", sj.argmax(x, softness=softness))
+print("Soft argmax:", sj.argmax(x))
 print("Hard argmin:", jnp.argmin(x))
-print("Soft argmin:", sj.argmin(x, softness=softness))
+print("Soft argmin:", sj.argmin(x))
 print("Hard argmedian:", "Not implemented in standard JAX")
-print("Soft argmedian:", sj.argmedian(x, softness=softness))
+print("Soft argmedian:", sj.argmedian(x))
 print("Hard argtop_k:", jax.lax.top_k(x, k=3)[1])
-print("Soft argtop_k:", sj.top_k(x, k=3, softness=softness)[1])
+print("Soft argtop_k:", sj.top_k(x, k=3)[1])
 print("Hard argsort:", jnp.argsort(x))
-print("Soft argsort:", sj.argsort(x, softness=softness))
+print("Soft argsort:", sj.argsort(x))
+```
+```
+Hard argmax: 3
+Soft argmax: [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+Hard argmin: 1
+Soft argmin: [3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
+Hard argmedian: Not implemented in standard JAX
+Soft argmedian: [4.99999764e-01 5.62675608e-08 4.99999764e-01 4.15764163e-07]
+Hard argtop_k: [3 2 0]
+Soft argtop_k: [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+ [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
+ [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]]
+Hard argsort: [1 0 2 3]
+Soft argsort: [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
+ [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]
+ [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
+ [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]]
+```
 
+```python
 ## SoftBool generation
-print("Hard heaviside:", jnp.heaviside(x, 0.5))
-print("Soft heaviside:", sj.heaviside(x, softness=softness))
 print("Hard greater:", x > y)
-print("Soft greater:", sj.greater(x, y, softness=softness))
+print("Soft greater:", sj.greater(x, y))
 print("Hard greater equal:", x >= y)
-print("Soft greater equal:", sj.greater_equal(x, y, softness=softness))
+print("Soft greater equal:", sj.greater_equal(x, y))
 print("Hard less:", x < y)
-print("Soft less:", sj.less(x, y, softness=softness))
+print("Soft less:", sj.less(x, y))
 print("Hard less equal:", x <= y)
-print("Soft less equal:", sj.less_equal(x, y, softness=softness))
+print("Soft less equal:", sj.less_equal(x, y))
 print("Hard equal:", x == y)
-print("Soft equal:", sj.equal(x, y, softness=softness))
+print("Soft equal:", sj.equal(x, y))
 print("Hard not equal:", x != y)
-print("Soft not equal:", sj.not_equal(x, y, softness=softness))
+print("Soft not equal:", sj.not_equal(x, y))
 print("Hard isclose:", jnp.isclose(x, y))
-print("Soft isclose:", sj.isclose(x, y, softness=softness))
+print("Soft isclose:", sj.isclose(x, y))
+```
+```
+Hard greater: [False False False  True]
+Soft greater: [0.01798621 0.00669285 0.11920292 1.        ]
+Hard greater equal: [False False False  True]
+Soft greater equal: [0.01798621 0.00669285 0.11920292 1.        ]
+Hard less: [ True  True  True False]
+Soft less: [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
+Hard less equal: [ True  True  True False]
+Soft less equal: [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
+Hard equal: [False False False False]
+Soft equal: [1.79862100e-02 6.69285093e-03 1.19202922e-01 2.06115369e-09]
+Hard not equal: [ True  True  True  True]
+Soft not equal: [0.98201379 0.99330715 0.88079708 1.        ]
+Hard isclose: [False False False False]
+Soft isclose: [1.79865650e-02 6.69318401e-03 1.19208182e-01 2.06135997e-09]
+```
 
+```python
 ## SoftBool manipulation
 fuzzy_a = jnp.array([0.1, 0.2, 0.8, 1.0])
 fuzzy_b = jnp.array([0.7, 0.3, 0.1, 0.9])
@@ -104,70 +182,33 @@ print("Soft ANY:", sj.any(fuzzy_a))
 ## SoftBool selection
 print("Where:", sj.where(fuzzy_a, x, y))
 ```
-
 ```
-Hard ReLU: [0.  0.  0.7 1.8]
-Soft ReLU: [0.03132617 0.06931472 0.70009115 1.8       ]
-Hard Clip: [-0.1  0.   0.5  0.5]
-Soft Clip: [-9.84325757e-02 -3.46944695e-18  4.87307813e-01  4.99999774e-01]
-Hard Absolute: [0.1 0.  0.7 1.8]
-Soft Absolute: [0.04621172 0.         0.69872453 1.79999995]
-Hard Sign: [-1.  0.  1.  1.]
-Soft Sign: [-0.46211716  0.          0.9981779   0.99999997]
-Hard round: [-0.  0.  1.  2.]
-Soft round: [-0.09064511  0.          0.71513653  1.81513653]
-Hard max: 1.8
-Soft max: 1.7999815903777097
-Hard min: -0.1
-Soft min: -0.07291629800981214
-Hard median: 0.35
-Soft median: 0.24772037254528773
-Hard top_k: [1.8 0.7 0. ]
-Soft top_k: [ 1.79998159  0.69911281 -0.02640987]
-Hard sort: [-0.1  0.   0.7  1.8]
-Soft sort: [-0.0729163  -0.02640987  0.69911281  1.79998159]
-Hard ranking: [0 1 2 3]
-Soft ranking: [2.73063414e+00 2.26809603e+00 1.00156413e+00 1.67486891e-05]
-Straight-through sort: [-0.1  0.   0.7  1.8]
-Hard argmax: 3
-Soft argmax: [5.60270275e-09 1.52297251e-08 1.67014215e-05 9.99983278e-01]
-Hard argmin: 0
-Soft argmin: [7.30879333e-01 2.68875480e-01 2.45182702e-04 4.09496812e-09]
-Hard argmedian: Not implemented in standard JAX
-Soft argmedian: [0.23233226 0.38305115 0.38305115 0.00156544]
-Hard argtop_k: [3 2 1]
-Soft argtop_k: [[5.60270275e-09 1.52297251e-08 1.67014215e-05 9.99983278e-01]
- [3.35039123e-04 9.10730760e-04 9.98737550e-01 1.66806157e-05]
- [2.68762251e-01 7.30571543e-01 6.66195015e-04 1.11265898e-08]]
-Hard argsort: [0 1 2 3]
-Soft argsort: [[7.30879333e-01 2.68875480e-01 2.45182702e-04 4.09496812e-09]
- [2.68762251e-01 7.30571543e-01 6.66195015e-04 1.11265898e-08]
- [3.35039123e-04 9.10730760e-04 9.98737550e-01 1.66806157e-05]
- [5.60270275e-09 1.52297251e-08 1.67014215e-05 9.99983278e-01]]
-Hard heaviside: [0.  0.5 1.  1. ]
-Soft heaviside: [0.26894142 0.5        0.99908895 0.99999998]
-Hard greater: [False  True  True  True]
-Soft greater: [0.04742587 0.99330715 0.88079708 1.        ]
-Hard greater equal: [False  True  True  True]
-Soft greater equal: [0.04742587 0.99330715 0.88079708 1.        ]
-Hard less: [ True False False False]
-Soft less: [9.52574127e-01 6.69285092e-03 1.19202922e-01 6.91446900e-13]
-Hard less equal: [ True False False False]
-Soft less equal: [9.52574127e-01 6.69285093e-03 1.19202922e-01 6.91446900e-13]
-Hard equal: [False False False False]
-Soft equal: [4.74258732e-02 6.69285093e-03 1.19202922e-01 6.91446900e-13]
-Hard not equal: [ True  True  True  True]
-Soft not equal: [0.95257413 0.99330715 0.88079708 1.        ]
-Hard isclose: [False False False False]
-Soft isclose: [4.74267813e-02 6.69318401e-03 1.19208182e-01 6.91446900e-13]
 Soft AND: [0.26457513 0.24494897 0.28284271 0.9486833 ]
 Soft OR: [0.48038476 0.25166852 0.57573593 0.99999684]
 Soft NOT: [0.9 0.8 0.2 0. ]
 Soft XOR: [0.58702688 0.43498731 0.63937484 0.17309871]
-Soft ALL: 0.3556558820077846
+Soft ALL: 0.35565588200778464
 Soft ANY: 0.9980519925071494
-Where: [ 0.17 -0.4   0.66  1.8 ]
+Where: [ 0.16 -0.6   0.34  1.  ]
 ```
+
+```python
+# Straight-through estimation: Use hard function on forward and soft on backward
+print("Straight-through ReLU:", sj.relu_st(x))
+print("Straight-through sort:", sj.sort_st(x))
+print("Straight-through argtop_k:", sj.top_k_st(x, k=3)[1])
+print("Straight-through greater:", sj.greater_st(x, y))
+```
+```
+Straight-through ReLU: [0.  0.  0.3 1. ]
+Straight-through sort: [-1.  -0.2  0.3  1. ]
+Straight-through argtop_k: [[0. 0. 0. 1.]
+ [0. 0. 1. 0.]
+ [1. 0. 0. 0.]]
+Straight-through greater: [0. 0. 0. 1.]
+```
+
+The outputs were generated in [this notebook](./quick-example.ipynb).
 
 
 ## Citation

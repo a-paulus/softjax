@@ -1,6 +1,5 @@
 # topk_ot.py  (jax-ott ≥ 0.5)
 
-from functools import partial
 
 import jax
 import jax.numpy as jnp
@@ -69,7 +68,7 @@ def _canonicalize_axis(axis: int | None, num_dims: int) -> int:
 #     return out.matrix
 
 
-@partial(jax.jit, static_argnames=("max_iter"), inline=True)
+# @partial(jax.jit, static_argnames=("max_iter"), inline=True)
 def _sinkhorn(
     C: jax.Array,
     mu: jax.Array,

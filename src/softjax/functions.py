@@ -7,7 +7,6 @@ from typing import Literal
 import jax
 import jax.numpy as jnp
 from jax import Array
-from jax.scipy.special import betainc
 from jaxopt import LBFGS
 from jaxopt.projection import kl_projection_transport, projection_transport
 from jaxtyping import Float
@@ -17,6 +16,11 @@ from softjax.utils import _canonicalize_axis, _projection_unit_simplex, _sinkhor
 
 SoftBool = Float[Array, "..."]  # probability in [0, 1]
 SoftIndex = Float[Array, "..."]  # probabilities summing to 1 along the last axis
+
+ENTROPIC_CONSTANT = 10.0
+PSEUDOHUBER_CONSTANT = 10.0
+EUCLIDEAN_CONSTANT = 2.0
+EUCLIDEAN_OT_CONSTANT = 1.0
 
 
 # Array -> SoftIndex
@@ -53,8 +57,10 @@ def _projection_simplex(
     axis = _canonicalize_axis(axis, x.ndim)
     _x = x / softness
     if mode == "entropic":
+        _x = _x * ENTROPIC_CONSTANT
         soft_indices = jax.nn.softmax(_x, axis=axis)  # (..., [n], ...)
     elif mode == "euclidean":
+        _x = _x * EUCLIDEAN_CONSTANT
         _x = jnp.moveaxis(_x, axis, -1)  # (..., ..., n)
         *batch_sizes, n = _x.shape
         _x = _x.reshape(-1, n)  # (B, n)
@@ -197,8 +203,8 @@ def _projection_transport_polytope(
     nu: Array,  # ([m],)
     softness: float = 1.0,
     mode: Literal["entropic", "euclidean"] = "entropic",
-    max_iter: int = 20,
-    use_sinkhorn: bool = False,
+    max_iter: int = 1000,
+    use_sinkhorn: bool = True,
 ) -> SoftIndex:  # (..., [n], [m])
     """Projects a cost matrix onto the transport polytope between `mu` and `nu`.
 
@@ -222,7 +228,7 @@ def _projection_transport_polytope(
     - `max_iter`: Maximum number of iterations for the optimizer/Sinkhorn solver,
         defaults to 20.
     - `use_sinkhorn`: If True, run the custom Sinkhorn routine; otherwise rely on
-        `jaxopt` projections.
+        `jaxopt` projections. Defaults to True.
 
     **Returns:**
 
@@ -234,6 +240,7 @@ def _projection_transport_polytope(
     cost = cost.reshape(-1, n, m)  # (B, n, m)
     cost = cost / softness  # (B, n, m)
     if mode == "entropic":
+        cost = cost * ENTROPIC_CONSTANT
         if use_sinkhorn:
             proj_fn = lambda c: _sinkhorn(c, mu=mu, nu=nu, max_iter=max_iter)
         else:
@@ -248,6 +255,7 @@ def _projection_transport_polytope(
                 -c, (mu, nu), make_solver=make_solver, use_semi_dual=True
             )
     elif mode == "euclidean":
+        cost = cost * EUCLIDEAN_OT_CONSTANT
         make_solver = lambda fun: LBFGS(
             fun=fun, tol=1e-3, maxiter=max_iter, linesearch="zoom", implicit_diff=True
         )
@@ -269,7 +277,7 @@ def argsort(
     softness: float = 1.0,
     mode: Literal["hard", "entropic", "euclidean"] = "entropic",
     fast: bool = True,
-    max_iter: int = 20,
+    max_iter: int = 1000,
 ) -> SoftIndex:  # (..., n, ..., [n])
     """Performs a soft version of [jax.numpy.argsort](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.argsort.html)
     of `x` along the specified axis.
@@ -343,9 +351,7 @@ def argsort(
 
         if fast:
             anchors = jnp.sort(x, axis=-1, descending=descending)  # (..., ..., n)
-            cost = jnp.pow(
-                jnp.abs(x[..., :, None] - anchors[..., None, :]), 1.0
-            )  # (..., ..., n, n)
+            cost = jnp.abs(x[..., :, None] - anchors[..., None, :])  # (..., ..., n, n)
             soft_indices = _projection_simplex(
                 -cost, axis=-2, softness=softness, mode=mode
             )  # (..., ..., [n], n)
@@ -378,7 +384,7 @@ def argtop_k(
     softness: float = 1.0,
     mode: Literal["hard", "entropic", "euclidean"] = "entropic",
     fast: bool = True,
-    max_iter: int = 20,
+    max_iter: int = 1000,
 ) -> SoftIndex:  # (..., k, ..., [n])
     """Computes the soft argtop_k operation of `x` along the specified axis.
 
@@ -484,7 +490,7 @@ def ranking(
     softness: float = 1.0,
     mode: Literal["hard", "entropic", "euclidean"] = "entropic",
     fast: bool = True,
-    max_iter: int = 20,
+    max_iter: int = 1000,
     descending: bool = True,
 ) -> Array:  # (..., n, ...)
     """Computes the soft rankings of `x` along the specified axis.
@@ -539,7 +545,7 @@ def ranking(
         axis = _canonicalize_axis(axis, x.ndim)
 
     if mode == "hard":
-        indices = jnp.argsort(x, axis=axis)  # (..., n, ...)
+        indices = jnp.argsort(x, axis=axis, descending=descending)  # (..., n, ...)
         indices = indices.astype(jnp.float_)
         rankings = jnp.argsort(
             indices, axis=axis, descending=descending
@@ -551,9 +557,7 @@ def ranking(
 
         if fast:
             anchors = jnp.sort(x, axis=-1, descending=descending)  # (..., ..., n)
-            cost = jnp.pow(
-                jnp.abs(x[..., :, None] - anchors[..., None, :]), 1.0
-            )  # (..., ..., n, n)
+            cost = jnp.abs(x[..., :, None] - anchors[..., None, :])  # (..., ..., n, n)
             soft_indices = _projection_simplex(
                 -cost, axis=-1, softness=softness, mode=mode
             )  # (..., ..., n, [n])
@@ -591,7 +595,7 @@ def argmedian(
     softness: float = 1.0,
     mode: Literal["hard", "entropic", "euclidean"] = "entropic",
     fast: bool = True,
-    max_iter: int = 20,
+    max_iter: int = 1000,
 ) -> SoftIndex:  # (..., {1}, ..., [n])]
     """Computes the soft argmedian of `x` along the specified axis.
 
@@ -658,7 +662,7 @@ def argmedian(
             cost = jnp.abs(
                 x_last[..., :, None] - x_last[..., None, :]
             )  # (..., ..., n, n)
-            cost = jnp.mean(cost, axis=-1)  # (..., ..., n)
+            cost = jnp.sum(cost, axis=-1)  # (..., ..., n)
             argmed = _projection_simplex(
                 -cost, axis=-1, softness=softness, mode=mode
             )  # (..., ..., [n])
@@ -1083,7 +1087,7 @@ def sort(
     softness: float = 1.0,
     mode: Literal["hard", "entropic", "euclidean"] = "entropic",
     fast: bool = True,
-    max_iter: int = 20,
+    max_iter: int = 1000,
 ) -> Array:  # (..., n, ...)
     """Performs a soft version of [jax.numpy.sort](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.sort.html)
     of `x` along the specified axis.
@@ -1124,7 +1128,7 @@ def top_k(
     softness: float = 1.0,
     mode: Literal["hard", "entropic", "euclidean"] = "entropic",
     fast: bool = True,
-    max_iter: int = 20,
+    max_iter: int = 1000,
 ) -> tuple[Array, SoftIndex]:  # (..., k, ...), (..., k, ..., [n])
     """Performs a soft version of [jax.lax.top_k](https://docs.jax.dev/en/latest/_autosummary/jax.lax.top_k.html)
     of `x` along the specified axis.
@@ -1158,7 +1162,7 @@ def median(
     softness: float = 1.0,
     mode: Literal["hard", "entropic", "euclidean"] = "entropic",
     fast: bool = True,
-    max_iter: int = 20,
+    max_iter: int = 1000,
 ) -> Array:  # (..., {1}, ...)
     """Performs a soft version of [jnp.median](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.median.html)
     of `x` along the specified axis.
@@ -1201,13 +1205,12 @@ def median_newton(
     softness: float = 1.0,
     mode: Literal[
         "hard",
-        "sigmoid",
-        "tanh",
+        "entropic",
         "pseudohuber",
-        "linear",
+        "euclidean",
         "cubic",
         "quintic",
-    ] = "sigmoid",
+    ] = "entropic",
     max_iter: int = 8,
     eps: float = 1e-12,
 ) -> Array:  # (..., {1}, ...)
@@ -1225,7 +1228,7 @@ def median_newton(
         to 1.0.
     - `mode`: Smooth score choice:
         - `hard`: Returns `jnp.median`.
-        - `sigmoid`, `tanh`, `pseudohuber`, `linear`, `cubic`, `quintic`: Smooth
+        - `sigmoid`, `pseudohuber`, `linear`, `cubic`, `quintic`: Smooth
             relaxations for the M-estimator using Newton steps. Defaults to `sigmoid`.
     - `max_iter`: Maximum number of Newton iterations in the M-estimator.
     - `eps`: Small constant added to the derivative to avoid division by zero.
@@ -1271,7 +1274,10 @@ def median_newton(
 def round(
     x: Array,
     softness: float = 1.0,
-    mode: Literal["hard", "cosine"] = "cosine",
+    mode: Literal[
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
+    neighbor_radius: int = 5,
 ) -> Array:
     """Performs a soft version of [jax.numpy.round](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.round.html).
 
@@ -1279,12 +1285,10 @@ def round(
 
     - `x`: Input Array of any shape.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
-    - `mode`: If "hard", applies `jnp.round`.
-        If "cosine", uses a cosine-based smoothing. Specifically, it returns a function
-        that has gradient 1+s*cos(2πx) for softness <= 1, and (1+cos(2πx))^s/Z for
-        softness > 1, where s is the softness parameter and Z is a normalization
-        constant.
-        Defaults to "cosine".
+    - `mode`: If "hard", applies `jnp.round`. Otherwise uses "entropic", "euclidean",
+        "pseudohuber", "cubic", or "quintic" relaxations. Defaults to "entropic".
+    - `neighbor_radius`: Number of neighbors on each side of the floor value to
+        consider for the soft rounding. Defaults to 2.
 
     **Returns:**
 
@@ -1292,33 +1296,30 @@ def round(
     """
     if mode == "hard":
         return jnp.round(x)
-    elif mode == "cosine":
-        soft_round_1 = x - softness * jnp.sin(2.0 * jnp.pi * x) / (2.0 * jnp.pi)
+    else:
+        center = jax.lax.stop_gradient(jnp.floor(x))
+        offsets = jnp.arange(
+            -neighbor_radius, neighbor_radius + 1, dtype=x.dtype
+        )  # (M,)
+        n = center[..., None] + offsets  # (..., M)
 
-        k = jnp.floor(x)
-        u = x - k  # fractional part in [0, 1)
-        a = softness + 0.5
-        b = 0.5
-        z = jnp.sin(jnp.pi * u) ** 2  # in [0, 1]
-        half_cdf = 0.5 * betainc(a, b, z)
-        F = jnp.where(u <= 0.5, half_cdf, 1.0 - half_cdf)
-        soft_round_2 = k + F
-
-        soft_round = jnp.where(softness < 1.0, soft_round_1, soft_round_2)
-        return soft_round
+        w_left = _sigmoid(x[..., None] - (n - 0.5), softness=softness, mode=mode)
+        w_right = _sigmoid(x[..., None] - (n + 0.5), softness=softness, mode=mode)
+        return jnp.sum(n * (w_left - w_right), axis=-1)
 
 
 def _softrelu(
     x: Array,
     softness: float = 1.0,
     mode: Literal[
-        "softplus",
-        "silu",
-        "quadratic",
+        "entropic",
+        "euclidean",
         "quartic",
-        # "entropic",
-        # "euclidean",
-    ] = "softplus",
+        "gated_entropic",
+        "gated_euclidean",
+        "gated_cubic",
+        "gated_quintic",
+    ] = "entropic",
 ) -> Array:
     """Family of soft relaxations to ReLU used by `relu`/`clip`.
 
@@ -1326,31 +1327,36 @@ def _softrelu(
 
     - `x`: Input Array.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
-    - `mode`: Choice of smoothing kernel: "softplus", "silu", "quadratic", or "quartic".
-        Defaults to "softplus".
+    - `mode`: Choice of smoothing kernel: "entropic", "euclidean", "quartic",
+        "gated_entropic", "gated_euclidean", "gated_cubic", or "gated_quintic".
+        Defaults to "entropic".
 
     **Returns:**
 
     Result of applying soft elementwise ReLU to `x`.
     """
     x = x / softness
-    if mode == "silu":  # smooth
-        y = jax.nn.silu(x)
-    elif mode == "softplus":  # smooth
-        y = jax.nn.softplus(x)
-    elif mode == "quadratic":  # differentiable
+    if mode == "entropic":
+        y = jax.nn.softplus(x * ENTROPIC_CONSTANT) / ENTROPIC_CONSTANT
+        # closed form integral of _sigmoid(x, mode="entropic")
+    elif mode == "euclidean":
         y = jnp.polyval(jnp.array([0.5, 0.5, 0.125]), x)
         y = jnp.where(x < -0.5, 0.0, jnp.where(x < 0.5, y, x))
-    elif mode == "quartic":  # twice differentiable
+        # closed form integral of _sigmoid(x, mode="euclidean")
+    elif mode == "quartic":
         y = jnp.polyval(jnp.array([-0.5, 0.0, 0.75, 0.5, 0.09375]), x)
         y = jnp.where(x < -0.5, 0.0, jnp.where(x < 0.5, y, x))
-    # elif mode == "entropic":
-    #     # entropic is equivalent to silu
-    #     y = max(jnp.array([0.0, x]), axis=0, mode=mode, softness=1.0)
-    # elif mode == "euclidean":
-    #     y = max(jnp.array([0.0, x]), axis=0, mode=mode, softness=0.5)
+        # closed form integral of _sigmoid(x, mode="cubic")
+    elif mode == "gated_entropic":
+        y = x * _sigmoid(x, mode="entropic")
+    elif mode == "gated_euclidean":
+        y = x * _sigmoid(x, mode="euclidean")
+    elif mode == "gated_cubic":
+        y = x * _sigmoid(x, mode="cubic")
+    elif mode == "gated_quintic":
+        y = x * _sigmoid(x, mode="quintic")
     else:
-        raise ValueError(f"Invalid mode: {mode}")
+        raise ValueError(f"Unknown mode '{mode}' for _softrelu.")
     y = y * softness
     return y
 
@@ -1360,11 +1366,14 @@ def relu(
     softness: float = 1.0,
     mode: Literal[
         "hard",
-        "softplus",
-        "silu",
-        "quadratic",
+        "entropic",
+        "euclidean",
         "quartic",
-    ] = "softplus",
+        "gated_entropic",
+        "gated_euclidean",
+        "gated_cubic",
+        "gated_quintic",
+    ] = "entropic",
 ) -> Array:
     """Performs a soft version of [jax.nn.relu](https://docs.jax.dev/en/latest/_autosummary/jax.nn.relu.html).
 
@@ -1372,8 +1381,9 @@ def relu(
 
     - `x`: Input Array of any shape.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
-    - `mode`: If "hard", applies `jax.nn.relu`. Otherwise uses "softplus", "silu",
-        "quadratic" spline, or "quartic" spline smoothing. Defaults to "softplus".
+    - `mode`: If "hard", applies `jax.nn.relu`. Otherwise uses "entropic", "euclidean",
+        "quartic", "gated_entropic", "gated_euclidean", "gated_cubic", or "gated_quintic"
+        relaxations. Defaults to "entropic".
 
     **Returns:**
 
@@ -1387,16 +1397,19 @@ def relu(
 
 def clip(
     x: Array,
-    a: float,
-    b: float,
+    a: Array,
+    b: Array,
     softness: float = 1.0,
     mode: Literal[
         "hard",
-        "softplus",
-        "silu",
-        "quadratic",
+        "entropic",
+        "euclidean",
         "quartic",
-    ] = "softplus",
+        "gated_entropic",
+        "gated_euclidean",
+        "gated_cubic",
+        "gated_quintic",
+    ] = "entropic",
 ) -> Array:
     """Performs a soft version of [jax.numpy.clip](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.clip.html).
 
@@ -1406,8 +1419,9 @@ def clip(
     - `a`: Lower bound scalar.
     - `b`: Upper bound scalar.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
-    - `mode`: If "hard", applies `jnp.clip`. Otherwise smooths via "softplus", "silu",
-        "quadratic" spline, or "quartic" spline relaxations. Defaults to "softplus".
+    - `mode`: If "hard", applies `jnp.clip`. Otherwise uses "entropic", "euclidean",
+        "quartic", "gated_entropic", "gated_euclidean", "gated_cubic", or "gated_quintic"
+        relaxations. Defaults to "entropic".
 
     **Returns:**
 
@@ -1425,8 +1439,8 @@ def abs(
     x: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
 ) -> Array:
     """Performs a soft version of [jax.numpy.abs](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.abs.html).
 
@@ -1435,8 +1449,8 @@ def abs(
     - `x`: Input Array of any shape.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: Projection mode. "hard" returns the exact absolute value, otherwise uses
-        "sigmoid", "pseudohuber", "tanh", "linear", "cubic", or "quintic" relaxations.
-        Defaults to "sigmoid".
+        "entropic", "pseudohuber", "euclidean", "cubic", or "quintic" relaxations.
+        Defaults to "entropic".
 
     **Returns:**
 
@@ -1452,8 +1466,8 @@ def sign(
     x: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
 ) -> Array:
     """Performs a soft version of [jax.numpy.sign](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.sign.html).
 
@@ -1461,8 +1475,8 @@ def sign(
 
     - `x`: Input Array of any shape.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
-    - `mode`: If "hard", returns `jnp.sign`. Otherwise smooths via "sigmoid", "linear",
-        "cubic", or "quintic" relaxations. Defaults to "sigmoid".
+    - `mode`: If "hard", returns `jnp.sign`. Otherwise smooths via "entropic", "euclidean",
+        "cubic", or "quintic" relaxations. Defaults to "entropic".
 
     **Returns:**
 
@@ -1481,8 +1495,8 @@ def _sigmoid(
     x: Array,
     softness: float = 1.0,
     mode: Literal[
-        "sigmoid", "tanh", "pseudohuber", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
 ) -> SoftBool:
     """Closed-form solution of `argmax(jnp.array([0, x]), softness=softness,
     mode=mode)`.
@@ -1491,7 +1505,7 @@ def _sigmoid(
 
     - `x`: Input Array.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
-    - `mode`: Choice of smoothing family for the surrogate step. Defaults to "sigmoid".
+    - `mode`: Choice of smoothing family for the surrogate step. Defaults to "entropic".
 
     **Returns:**
 
@@ -1499,15 +1513,16 @@ def _sigmoid(
     elementwise Heaviside step function.
     """
     x = x / softness
-    if mode == "sigmoid":  # smooth
-        y = jax.nn.sigmoid(x)
-    elif mode == "tanh":  # smooth
-        y = 0.5 * (1.0 + jnp.tanh(x))
-    elif mode == "pseudohuber":
-        y = 0.5 * (1.0 + x / jnp.sqrt(1.0 + x * x))
-    elif mode == "linear":  # continuous
+    if mode == "entropic":  # smooth
+        # closed form solution of argmax([0,x], mode="entropic")[1]
+        y = jax.nn.sigmoid(x * ENTROPIC_CONSTANT)
+    elif mode == "euclidean":  # continuous
+        # closed form solution of argmax([0,x], mode="euclidean")[1]
         y = jnp.polyval(jnp.array([1.0, 0.5]), x)
         y = jnp.where(x < -0.5, 0.0, jnp.where(x < 0.5, y, 1.0))
+    elif mode == "pseudohuber":
+        x = x * PSEUDOHUBER_CONSTANT
+        y = 0.5 * (1.0 + x / jnp.sqrt(1.0 + x * x))
     elif mode == "cubic":  # differentiable
         y = jnp.polyval(jnp.array([-2.0, 0.0, 1.5, 0.5]), x)
         y = jnp.where(x < -0.5, 0.0, jnp.where(x < 0.5, y, 1.0))
@@ -1523,8 +1538,8 @@ def heaviside(
     x: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
 ) -> SoftBool:
     """Performs a soft version of [jax.numpy.heaviside](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.heaviside.html)(x,0.5).
 
@@ -1533,7 +1548,7 @@ def heaviside(
     - `x`: Input Array of any shape.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", returns the exact Heaviside step. Otherwise uses
-        "sigmoid", "linear", "cubic", or "quintic" relaxations. Defaults to "sigmoid".
+        "entropic", "euclidean", "cubic", or "quintic" relaxations. Defaults to "entropic".
 
     **Returns:**
 
@@ -1551,8 +1566,8 @@ def greater(
     y: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
     epsilon: float = 1e-10,
 ) -> SoftBool:
     """Computes a soft approximation to elementwise `x > y`.
@@ -1564,8 +1579,8 @@ def greater(
     - `y`: Second input Array, same shape as `x`.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", returns the exact comparison. Otherwise uses a soft
-        Heaviside: "sigmoid", "linear" spline, "cubic" spline, or "quintic" spline.
-        Defaults to "sigmoid".
+        Heaviside: "entropic", "euclidean", "cubic" spline, or "quintic" spline.
+        Defaults to "entropic".
     - `epsilon`: Small offset so that as softness->0, greater returns 0 at equality.
 
     **Returns:**
@@ -1584,8 +1599,8 @@ def greater_equal(
     y: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
     epsilon: float = 1e-10,
 ) -> SoftBool:
     """Computes a soft approximation to elementwise `x >= y`.
@@ -1597,8 +1612,8 @@ def greater_equal(
     - `y`: Second input Array, same shape as `x`.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", returns the exact comparison. Otherwise uses a soft
-        Heaviside: "sigmoid", "linear" spline, "cubic" spline, or "quintic" spline.
-        Defaults to "sigmoid".
+        Heaviside: "entropic", "euclidean", "cubic" spline, or "quintic" spline.
+        Defaults to "entropic".
     - `epsilon`: Small offset so that as softness->0, greater_equal returns 1 at
         equality.
 
@@ -1618,8 +1633,8 @@ def less(
     y: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
     epsilon: float = 1e-10,
 ) -> SoftBool:
     """Computes a soft approximation to elementwise `x < y`.
@@ -1631,8 +1646,8 @@ def less(
     - `y`: Second input Array, same shape as `x`.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", returns the exact comparison. Otherwise uses a soft
-        Heaviside: "sigmoid", "linear" spline, "cubic" spline, or "quintic" spline.
-        Defaults to "sigmoid".
+        Heaviside: "entropic", "euclidean", "cubic" spline, or "quintic" spline.
+        Defaults to "entropic".
     - `epsilon`: Small offset so that as softness->0, less returns 0 at equality.
 
     **Returns:**
@@ -1653,8 +1668,8 @@ def less_equal(
     y: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
     epsilon: float = 1e-10,
 ) -> SoftBool:
     """Computes a soft approximation to elementwise `x <= y`.
@@ -1666,8 +1681,8 @@ def less_equal(
     - `y`: Second input Array, same shape as `x`.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", returns the exact comparison. Otherwise uses a soft
-        Heaviside: "sigmoid", "linear" spline, "cubic" spline, or "quintic" spline.
-        Defaults to "sigmoid".
+        Heaviside: "entropic", "euclidean", "cubic" spline, or "quintic" spline.
+        Defaults to "entropic".
     - `epsilon`: Small offset so that as softness->0, less_equal returns 1 at equality.
 
     **Returns:**
@@ -1686,8 +1701,8 @@ def equal(
     y: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
     epsilon: float = 1e-10,
 ) -> SoftBool:
     """Computes a soft approximation to elementwise `x == y`.
@@ -1699,8 +1714,8 @@ def equal(
     - `y`: Second input Array, same shape as `x`.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", returns the exact comparison. Otherwise uses a soft
-        Heaviside: "sigmoid", "linear" spline, "cubic" spline, or "quintic" spline.
-        Defaults to "sigmoid".
+        Heaviside: "entropic", "euclidean", "cubic" spline, or "quintic" spline.
+        Defaults to "entropic".
     - `epsilon`: Small offset so that as softness->0, equal returns 1 at equality.
 
     **Returns:**
@@ -1722,8 +1737,8 @@ def not_equal(
     y: Array,
     softness: float = 1.0,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
     epsilon: float = 1e-10,
 ) -> SoftBool:
     """Computes a soft approximation to elementwise `x != y`.
@@ -1735,8 +1750,8 @@ def not_equal(
     - `y`: Second input Array, same shape as `x`.
     - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
     - `mode`: If "hard", returns the exact comparison. Otherwise uses a soft
-        Heaviside: "sigmoid", "linear" spline, "cubic" spline, or "quintic" spline.
-        Defaults to "sigmoid".
+        Heaviside: "entropic", "euclidean", "cubic" spline, or "quintic" spline.
+        Defaults to "entropic".
     - `epsilon`: Small offset so that as softness->0, not_equal returns 0 at equality.
 
     **Returns:**
@@ -1760,8 +1775,8 @@ def isclose(
     rtol: float = 1e-05,
     atol: float = 1e-08,
     mode: Literal[
-        "hard", "sigmoid", "pseudohuber", "tanh", "linear", "cubic", "quintic"
-    ] = "sigmoid",
+        "hard", "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
+    ] = "entropic",
     epsilon: float = 1e-10,
 ) -> SoftBool:
     """Computes a soft approximation to `jnp.isclose` for elementwise comparison.
@@ -1775,8 +1790,8 @@ def isclose(
     - `rtol`: Relative tolerance. Defaults to 1e-5.
     - `atol`: Absolute tolerance. Defaults to 1e-8.
     - `mode`: If "hard", returns the exact comparison. Otherwise uses a soft
-        Heaviside: "sigmoid", "linear" spline, "cubic" spline, or "quintic" spline.
-        Defaults to "sigmoid".
+        Heaviside: "entropic", "euclidean", "cubic" spline, or "quintic" spline.
+        Defaults to "entropic".
     - `epsilon`: Small offset so that as softness->0, isclose returns 1 at equality.
 
     **Returns:**

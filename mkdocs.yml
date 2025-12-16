@@ -123,6 +123,8 @@ nav:
     - 'index.md'
     - All of Softjax: 'all-of-softjax.ipynb'
     - Examples: 
+        - 'quick-example.ipynb'
+        - 'plots.ipynb'
         - 'manifold_points.ipynb'
     - API:
         - 'api/soft_functions.md'
