@@ -2522,14 +2522,14 @@ print(
 jnp.argmax(x, axis=1).shape: (3,)
 sj.argmax(x, axis=1).shape: (3, 4)
 jnp.argmax(x, axis=0).shape: (4,)
-sj.argmax(x, axis=0).shape: (4, 3)
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>jnp.argmax(x, axis=1, keepdims=True).shape: (3, 1)
+<pre>sj.argmax(x, axis=0).shape: (4, 3)
+jnp.argmax(x, axis=1, keepdims=True).shape: (3, 1)
 sj.argmax(x, axis=1, keepdims=True).shape: (3, 1, 4)
 jnp.argmax(x, axis=0, keepdims=True).shape: (1, 4)
 sj.argmax(x, axis=0, keepdims=True).shape: (1, 4, 3)
@@ -2999,7 +2999,13 @@ jax.lax.top_k(x, k=2)[0]: [0.96532146 0.57450053]
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>sj.top_k(x, k=2, mode='hard')[0]: [0.96532146 0.57450053]
-sj.top_k(x, k=2)[0]: [0.95500708 0.54676106]
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>sj.top_k(x, k=2)[0]: [0.95500708 0.54676106]
 
 jnp.sort(x): [0.21629545 0.41845711 0.57450053 0.96532146]
 sj.sort(x, mode='hard'): [0.21629545 0.41845711 0.57450053 0.96532146]
