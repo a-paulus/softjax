@@ -30,6 +30,7 @@ Available at https://a-paulus.github.io/softjax/.
 
 ## Quick example
 ```python
+import jax
 import jax.numpy as jnp
 import softjax as sj
 
