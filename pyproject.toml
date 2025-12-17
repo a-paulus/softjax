@@ -1,7 +1,7 @@
 [project]
 name = "softjax"
 version = "0.1.0"
-description = "Add your description here"
+description = "A library for soft differentiable relaxations of common JAX functions."
 readme = "README.md"
 authors = [
     { name = "Anselm Paulus", email = "anselm.paulus@uni-tuebingen.de" }
