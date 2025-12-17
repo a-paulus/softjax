@@ -1,7 +1,7 @@
 # Disclaimer
 
 Softjax is not yet fully released!
-We are currently finalizing the library, and are planning on releasing it (alongside a similar "Softtorch" library) officially until the end of the year.
+We are currently finalizing the library, and are planning on releasing it (alongside a similar "[Softtorch](https://github.com/a-paulus/softtorch)" library) officially until the end of the year.
 If you somehow stumbled upon this library already, feel free to use and test the github code, and please reach out if you encounter any issues or have suggestions for improvement. Thanks!
 
 Note also that some of the API and internals are still subject to potentially bigger changes until the official release.
