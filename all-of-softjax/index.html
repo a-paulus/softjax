@@ -295,7 +295,7 @@
   
   
   <span class="md-ellipsis">
-    Getting started
+    Disclaimer
     
   </span>
   
@@ -2265,10 +2265,10 @@ Combining the soft index generation with the selection then allows to define sur
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"jnp.argmax(x):"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-16">x = jnp.array([1, 2, 3])
-print(jnp.argmax(x))</div>
+print("jnp.argmax(x):", jnp.argmax(x))</div>
 </div>
 </div>
 </div>
@@ -2280,7 +2280,7 @@ print(jnp.argmax(x))</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>2
+<pre>jnp.argmax(x): 2
 </pre>
 </div>
 </div>
@@ -2318,10 +2318,10 @@ print(jnp.argmax(x))</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argmax(x):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-17">x = jnp.array([1, 2, 3])
-print(sj.argmax(x))</div>
+print("sj.argmax(x):", sj.argmax(x))</div>
 </div>
 </div>
 </div>
@@ -2333,7 +2333,7 @@ print(sj.argmax(x))</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[2.06106005e-09 4.53978686e-05 9.99954600e-01]
+<pre>sj.argmax(x): [2.06106005e-09 4.53978686e-05 9.99954600e-01]
 </pre>
 </div>
 </div>
@@ -2571,25 +2571,27 @@ sj.argmax(x, axis=0, keepdims=True).shape: (1, 4, 3)
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"x:"</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"jnp.argmedian(x):</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Not implemented in standard JAX"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argmedian(x):</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"jax.lax.top_k(x, k=3)[1]:</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argtop_k(x, k=3):</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argtop_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">jnp.argmedian(x):"</span><span class="p">,</span> <span class="s2">"Not implemented in standard JAX"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argmedian(x):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"jnp.argsort(x):</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argsort(x):</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">jax.lax.top_k(x, k=3)[1]:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argtop_k(x, k=3):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argtop_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">jnp.argsort(x):"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argsort(x):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-20">x = jax.random.uniform(jax.random.key(0), shape=(4,))
 print("x:", x)
-print("jnp.argmedian(x):\n", "Not implemented in standard JAX")
-print("sj.argmedian(x):\n", sj.argmedian(x))
 
-print("jax.lax.top_k(x, k=3)[1]:\n", jax.lax.top_k(x, k=3)[1])
-print("sj.argtop_k(x, k=3):\n", sj.argtop_k(x, k=3))
+print("\njnp.argmedian(x):", "Not implemented in standard JAX")
+print("sj.argmedian(x):", sj.argmedian(x))
 
-print("jnp.argsort(x):\n", jnp.argsort(x))
-print("sj.argsort(x):\n", sj.argsort(x))</div>
+print("\njax.lax.top_k(x, k=3)[1]:", jax.lax.top_k(x, k=3)[1])
+print("sj.argtop_k(x, k=3):", sj.argtop_k(x, k=3))
+
+print("\njnp.argsort(x):", jnp.argsort(x))
+print("sj.argsort(x):", sj.argsort(x))</div>
 </div>
 </div>
 </div>
@@ -2602,32 +2604,29 @@ print("sj.argsort(x):\n", sj.argsort(x))</div>
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>x: [0.41845711 0.21629545 0.96532146 0.57450053]
-jnp.argmedian(x):
- Not implemented in standard JAX
+
+jnp.argmedian(x): Not implemented in standard JAX
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>sj.argmedian(x):
- [4.95553956e-01 8.69234800e-03 1.99739291e-04 4.95553956e-01]
-jax.lax.top_k(x, k=3)[1]:
- [2 3 0]
+<pre>sj.argmedian(x): [4.95553956e-01 8.69234800e-03 1.99739291e-04 4.95553956e-01]
+
+jax.lax.top_k(x, k=3)[1]: [2 3 0]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>sj.argtop_k(x, k=3):
- [[4.11469085e-03 5.44954558e-04 9.75750772e-01 1.95895826e-02]
+<pre>sj.argtop_k(x, k=3): [[4.11469085e-03 5.44954558e-04 9.75750772e-01 1.95895826e-02]
  [1.66975269e-01 2.21144035e-02 1.59597616e-02 7.94950566e-01]
  [7.42554231e-01 9.83447670e-02 3.13131302e-03 1.55969689e-01]]
-jnp.argsort(x):
- [1 0 3 2]
-sj.argsort(x):
- [[1.14092958e-01 8.61461280e-01 4.81124140e-04 2.39646378e-02]
+
+jnp.argsort(x): [1 0 3 2]
+sj.argsort(x): [[1.14092958e-01 8.61461280e-01 4.81124140e-04 2.39646378e-02]
  [7.42554231e-01 9.83447670e-02 3.13131302e-03 1.55969689e-01]
  [1.66975269e-01 2.21144035e-02 1.59597616e-02 7.94950566e-01]
  [4.11469085e-03 5.44954558e-04 9.75750772e-01 1.95895826e-02]]
@@ -2669,16 +2668,19 @@ sj.argsort(x):
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"x.shape:"</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
 <span class="c1"># standard JAX only added support for axis argument in jax.lax.top_k recently, normally uses last axis</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"jax.lax.top_k(x, k=2, axis=1)[1].shape:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argtop_k(x, k=2, axis=1).shape:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argtop_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">jax.lax.top_k(x, k=2, axis=1)[1].shape:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">sj.argtop_k(x, k=2, axis=1).shape:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argtop_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argtop_k(x, k=2, axis=0).shape:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argtop_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"jnp.argsort(x, axis=1).shape:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argsort(x, axis=1).shape:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"jnp.argsort(x, axis=0).shape:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argsort(x, axis=0).shape:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
 <span class="c1"># standard JAX does not support argmedian</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argmedian(x, axis=1).shape:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">sj.argmedian(x, axis=1).shape:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.argmedian(x, axis=0).shape:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
     <span class="s2">"sj.argmedian(x, axis=1, keepdims=True).shape:"</span><span class="p">,</span>
@@ -2691,16 +2693,19 @@ sj.argsort(x):
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-21">x = jax.random.uniform(jax.random.key(0), shape=(3, 4))
 print("x.shape:", x.shape)
+
 # standard JAX only added support for axis argument in jax.lax.top_k recently, normally uses last axis
-print("jax.lax.top_k(x, k=2, axis=1)[1].shape:", jax.lax.top_k(x, k=2)[1].shape)
-print("sj.argtop_k(x, k=2, axis=1).shape:", sj.argtop_k(x, k=2, axis=1).shape)
+print("\njax.lax.top_k(x, k=2, axis=1)[1].shape:", jax.lax.top_k(x, k=2)[1].shape)
+
+print("\nsj.argtop_k(x, k=2, axis=1).shape:", sj.argtop_k(x, k=2, axis=1).shape)
 print("sj.argtop_k(x, k=2, axis=0).shape:", sj.argtop_k(x, k=2, axis=0).shape)
 print("jnp.argsort(x, axis=1).shape:", jnp.argsort(x, axis=1).shape)
 print("sj.argsort(x, axis=1).shape:", sj.argsort(x, axis=1).shape)
 print("jnp.argsort(x, axis=0).shape:", jnp.argsort(x, axis=0).shape)
 print("sj.argsort(x, axis=0).shape:", sj.argsort(x, axis=0).shape)
+
 # standard JAX does not support argmedian
-print("sj.argmedian(x, axis=1).shape:", sj.argmedian(x, axis=1).shape)
+print("\nsj.argmedian(x, axis=1).shape:", sj.argmedian(x, axis=1).shape)
 print("sj.argmedian(x, axis=0).shape:", sj.argmedian(x, axis=0).shape)
 print(
     "sj.argmedian(x, axis=1, keepdims=True).shape:",
@@ -2722,6 +2727,7 @@ print(
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>x.shape: (3, 4)
+
 jax.lax.top_k(x, k=2, axis=1)[1].shape: (3, 2)
 </pre>
 </div>
@@ -2729,7 +2735,8 @@ jax.lax.top_k(x, k=2, axis=1)[1].shape: (3, 2)
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>sj.argtop_k(x, k=2, axis=1).shape: (3, 2, 4)
+<pre>
+sj.argtop_k(x, k=2, axis=1).shape: (3, 2, 4)
 sj.argtop_k(x, k=2, axis=0).shape: (2, 3, 4)
 jnp.argsort(x, axis=1).shape: (3, 4)
 sj.argsort(x, axis=1).shape: (3, 4, 4)
@@ -2747,6 +2754,7 @@ sj.argsort(x, axis=1).shape: (3, 4, 4)
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>sj.argsort(x, axis=0).shape: (3, 4, 3)
+
 sj.argmedian(x, axis=1).shape: (3, 4)
 </pre>
 </div>
@@ -2916,38 +2924,38 @@ min_sj_soft:
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">key</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"x:"</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"jnp.max(x):"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">jnp.max(x):"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.max(x, mode='hard'):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.max(x):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"jnp.median(x):"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">jnp.median(x):"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.median(x, mode='hard'):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.median(x):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"jax.lax.top_k(x, k=2)[0]:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">jax.lax.top_k(x, k=2)[0]:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.top_k(x, k=2, mode='hard')[0]:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.top_k(x, k=2)[0]:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"jnp.sort(x):"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">jnp.sort(x):"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.sort(x, mode='hard'):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"sj.sort(x):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-23">x = jax.random.uniform(jax.random.key(0), shape=(4,))
 print("x:", x)
 
-print("jnp.max(x):", jnp.max(x))
+print("\njnp.max(x):", jnp.max(x))
 print("sj.max(x, mode='hard'):", sj.max(x, mode="hard"))
 print("sj.max(x):", sj.max(x))
 
-print("jnp.median(x):", jnp.median(x))
+print("\njnp.median(x):", jnp.median(x))
 print("sj.median(x, mode='hard'):", sj.median(x, mode="hard"))
 print("sj.median(x):", sj.median(x))
 
-print("jax.lax.top_k(x, k=2)[0]:", jax.lax.top_k(x, k=2)[0])
+print("\njax.lax.top_k(x, k=2)[0]:", jax.lax.top_k(x, k=2)[0])
 print("sj.top_k(x, k=2, mode='hard')[0]:", sj.top_k(x, k=2, mode="hard")[0])
 print("sj.top_k(x, k=2)[0]:", sj.top_k(x, k=2)[0])
 
-print("jnp.sort(x):", jnp.sort(x))
+print("\njnp.sort(x):", jnp.sort(x))
 print("sj.sort(x, mode='hard'):", sj.sort(x, mode="hard"))
 print("sj.sort(x):", sj.sort(x))</div>
 </div>
@@ -2962,6 +2970,7 @@ print("sj.sort(x):", sj.sort(x))</div>
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>x: [0.41845711 0.21629545 0.96532146 0.57450053]
+
 jnp.max(x): 0.9653214611189975
 sj.max(x, mode='hard'): 0.9653214611189975
 </pre>
@@ -2977,9 +2986,11 @@ sj.max(x, mode='hard'): 0.9653214611189975
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>jnp.median(x): 0.49647882272194555
+<pre>
+jnp.median(x): 0.49647882272194555
 sj.median(x, mode='hard'): 0.49647882272194555
 sj.median(x): 0.494137017678798
+
 jax.lax.top_k(x, k=2)[0]: [0.96532146 0.57450053]
 </pre>
 </div>
@@ -2989,6 +3000,7 @@ jax.lax.top_k(x, k=2)[0]: [0.96532146 0.57450053]
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>sj.top_k(x, k=2, mode='hard')[0]: [0.96532146 0.57450053]
 sj.top_k(x, k=2)[0]: [0.95500708 0.54676106]
+
 jnp.sort(x): [0.21629545 0.41845711 0.57450053 0.96532146]
 sj.sort(x, mode='hard'): [0.21629545 0.41845711 0.57450053 0.96532146]
 sj.sort(x): [0.24830531 0.42462602 0.54676106 0.95500708]
@@ -3113,6 +3125,16 @@ Most importantly though, we can move up the ladder to even higher-level function
 <p>Therefore, for each of our heaviside relaxations we can define two ReLU relaxations, some of which are well known. For example, the <code>entropic</code> case leads to the classic <code>softplus</code> function when integrated, and to the <code>SiLU</code> function when "gated" (we refer to this relaxation mode as <code>gated_entropic</code>).
 Similarly, the <code>euclidean</code>, <code>cubic</code> and <code>quintic</code> are simple piecewise-polynomials that we can integrate in closed-form.<br/>
 We can now use the soft ReLU relaxation to define more relaxations like e.g. <code>clip</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 </div>
 </div>
 </div>

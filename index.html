@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#disclaimer" class="md-skip">
           Skip to content
         </a>
       
@@ -122,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting started
+              Disclaimer
             
           </span>
         </div>
@@ -297,136 +297,17 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Getting started
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
-    Getting started
+    Disclaimer
     
   </span>
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Quick example
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#citation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Citation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next steps
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#feedback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Feedback
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    <span class="md-ellipsis">
-      See also
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="See also">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#other-libraries-in-the-jax-ecosystem" class="md-nav__link">
-    <span class="md-ellipsis">
-      Other libraries in the JAX ecosystem
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#other-libraries-on-differentiable-programming" class="md-nav__link">
-    <span class="md-ellipsis">
-      Other libraries on differentiable programming
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#papers-on-differentiable-algorithms" class="md-nav__link">
-    <span class="md-ellipsis">
-      Papers on differentiable algorithms
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -731,6 +612,12 @@
 
 
 
+<h1 id="disclaimer">Disclaimer<a class="headerlink" href="#disclaimer" title="Permanent link">¤</a></h1>
+<p>Softjax is not yet fully released!
+We are currently finalizing the library, and are planning on releasing it (alongside a similar "Softtorch" library) officially until the end of the year.
+If you somehow stumbled upon this library already, feel free to use and test the github code, and please reach out if you encounter any issues or have suggestions for improvement. Thanks!</p>
+<p>Note also that some of the API and internals are still subject to potentially bigger changes until the official release.
+The pip install will also only be available after official release.</p>
 <h1 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">¤</a></h1>
 <p>Softjax provides soft differentiable drop-in replacements for traditionally non-differentiable functions in <a href="https://github.com/google/jax">JAX</a>, including</p>
 <ul>
@@ -750,7 +637,8 @@ However, keep in mind that special care needs to be taken when using functions o
 <div class="highlight"><pre><span></span><code>pip install softjax
 </code></pre></div></p>
 <h2 id="quick-example">Quick example<a class="headerlink" href="#quick-example" title="Permanent link">¤</a></h2>
-<p><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<p><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">softjax</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sj</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
