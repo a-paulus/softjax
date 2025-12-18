@@ -1,4 +1,6 @@
-# Disclaimer
+# Softjax
+
+## Disclaimer
 
 Softjax is not yet fully released!
 We are currently finalizing the library, and are planning on releasing it (alongside a similar "[Softtorch](https://github.com/a-paulus/softtorch)" library) officially until the end of the year.
@@ -8,13 +10,13 @@ Note also that some of the API and internals are still subject to potentially bi
 The pip install will also only be available after official release.
 
 
-# Getting started
+## In a nutshell
 
 Softjax provides soft differentiable drop-in replacements for traditionally non-differentiable functions in [JAX](https://github.com/google/jax), including
 
 - simple elementwise functions: `abs`, `relu`, `clip`, `sign` and `round`;
 - functions operating on arrays: `max`, `min`, `median`, `sort`, `ranking` and `top_k`;
-- functions returning indices: `argmax`, `argmin`, `argmedian`, `argsort` and `argtop_k`;
+- functions returning indices: `argmax`, `argmin`, `argmedian`, `argsort` and `top_k`;
 - functions returning boolean values such as: `greater`, `equal` or `isclose`;
 - functions for selection with indices such as: `take_along_axis`, `dynamic_index_in_dim` and `choose`;
 - functions for logical manipulation such as: `logical_and`, `all` and `where`.
@@ -202,48 +204,62 @@ SoftJAX argsort (soft mode): [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06
 y = jnp.array([0.2, -0.5, 0.5, -1.0])
 
 # SoftBool generation
-print("\nJAX greater:", x > y)
-print("SoftJAX greater:", sj.greater(x, y))
+print("\nJAX greater:", jnp.greater(x, y))
+print("SoftJAX greater (hard mode):", sj.greater(x, y, mode="hard"))
+print("SoftJAX greater (soft mode):", sj.greater(x, y))
 
-print("\nJAX greater equal:", x >= y)
-print("SoftJAX greater equal:", sj.greater_equal(x, y))
+print("\nJAX greater equal:", jnp.greater_equal(x, y))
+print("SoftJAX greater equal (hard mode):", sj.greater_equal(x, y, mode="hard"))
+print("SoftJAX greater equal (soft mode):", sj.greater_equal(x, y))
 
-print("\nJAX less:", x < y)
-print("SoftJAX less:", sj.less(x, y))
+print("\nJAX less:", jnp.less(x, y))
+print("SoftJAX less (hard mode):", sj.less(x, y, mode="hard"))
+print("SoftJAX less (soft mode):", sj.less(x, y))
 
-print("\nJAX less equal:", x <= y)
-print("SoftJAX less equal:", sj.less_equal(x, y))
+print("\nJAX less equal:", jnp.less_equal(x, y))
+print("SoftJAX less equal (hard mode):", sj.less_equal(x, y, mode="hard"))
+print("SoftJAX less equal (soft mode):", sj.less_equal(x, y))
 
-print("\nJAX equal:", x == y)
-print("SoftJAX equal:", sj.equal(x, y))
+print("\nJAX equal:", jnp.equal(x, y))
+print("SoftJAX equal (hard mode):", sj.equal(x, y, mode="hard"))
+print("SoftJAX equal (soft mode):", sj.equal(x, y))
 
-print("\nJAX not equal:", x != y)
-print("SoftJAX not equal:", sj.not_equal(x, y))
+print("\nJAX not equal:", jnp.not_equal(x, y))
+print("SoftJAX not equal (hard mode):", sj.not_equal(x, y, mode="hard"))
+print("SoftJAX not equal (soft mode):", sj.not_equal(x, y))
 
 print("\nJAX isclose:", jnp.isclose(x, y))
-print("SoftJAX isclose:", sj.isclose(x, y))
+print("SoftJAX isclose (hard mode):", sj.isclose(x, y, mode="hard"))
+print("SoftJAX isclose (soft mode):", sj.isclose(x, y))
 ```
 ```
 JAX greater: [False False False  True]
-SoftJAX greater: [0.01798621 0.00669285 0.11920292 1.        ]
+SoftJAX greater (hard mode): [0. 0. 0. 1.]
+SoftJAX greater (soft mode): [0.01798621 0.00669285 0.11920292 1.        ]
 
 JAX greater equal: [False False False  True]
-SoftJAX greater equal: [0.01798621 0.00669285 0.11920292 1.        ]
+SoftJAX greater equal (hard mode): [0. 0. 0. 1.]
+SoftJAX greater equal (soft mode): [0.01798621 0.00669285 0.11920292 1.        ]
 
 JAX less: [ True  True  True False]
-SoftJAX less: [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
+SoftJAX less (hard mode): [1. 1. 1. 0.]
+SoftJAX less (soft mode): [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
 
 JAX less equal: [ True  True  True False]
-SoftJAX less equal: [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
+SoftJAX less equal (hard mode): [1. 1. 1. 0.]
+SoftJAX less equal (soft mode): [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
 
 JAX equal: [False False False False]
-SoftJAX equal: [1.79862100e-02 6.69285093e-03 1.19202922e-01 2.06115369e-09]
+SoftJAX equal (hard mode): [0. 0. 0. 0.]
+SoftJAX equal (soft mode): [1.79862100e-02 6.69285093e-03 1.19202922e-01 2.06115369e-09]
 
 JAX not equal: [ True  True  True  True]
-SoftJAX not equal: [0.98201379 0.99330715 0.88079708 1.        ]
+SoftJAX not equal (hard mode): [1. 1. 1. 1.]
+SoftJAX not equal (soft mode): [0.98201379 0.99330715 0.88079708 1.        ]
 
 JAX isclose: [False False False False]
-SoftJAX isclose: [1.79865650e-02 6.69318401e-03 1.19208182e-01 2.06135997e-09]
+SoftJAX isclose (hard mode): [0. 0. 0. 0.]
+SoftJAX isclose (soft mode): [1.79865650e-02 6.69318401e-03 1.19208182e-01 2.06135997e-09]
 ```
 
 ```python

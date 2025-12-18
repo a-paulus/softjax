@@ -1,20 +1,28 @@
 # SoftIndices
 
-## Generating SoftIndices
+## Generating / Using SoftIndices
+
+::: softjax.max
 
 ::: softjax.argmax
 
+::: softjax.min
+
 ::: softjax.argmin
 
-::: softjax.argsort
-
-::: softjax.argtop_k
-
-::: softjax.ranking
+::: softjax.median
 
 ::: softjax.argmedian
 
-## Selection with SoftIndices
+::: softjax.sort
+
+::: softjax.argsort
+
+::: softjax.top_k
+
+::: softjax.ranking
+
+## Selection Utilities
 
 ::: softjax.take_along_axis
 
@@ -27,15 +35,3 @@
 ::: softjax.dynamic_slice_in_dim
 
 ::: softjax.dynamic_slice
-
-## Examples of Selection
-
-::: softjax.max
-
-::: softjax.min
-
-::: softjax.median
-
-::: softjax.sort
-
-::: softjax.top_k

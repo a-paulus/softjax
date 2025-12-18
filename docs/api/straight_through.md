@@ -4,7 +4,11 @@
 
 ::: softjax.st
 
+::: softjax.abs_st
+
 ::: softjax.argmax_st
+
+::: softjax.argmedian_st
 
 ::: softjax.argmin_st
 

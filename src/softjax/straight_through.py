@@ -66,6 +66,10 @@ def st(fn: Callable) -> Callable:
     return wrapped
 
 
+def abs_st(*args, **kwargs):
+    return st(sj.abs)(*args, **kwargs)
+
+
 def argmax_st(*args, **kwargs):
     """
     Straight-through version of [`softjax.argmax`][].
@@ -77,6 +81,10 @@ def argmax_st(*args, **kwargs):
     Implemented using the [`softjax.st`][] decorator as `st(softjax.argmax)`.
     """
     return st(sj.argmax)(*args, **kwargs)
+
+
+def argmedian_st(*args, **kwargs):
+    return st(sj.argmedian)(*args, **kwargs)
 
 
 def argmin_st(*args, **kwargs):

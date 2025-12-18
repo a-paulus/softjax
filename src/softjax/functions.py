@@ -58,18 +58,18 @@ def _projection_simplex(
     _x = x / softness
     if mode == "entropic":
         _x = _x * ENTROPIC_CONSTANT
-        soft_indices = jax.nn.softmax(_x, axis=axis)  # (..., [n], ...)
+        soft_index = jax.nn.softmax(_x, axis=axis)  # (..., [n], ...)
     elif mode == "euclidean":
         _x = _x * EUCLIDEAN_CONSTANT
         _x = jnp.moveaxis(_x, axis, -1)  # (..., ..., n)
         *batch_sizes, n = _x.shape
         _x = _x.reshape(-1, n)  # (B, n)
-        soft_indices = jax.vmap(_projection_unit_simplex, in_axes=0)(_x)
-        soft_indices = soft_indices.reshape(*batch_sizes, n)  # (..., ..., [n])
-        soft_indices = jnp.moveaxis(soft_indices, -1, axis)  # (..., [n], ...)
+        soft_index = jax.vmap(_projection_unit_simplex, in_axes=0)(_x)
+        soft_index = soft_index.reshape(*batch_sizes, n)  # (..., ..., [n])
+        soft_index = jnp.moveaxis(soft_index, -1, axis)  # (..., [n], ...)
     else:
         raise ValueError(f"Invalid mode: {mode}")
-    return soft_indices
+    return soft_index
 
 
 def argmax(
@@ -104,8 +104,8 @@ def argmax(
 
     !!! tip "Usage"
         This function can be used as a differentiable relaxation to
-        [`softjax.argmax`][], enabling
-        backpropagation through index selection steps in neural networks or
+        [jax.numpy.argmax](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.argmax.html),
+        enabling backpropagation through index selection steps in neural networks or
         optimization routines. However, note that the output is not a discrete index
         but a `SoftIndex`, which is a distribution over indices.
         Therefore, functions which operate on indices have to be adjusted accordingly
@@ -122,35 +122,16 @@ def argmax(
     ??? example
 
         ```python
-        x = jnp.array([[5, 3, 4], [2, 7, 6]])
-
-        # Hard
-        print("jnp:", jnp.argmax(x, axis=1))
-        print("sj_hard:", sj.argmax(x, mode="hard", axis=1))
-
-        # Entropic (Softmax projection)
-        print("sj_entropic_low:", sj.argmax(x, mode="entropic", softness=0.01, axis=1))
-        print("sj_entropic_high:", sj.argmax(x, mode="entropic", softness=1.0, axis=1))
-
-        # Euclidean (L2 projection)
-        print("sj_euclidean_low:", sj.argmax(x, mode="euclidean", softness=0.01,
-            axis=1))
-        print("sj_euclidean_high:", sj.argmax(x, mode="euclidean", softness=4.0,
-            axis=1))
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+        print("JAX argmax:", jnp.argmax(x))
+        print("SoftJAX argmax (hard mode):", sj.argmax(x, mode="hard"))
+        print("SoftJAX argmax (soft mode):", sj.argmax(x))
         ```
 
         ```
-        jnp: [0 1]
-        sj_hard: [[1. 0. 0.]
-                  [0. 1. 0.]]
-        sj_entropic_low: [[1.00000000e+000 1.38389653e-087 3.72007598e-044]
-                          [7.12457641e-218 1.00000000e+000 3.72007598e-044]]
-        sj_entropic_high: [[0.66524096 0.09003057 0.24472847]
-                           [0.00490169 0.72747516 0.26762315]]
-        sj_euclidean_low: [[1. 0. 0.]
-                           [0. 1. 0.]]
-        sj_euclidean_high: [[0.58333333 0.08333333 0.33333333]
-                            [0.         0.625      0.375     ]]
+        JAX argmax: 3
+        SoftJAX argmax (hard mode): [0. 0. 0. 1.]
+        SoftJAX argmax (soft mode): [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
         ```
 
     """
@@ -162,17 +143,15 @@ def argmax(
 
     if mode == "hard":
         indices = jnp.argmax(x, axis=axis, keepdims=keepdims)
-        soft_indices = jax.nn.one_hot(indices, num_classes=x.shape[axis], axis=-1)
+        soft_index = jax.nn.one_hot(indices, num_classes=x.shape[axis], axis=-1)
     else:
-        soft_indices = _projection_simplex(
+        soft_index = _projection_simplex(
             x, axis=axis, mode=mode, softness=softness
         )  # (..., [n], ...)
-        soft_indices = jnp.moveaxis(soft_indices, axis, -1)  # (..., ..., [n])
+        soft_index = jnp.moveaxis(soft_index, axis, -1)  # (..., ..., [n])
         if keepdims:
-            soft_indices = jnp.expand_dims(
-                soft_indices, axis=axis
-            )  # (..., 1, ..., [n])
-    return soft_indices
+            soft_index = jnp.expand_dims(soft_index, axis=axis)  # (..., 1, ..., [n])
+    return soft_index
 
 
 def argmin(
@@ -330,9 +309,30 @@ def argsort(
             ```
         we offer the equivalent soft version via
             ```python
-            soft_sorted_x = sj.take_along_axis(x, soft_indices, axis=axis)
+            soft_sorted_x = sj.take_along_axis(x, soft_index, axis=axis)
             ```
         This is what is done in [`softjax.sort`][].
+
+    ??? example
+
+        ```python
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+        print("JAX argsort:", jnp.argsort(x))
+        print("SoftJAX argsort (hard mode):", sj.argsort(x, mode="hard"))
+        print("SoftJAX argsort (soft mode):", sj.argsort(x))
+        ```
+
+        ```
+        JAX argsort: [1 0 2 3]
+        SoftJAX argsort (hard mode): [[0. 1. 0. 0.]
+        [1. 0. 0. 0.]
+        [0. 0. 1. 0.]
+        [0. 0. 0. 1.]]
+        SoftJAX argsort (soft mode): [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
+        [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]
+        [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
+        [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]]
+        ```
     """
     if axis is None:
         x = jnp.ravel(x)
@@ -342,7 +342,7 @@ def argsort(
 
     if mode == "hard":
         indices = jnp.argsort(x, axis=axis, descending=descending)  # (..., n, ...)
-        soft_indices = jax.nn.one_hot(
+        soft_index = jax.nn.one_hot(
             indices, num_classes=x.shape[axis], axis=-1
         )  # (..., n, ..., [n])
     else:
@@ -352,7 +352,7 @@ def argsort(
         if fast:
             anchors = jnp.sort(x, axis=-1, descending=descending)  # (..., ..., n)
             cost = jnp.abs(x[..., :, None] - anchors[..., None, :])  # (..., ..., n, n)
-            soft_indices = _projection_simplex(
+            soft_index = _projection_simplex(
                 -cost, axis=-2, softness=softness, mode=mode
             )  # (..., ..., [n], n)
         else:
@@ -369,119 +369,12 @@ def argsort(
             mu = jnp.ones((n,), jnp.float_) / n  # ([n],)
             nu = jnp.ones((n,), jnp.float_) / n  # ([n],)
 
-            soft_indices = _projection_transport_polytope(
+            soft_index = _projection_transport_polytope(
                 cost=cost, mu=mu, nu=nu, softness=softness, mode=mode, max_iter=max_iter
             )  # (..., ..., [n], [n])
 
-        soft_indices = jnp.moveaxis(soft_indices, -1, axis)  # (..., [n], ..., [n])
-    return soft_indices
-
-
-def argtop_k(
-    x: Array,  # (..., n, ...)
-    k: int,
-    axis: int = -1,
-    softness: float = 1.0,
-    mode: Literal["hard", "entropic", "euclidean"] = "entropic",
-    fast: bool = True,
-    max_iter: int = 1000,
-) -> SoftIndex:  # (..., k, ..., [n])
-    """Computes the soft argtop_k operation of `x` along the specified axis.
-
-    **Arguments:**
-
-    - `x`: Input Array of shape (..., n, ...).
-    - `k`: The number of top elements to select.
-    - `axis`: The axis along which to compute the top_k operation. Defaults to -1.
-    - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
-    - `mode` and `fast`: These two arguments control the type of softening:
-        - `mode="hard"`: Returns the result of jax.lax.top_k with a one-hot encoding of
-            the indices.
-        - `fast=False` and `mode="entropic"`: Uses entropy-regularized optimal
-            transport (implemented via Sinkhorn iterations) as in
-            [Differentiable Top-k with Optimal Transport](https://papers.nips.cc/paper/2020/file/ec24a54d62ce57ba93a531b460fa8d18-Paper.pdf).
-            Intuition: The top-k elements are selected by specifying k+1 "anchors"
-            and then transporting the top_k values to the top k anchors, and the
-            remaining (n-k) values to the last anchor.
-            Can be slow for large `max_iter`.
-        - `fast=False` and `mode="euclidean"`: Similar to entropic case, but using an
-            L2-regularizer (implemented via projection onto Birkhoff polytope).
-            This version combines the approaches in [Fast Differentiable Sorting and Ranking](https://arxiv.org/pdf/2002.08871)
-            (L2 regularizer for sorting) and [Differentiable Top-k with Optimal Transport](https://papers.nips.cc/paper/2020/file/ec24a54d62ce57ba93a531b460fa8d18-Paper.pdf)
-            (entropic regularizer for top-k).
-        - `fast=True` and `mode="entropic"`: Uses the "SoftSort" operator proposed  in
-            [SoftSort: A Continuous Relaxation for the argsort Operator](https://arxiv.org/pdf/2006.16038).
-            This initializes the cost matrix based on the absolute difference of `x` to
-            the sorted values and then applies a single row normalization (instead of
-            full Sinkhorn in OT).
-            Because this is very fast we do a full soft argsort and then take the top-k
-            elements.
-            Note: Fast mode introduces gradient discontinuities when elements in `x` are
-            not unique, but is much faster.
-        - `fast=True` and `mode="euclidean"`: Similar to entropic fast case, but using
-            a euclidean unit-simplex projection instead of softmax. To the best of our
-            knowledge this variant is novel.
-    - `max_iter`: Maximum number of iterations for the Sinkhorn algorithm if `mode` is
-        "entropic", or for the projection onto the Birkhoff polytope if
-        `mode` is "euclidean". Unused if `fast=True`.
-
-    **Returns:**
-
-    A SoftIndex of shape (..., k, ..., [n]) (positive Array which sums to 1 over
-    the last dimension).
-    The elements in (..., i, ..., [n]) represent a distribution over values in x for the
-    ith largest element along the specified axis.
-    """
-    if axis is None:
-        x = jnp.ravel(x)
-        axis = 0
-    else:
-        axis = _canonicalize_axis(axis, x.ndim)
-    x = jnp.moveaxis(x, axis, -1)  # (..., ..., n)
-
-    if mode == "hard":
-        soft_values, indices = jax.lax.top_k(x, k=k)  # (..., ..., k), (..., ..., k)
-        soft_values = jnp.moveaxis(soft_values, -1, axis)  # (..., k, ...)
-        soft_indices = jax.nn.one_hot(
-            indices, num_classes=x.shape[-1], axis=-1
-        )  # (..., ..., k, [n])
-        soft_indices = jnp.moveaxis(soft_indices, -2, axis)  # (..., k, ..., [n])
-    else:
-        if fast:
-            soft_indices = argsort(
-                x,
-                axis=axis,
-                mode=mode,
-                fast=fast,
-                max_iter=max_iter,
-                softness=softness,
-                descending=True,
-            )  # (..., n, ..., [n])
-            soft_indices = jnp.moveaxis(soft_indices, axis, -1)  # (..., ..., [n], n)
-        else:
-            *batch_dims, n = x.shape
-
-            anchors = jnp.linspace(0, k, k + 1, dtype=x.dtype)  # (k+1,)
-            anchors = anchors[::-1]  # (k+1,)
-            anchors = jnp.broadcast_to(anchors, (*batch_dims, k + 1))  # (..., ..., k+1)
-
-            # Note: could also do absolute difference or Huber
-            cost = (
-                jnp.abs(x[..., :, None] - anchors[..., None, :])
-            ) ** 2  # (..., ..., n, k+1)
-
-            mu = jnp.ones((n,), jnp.float_) / n  # ([n],)
-            nu = jnp.concatenate(
-                [jnp.ones(k, jnp.float_) / n, jnp.array((n - k) / n)[None]]
-            )  # ([k+1],)
-
-            soft_indices = _projection_transport_polytope(
-                cost=cost, mu=mu, nu=nu, softness=softness, mode=mode, max_iter=max_iter
-            )  # (..., ..., [n], [k+1])
-
-        soft_indices = soft_indices[..., :k]  # (..., ..., [n], k)
-        soft_indices = jnp.moveaxis(soft_indices, -1, axis)  # (..., k, ..., [n])
-    return soft_indices
+        soft_index = jnp.moveaxis(soft_index, -1, axis)  # (..., [n], ..., [n])
+    return soft_index
 
 
 def ranking(
@@ -537,6 +430,20 @@ def ranking(
     A positive Array of shape (..., n, ...) with values in [0, n-1].
     The elements in (..., i, ...) represent the soft rank of the ith element along the
     specified axis.
+
+    ??? example
+
+        ```python
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+        print("JAX ranking:", jnp.argsort(jnp.argsort(x)))
+        print("SoftJAX ranking (hard mode):", sj.ranking(x, mode="hard", descending=False))
+        print("SoftJAX ranking (soft mode):", sj.ranking(x, descending=False))
+        ```
+        ```
+        JAX ranking: [1 0 2 3]
+        SoftJAX ranking (hard mode): [1. 0. 2. 3.]
+        SoftJAX ranking (soft mode): [1.00636968e+00 3.39874686e-04 1.99421369e+00 2.99907667e+00]
+        ```
     """
     if axis is None:
         x = jnp.ravel(x)
@@ -558,7 +465,7 @@ def ranking(
         if fast:
             anchors = jnp.sort(x, axis=-1, descending=descending)  # (..., ..., n)
             cost = jnp.abs(x[..., :, None] - anchors[..., None, :])  # (..., ..., n, n)
-            soft_indices = _projection_simplex(
+            soft_index = _projection_simplex(
                 -cost, axis=-1, softness=softness, mode=mode
             )  # (..., ..., n, [n])
         else:
@@ -574,11 +481,11 @@ def ranking(
             mu = jnp.ones((n,), jnp.float_) / n  # ([n],)
             nu = jnp.ones((n,), jnp.float_) / n  # ([n],)
 
-            soft_indices = _projection_transport_polytope(
+            soft_index = _projection_transport_polytope(
                 cost=cost, mu=mu, nu=nu, softness=softness, mode=mode, max_iter=max_iter
             )  # (..., ..., [n], [n])
 
-        soft_rank_indices = jnp.moveaxis(soft_indices, -1, axis)  # (..., [n], ..., n)
+        soft_rank_indices = jnp.moveaxis(soft_index, -1, axis)  # (..., [n], ..., n)
 
         nums = jnp.arange(0, soft_rank_indices.shape[axis], dtype=x.dtype)  # (n,)
         rankings = jnp.tensordot(
@@ -642,6 +549,18 @@ def argmedian(
     to 1 over the last dimension).
     The elements in (..., 0, ...) represent a distribution over values in x being
     the median along the specified axis.
+
+    ??? example
+
+        ```python
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+        print("SoftJAX argmedian (hard mode):", sj.argmedian(x, mode="hard"))
+        print("SoftJAX argmedian (soft mode):", sj.argmedian(x))
+        ```
+        ```
+        SoftJAX argmedian (hard mode): [0.5 0.  0.5 0. ]
+        SoftJAX argmedian (soft mode): [4.99999764e-01 5.62675608e-08 4.99999764e-01 4.15764163e-07]
+        ```
     """
     if axis is None:
         x = jnp.ravel(x)
@@ -681,10 +600,10 @@ def argmedian(
                 [(n - 1) / (2 * n), 1 / n, (n - 1) / (2 * n)], jnp.float_
             )  # ([m],)
 
-            soft_indices = _projection_transport_polytope(
+            soft_index = _projection_transport_polytope(
                 cost=cost, mu=mu, nu=nu, softness=softness, mode=mode, max_iter=max_iter
             )  # (..., ..., [n], [m])
-            argmed = soft_indices[..., :, 1]  # (..., ..., [n])
+            argmed = soft_index[..., :, 1]  # (..., ..., [n])
 
     argmed = argmed / jnp.sum(argmed, axis=-1, keepdims=True)  # Normalize distribution
     if keepdims:
@@ -708,7 +627,7 @@ def argpartition():
 
 def take_along_axis(
     x: Array,  # (..., n, ...)
-    soft_indices: SoftIndex,  # (..., k, ..., [n])
+    soft_index: SoftIndex,  # (..., k, ..., [n])
     axis: int = -1,
 ) -> Array:  # (..., k, ...)
     """Performs a soft version of [jax.numpy.take_along_axis](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.take_along_axis.html)
@@ -785,7 +704,7 @@ def take_along_axis(
     **Arguments:**
 
     - `x`: Input Array of shape (..., n, ...).
-    - `soft_indices`: A SoftIndex of shape (..., k, ..., [n]) (positive Array which
+    - `soft_index`: A SoftIndex of shape (..., k, ..., [n]) (positive Array which
         sums to 1 over the last dimension).
     - `axis`: Axis along which to apply the soft index. Defaults to -1.
 
@@ -794,22 +713,22 @@ def take_along_axis(
     Array of shape (..., k, ...), representing the result after soft selection along
     the specified axis.
     """
-    if x.ndim + 1 != soft_indices.ndim:
+    if x.ndim + 1 != soft_index.ndim:
         raise ValueError(
-            f"Input x and soft_indices must have compatible dimensions, "
-            f"but got x.ndim={x.ndim} and soft_indices.ndim={soft_indices.ndim}. "
-            f"Should be x.ndim + 1 == soft_indices.ndim."
+            f"Input x and soft_index must have compatible dimensions, "
+            f"but got x.ndim={x.ndim} and soft_index.ndim={soft_index.ndim}. "
+            f"Should be x.ndim + 1 == soft_index.ndim."
         )
     axis = _canonicalize_axis(axis, x.ndim)
     x = jnp.moveaxis(x, axis, -1)  # (..., ..., n)
     x = jnp.expand_dims(x, axis)  # (..., 1, ..., n)
-    dotprod = jnp.sum(x * soft_indices, axis=-1)  # (..., k, ...)
+    dotprod = jnp.sum(x * soft_index, axis=-1)  # (..., k, ...)
     return dotprod
 
 
 def take(
     x: Array,  # (..., n, ...)
-    soft_indices: SoftIndex,  # (k, [n])
+    soft_index: SoftIndex,  # (k, [n])
     axis: int | None = None,
 ) -> Array:  # (..., k, ...)
     """Performs a soft version of [jax.numpy.take](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.take.html)
@@ -818,7 +737,7 @@ def take(
     **Arguments:**
 
     - `x`: Input Array of shape (..., n, ...).
-    - `soft_indices`: A SoftIndex of shape (k, [n]) (positive Array which
+    - `soft_index`: A SoftIndex of shape (k, [n]) (positive Array which
         sums to 1 over the last dimension).
     - `axis`: Axis along which to apply the soft index. If None, the input is
         flattened. Defaults to None.
@@ -827,9 +746,9 @@ def take(
 
     Array of shape (..., k, ...) after soft selection.
     """
-    if soft_indices.ndim != 2:
+    if soft_index.ndim != 2:
         raise ValueError(
-            f"soft_indices must be of shape (k, [n]), but got shape {soft_indices.shape}."
+            f"soft_index must be of shape (k, [n]), but got shape {soft_index.shape}."
         )
     if axis is None:
         x = jnp.ravel(x)
@@ -837,17 +756,17 @@ def take(
     else:
         axis = _canonicalize_axis(axis, x.ndim)
         x = jnp.moveaxis(x, axis, -1)  # (..., ..., n)
-    soft_indices = jnp.reshape(
-        soft_indices, (1,) * (x.ndim - 1) + soft_indices.shape
+    soft_index = jnp.reshape(
+        soft_index, (1,) * (x.ndim - 1) + soft_index.shape
     )  # (1..., 1..., k, [n])
     x = jnp.expand_dims(x, axis)  # (..., 1, ..., n)
-    soft_indices = jnp.moveaxis(soft_indices, -2, axis)  # (1..., k, 1..., [n])
-    y = jnp.sum(x * soft_indices, axis=-1)  # (..., k, ...)
+    soft_index = jnp.moveaxis(soft_index, -2, axis)  # (1..., k, 1..., [n])
+    y = jnp.sum(x * soft_index, axis=-1)  # (..., k, ...)
     return y
 
 
 def choose(
-    soft_indices: SoftIndex,  # (..., [n])
+    soft_index: SoftIndex,  # (..., [n])
     choices: Array,  # (n, ...)
 ) -> Array:  # (...,)
     """Performs a soft version of [jax.numpy.choose](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.choose.html)
@@ -855,7 +774,7 @@ def choose(
 
     **Arguments:**
 
-    - `soft_indices`: A SoftIndex of shape (..., [n]) (positive Array which
+    - `soft_index`: A SoftIndex of shape (..., [n]) (positive Array which
         sums to 1 over the last dimension). Represents the weights for each choice.
     - `choices`: Array of shape (n, ...) supplying the values to mix.
 
@@ -863,16 +782,16 @@ def choose(
 
     Array of shape (..., ...) after softly selecting among `choices`.
     """
-    if soft_indices.ndim != choices.ndim or soft_indices.shape[-1] != choices.shape[0]:
+    if soft_index.ndim != choices.ndim or soft_index.shape[-1] != choices.shape[0]:
         raise ValueError(
-            f"soft_indices and choices must have compatible dimensions, but got "
-            f"soft_indices.shape={soft_indices.shape} and choices.shape={choices.shape}. "
-            f"Should be soft_indices.shape=(..., [n]) and choices.shape=(n, ...)."
+            f"soft_index and choices must have compatible dimensions, but got "
+            f"soft_index.shape={soft_index.shape} and choices.shape={choices.shape}. "
+            f"Should be soft_index.shape=(..., [n]) and choices.shape=(n, ...)."
         )
-    tgt_shape = jnp.broadcast_shapes(choices.shape[1:], soft_indices.shape[:-1])
+    tgt_shape = jnp.broadcast_shapes(choices.shape[1:], soft_index.shape[:-1])
     choices_bcast = jnp.broadcast_to(choices, (choices.shape[0], *tgt_shape))
     choices_bcast = jnp.moveaxis(choices_bcast, 0, -1)  # (..., C)
-    result = jnp.sum(choices_bcast * soft_indices, axis=-1)  # (...)
+    result = jnp.sum(choices_bcast * soft_index, axis=-1)  # (...)
     return result
 
 
@@ -888,7 +807,7 @@ def dynamic_index_in_dim(
     **Arguments:**
 
     - `x`: Input Array of shape (..., n, ...).
-    - `soft_indices`: A SoftIndex of shape ([n],) (positive Array which
+    - `soft_index`: A SoftIndex of shape ([n],) (positive Array which
         sums to 1 over the last dimension).
     - `axis`: Axis along which to apply the soft index. Defaults to 0.
     - `keepdims`: If True, keeps the reduced dimension as a singleton {1}.
@@ -924,7 +843,7 @@ def dynamic_slice_in_dim(
     **Arguments:**
 
     - `x`: Input Array of shape (..., n, ...).
-    - `soft_indices`: A SoftIndex of shape ([n],) (positive Array which
+    - `soft_index`: A SoftIndex of shape ([n],) (positive Array which
         sums to 1 over the last dimension).
     - `slice_size`: Length of the slice to extract.
     - `axis`: Axis along which to apply the soft slice. Defaults to 0.
@@ -1038,6 +957,20 @@ def max(
 
     Array of shape (..., {1}, ...) representing the soft maximum of `x` along the
     specified axis.
+
+    ??? example
+
+        ```python
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+        print("JAX max:", jnp.max(x))
+        print("SoftJAX max (hard mode):", sj.max(x, mode="hard"))
+        print("SoftJAX max (soft mode):", sj.max(x))
+        ```
+        ```
+        JAX max: 1.0
+        SoftJAX max (hard mode): 1.0
+        SoftJAX max (soft mode): 0.9993548976691374
+        ```
     """
     if axis is None:
         x = jnp.ravel(x)
@@ -1048,14 +981,14 @@ def max(
     if mode == "hard":
         max_val = jnp.max(x, axis=axis, keepdims=keepdims)
     else:
-        soft_indices = argmax(
+        soft_index = argmax(
             x,
             axis=axis,
             keepdims=True,
             softness=softness,
             mode=mode,
         )  # (..., 1, ..., [n])
-        max_val = take_along_axis(x, soft_indices, axis=axis)  # (..., 1, ...)
+        max_val = take_along_axis(x, soft_index, axis=axis)  # (..., 1, ...)
         if not keepdims:
             max_val = jnp.squeeze(max_val, axis=axis)  # (..., ...)
     return max_val
@@ -1098,6 +1031,20 @@ def sort(
 
     Array of shape (..., n, ...) representing the soft sorted values of `x` along the
     specified axis.
+
+    ??? example
+
+        ```python
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+        print("JAX sort:", jnp.sort(x))
+        print("SoftJAX sort (hard mode):", sj.sort(x, mode="hard"))
+        print("SoftJAX sort (soft mode):", sj.sort(x))
+        ```
+        ```
+        JAX sort: [-1.  -0.2  0.3  1. ]
+        SoftJAX sort (hard mode): [-1.  -0.2  0.3  1. ]
+        SoftJAX sort (soft mode): [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
+        ```
     """
     if axis is None:
         x = jnp.ravel(x)
@@ -1108,7 +1055,7 @@ def sort(
     if mode == "hard":
         soft_values = jnp.sort(x, axis=axis, descending=descending)
     else:
-        soft_indices = argsort(
+        soft_index = argsort(
             x=x,
             axis=axis,
             descending=descending,
@@ -1117,7 +1064,7 @@ def sort(
             fast=fast,
             max_iter=max_iter,
         )  # (..., n, ..., [n])
-        soft_values = take_along_axis(x, soft_indices, axis=axis)
+        soft_values = take_along_axis(x, soft_index, axis=axis)
     return soft_values  # (..., n, ...)
 
 
@@ -1132,27 +1079,125 @@ def top_k(
 ) -> tuple[Array, SoftIndex]:  # (..., k, ...), (..., k, ..., [n])
     """Performs a soft version of [jax.lax.top_k](https://docs.jax.dev/en/latest/_autosummary/jax.lax.top_k.html)
     of `x` along the specified axis.
-    Implemented as [`softjax.argtop_k`][] followed by [`softjax.take_along_axis`][], see
-    respective documentations for details.
+
+    **Arguments:**
+
+    - `x`: Input Array of shape (..., n, ...).
+    - `k`: The number of top elements to select.
+    - `axis`: The axis along which to compute the top_k operation. Defaults to -1.
+    - `softness`: Softness of the function, should be larger than zero. Defaults to 1.
+    - `mode` and `fast`: These two arguments control the type of softening:
+        - `mode="hard"`: Returns the result of jax.lax.top_k with a one-hot encoding of
+            the indices.
+        - `fast=False` and `mode="entropic"`: Uses entropy-regularized optimal
+            transport (implemented via Sinkhorn iterations) as in
+            [Differentiable Top-k with Optimal Transport](https://papers.nips.cc/paper/2020/file/ec24a54d62ce57ba93a531b460fa8d18-Paper.pdf).
+            Intuition: The top-k elements are selected by specifying k+1 "anchors"
+            and then transporting the top_k values to the top k anchors, and the
+            remaining (n-k) values to the last anchor.
+            Can be slow for large `max_iter`.
+        - `fast=False` and `mode="euclidean"`: Similar to entropic case, but using an
+            L2-regularizer (implemented via projection onto Birkhoff polytope).
+            This version combines the approaches in [Fast Differentiable Sorting and Ranking](https://arxiv.org/pdf/2002.08871)
+            (L2 regularizer for sorting) and [Differentiable Top-k with Optimal Transport](https://papers.nips.cc/paper/2020/file/ec24a54d62ce57ba93a531b460fa8d18-Paper.pdf)
+            (entropic regularizer for top-k).
+        - `fast=True` and `mode="entropic"`: Uses the "SoftSort" operator proposed  in
+            [SoftSort: A Continuous Relaxation for the argsort Operator](https://arxiv.org/pdf/2006.16038).
+            This initializes the cost matrix based on the absolute difference of `x` to
+            the sorted values and then applies a single row normalization (instead of
+            full Sinkhorn in OT).
+            Because this is very fast we do a full soft argsort and then take the top-k
+            elements.
+            Note: Fast mode introduces gradient discontinuities when elements in `x` are
+            not unique, but is much faster.
+        - `fast=True` and `mode="euclidean"`: Similar to entropic fast case, but using
+            a euclidean unit-simplex projection instead of softmax. To the best of our
+            knowledge this variant is novel.
+    - `max_iter`: Maximum number of iterations for the Sinkhorn algorithm if `mode` is
+        "entropic", or for the projection onto the Birkhoff polytope if
+        `mode` is "euclidean". Unused if `fast=True`.
 
     **Returns:**
 
     - `soft_values`: Top-k values of `x`, shape (..., k, ...).
-    - `soft_indices`: SoftIndex of shape (..., k, ..., [n]) (positive Array which sums
+    - `soft_index`: SoftIndex of shape (..., k, ..., [n]) (positive Array which sums
         to 1 over the last dimension). Represents the soft indices of the top-k values.
+
+    ??? example
+
+        ```python
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+
+        print("JAX top_k:", jax.lax.top_k(x, k=3)[0])
+        print("SoftJAX top_k (hard mode):", sj.top_k(x, k=3, mode="hard")[0])
+        print("SoftJAX top_k (soft mode):", sj.top_k(x, k=3)[0])
+
+        print("JAX argtop_k:", jax.lax.top_k(x, k=3)[1])
+        print("SoftJAX argtop_k (hard mode):", sj.top_k(x, k=3, mode="hard")[1])
+        print("SoftJAX argtop_k (soft mode):", sj.top_k(x, k=3)[1])
+        ```
+        ```
+        JAX top_k: [ 1.   0.3 -0.2]
+        SoftJAX top_k (hard mode): [ 1.   0.3 -0.2]
+        SoftJAX top_k (soft mode): [ 0.9993549   0.29728716 -0.19691387]
+        JAX argtop_k: [3 2 0]
+
+        SoftJAX argtop_k (hard mode): [[0. 0. 0. 1.]
+        [0. 0. 1. 0.]
+        [1. 0. 0. 0.]]
+        SoftJAX argtop_k (soft mode): [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+        [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
+        [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]]
+        ```
     """
     axis = _canonicalize_axis(axis, x.ndim)
-    soft_indices = argtop_k(
-        x=x,
-        k=k,
-        axis=axis,
-        softness=softness,
-        mode=mode,
-        fast=fast,
-        max_iter=max_iter,
-    )  # (..., k, ..., [n])
-    soft_values = take_along_axis(x, soft_indices, axis=axis)  # (..., k, ...)
-    return soft_values, soft_indices
+
+    x = jnp.moveaxis(x, axis, -1)  # (..., ..., n)
+
+    if mode == "hard":
+        values, indices = jax.lax.top_k(x, k=k)  # (..., ..., k), (..., ..., k)
+        values = jnp.moveaxis(values, -1, axis)  # (..., k, ...)
+        soft_index = jax.nn.one_hot(
+            indices, num_classes=x.shape[-1], axis=-1
+        )  # (..., ..., k, [n])
+        soft_index = jnp.moveaxis(soft_index, -2, axis)  # (..., k, ..., [n])
+    else:
+        if fast:
+            soft_index = argsort(
+                x,
+                axis=axis,
+                mode=mode,
+                fast=fast,
+                max_iter=max_iter,
+                softness=softness,
+                descending=True,
+            )  # (..., n, ..., [n])
+            soft_index = jnp.moveaxis(soft_index, axis, -1)  # (..., ..., [n], n)
+        else:
+            *batch_dims, n = x.shape
+
+            anchors = jnp.linspace(0, k, k + 1, dtype=x.dtype)  # (k+1,)
+            anchors = anchors[::-1]  # (k+1,)
+            anchors = jnp.broadcast_to(anchors, (*batch_dims, k + 1))  # (..., ..., k+1)
+
+            # Note: could also do absolute difference or Huber
+            cost = (
+                jnp.abs(x[..., :, None] - anchors[..., None, :])
+            ) ** 2  # (..., ..., n, k+1)
+
+            mu = jnp.ones((n,), jnp.float_) / n  # ([n],)
+            nu = jnp.concatenate(
+                [jnp.ones(k, jnp.float_) / n, jnp.array((n - k) / n)[None]]
+            )  # ([k+1],)
+
+            soft_index = _projection_transport_polytope(
+                cost=cost, mu=mu, nu=nu, softness=softness, mode=mode, max_iter=max_iter
+            )  # (..., ..., [n], [k+1])
+
+        soft_index = soft_index[..., :k]  # (..., ..., [n], k)
+        soft_index = jnp.moveaxis(soft_index, -1, axis)  # (..., k, ..., [n])
+        values = take_along_axis(x, soft_index, axis=axis)  # (..., k, ...)
+    return values, soft_index
 
 
 def median(
@@ -1173,6 +1218,20 @@ def median(
 
     An Array of shape (..., {1}, ...), representing the soft median values along the
     specified axis.
+
+    ??? example
+
+        ```python
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+        print("JAX median:", jnp.median(x))
+        print("SoftJAX median (hard mode):", sj.median(x, mode="hard"))
+        print("SoftJAX median (soft mode):", sj.median(x))
+        ```
+        ```
+        JAX median: 0.04999999999999999
+        SoftJAX median (hard mode): 0.04999999999999999
+        SoftJAX median (soft mode): 0.05000033589501627
+        ```
     """
     if axis is None:
         x = jnp.ravel(x)
@@ -1183,7 +1242,7 @@ def median(
     if mode == "hard":
         median_val = jnp.median(x, axis=axis, keepdims=keepdims)
     else:
-        soft_indices = argmedian(
+        soft_index = argmedian(
             x,
             axis=axis,
             keepdims=True,
@@ -1192,7 +1251,7 @@ def median(
             fast=fast,
             max_iter=max_iter,
         )  # (..., 1, ..., [n])
-        median_val = take_along_axis(x, soft_indices, axis=axis)  # (..., 1, ...)
+        median_val = take_along_axis(x, soft_index, axis=axis)  # (..., 1, ...)
         if not keepdims:
             median_val = jnp.squeeze(median_val, axis=axis)  # (..., ...)
     return median_val
@@ -1237,6 +1296,20 @@ def median_newton(
 
     Array of shape (..., {1}, ...) representing the soft median of `x` along the
     specified axis.
+
+    ??? example
+
+        ```python
+        x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+        print("JAX median:", jnp.median(x))
+        print("SoftJAX median_newton (hard mode):", sj.median_newton(x, mode="hard"))
+        print("SoftJAX median_newton (soft mode):", sj.median_newton(x))
+        ```
+        ```
+        JAX median: 0.04999999999999999
+        SoftJAX median_newton (hard mode): 0.04999999999999999
+        SoftJAX median_newton (soft mode): 0.04996628137475152
+        ```
     """
     if axis is None:
         x = jnp.ravel(x)
@@ -1506,8 +1579,7 @@ def _sigmoid(
         "entropic", "euclidean", "pseudohuber", "cubic", "quintic"
     ] = "entropic",
 ) -> SoftBool:
-    """Closed-form solution of `argmax(jnp.array([0, x]), softness=softness,
-    mode=mode)`.
+    """Sigmoid-based family of soft Heaviside step functions.
 
     **Arguments:**
 
