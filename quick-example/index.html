@@ -295,7 +295,7 @@
   
   
   <span class="md-ellipsis">
-    Disclaimer
+    Softjax
     
   </span>
   
@@ -429,18 +429,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#default-entropic-mode-of-softjax" class="md-nav__link">
+  <a href="#additional-code-snippets-for-docstrings" class="md-nav__link">
     <span class="md-ellipsis">
-      Default "entropic" mode of Softjax
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#hard-mode-of-softjax" class="md-nav__link">
-    <span class="md-ellipsis">
-      "Hard" mode of Softjax
+      Additional code snippets for docstrings
     </span>
   </a>
   
@@ -1160,18 +1151,8 @@ jax.config.update("jax_platforms", "cpu")</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="default-entropic-mode-of-softjax">Default "entropic" mode of Softjax<a class="anchor-link" href="#default-entropic-mode-of-softjax">¶</a></h2>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>The default mode of all our softjax functions is <code>mode=entropic</code>. This uses some well-known exponential-function-based relaxations, e.g. an exponential sigmoid as a soft heaviside function and the <code>softplus</code> function as a soft ReLU function.</p>
+<p>The default mode of all our Softjax functions is <code>mode=entropic</code>. This uses some well-known exponential-function-based relaxations, e.g. an exponential sigmoid as a soft heaviside function and the <code>softplus</code> function as a soft ReLU function.</p>
+<p>We can replicate the original JAX function outputs (plus some one-hot generation for index functions) by setting <code>mode=hard</code>. This is especially useful for straight-through estimators, where we want to easily switch between hard and soft modes.</p>
 <p>Note that all Softjax functions taking a <code>mode</code> argument also take a <code>softness</code> argument, which determines how soft the relaxation is. Note that while the limit of softness going to zero should always recover the hard function, setting <code>softness=0</code> is not allowed. Instead, use the <code>mode=hard</code> setting.</p>
 </div>
 </div>
@@ -1196,38 +1177,58 @@ jax.config.update("jax_platforms", "cpu")</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
 
 <span class="c1"># Elementwise functions</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard ReLU:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft ReLU:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard Clip:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft Clip:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard Absolute:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft Absolute:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard Sign:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft Sign:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard round:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft round:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard heaviside:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft heaviside:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX ReLU:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX ReLU (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX ReLU (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX Clip:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX Clip (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX Clip (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX Absolute:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX Absolute (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX Absolute (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX Sign:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX Sign (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX Sign (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX round:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX round (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX round (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX heaviside:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX heaviside (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX heaviside (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-2">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
-y = jnp.array([0.2, -0.5, 0.5, -1.0])
 
 # Elementwise functions
-print("Hard ReLU:", jax.nn.relu(x))
-print("Soft ReLU:", sj.relu(x))
-print("Hard Clip:", jnp.clip(x, -0.5, 0.5))
-print("Soft Clip:", sj.clip(x, -0.5, 0.5))
-print("Hard Absolute:", jnp.abs(x))
-print("Soft Absolute:", sj.abs(x))
-print("Hard Sign:", jnp.sign(x))
-print("Soft Sign:", sj.sign(x))
-print("Hard round:", jnp.round(x))
-print("Soft round:", sj.round(x))
-print("Hard heaviside:", jnp.heaviside(x, 0.5))
-print("Soft heaviside:", sj.heaviside(x))</div>
+print("\nJAX ReLU:", jax.nn.relu(x))
+print("SoftJAX ReLU (hard mode):", sj.relu(x, mode="hard"))
+print("SoftJAX ReLU (soft mode):", sj.relu(x))
+
+print("\nJAX Clip:", jnp.clip(x, -0.5, 0.5))
+print("SoftJAX Clip (hard mode):", sj.clip(x, -0.5, 0.5, mode="hard"))
+print("SoftJAX Clip (soft mode):", sj.clip(x, -0.5, 0.5))
+
+print("\nJAX Absolute:", jnp.abs(x))
+print("SoftJAX Absolute (hard mode):", sj.abs(x, mode="hard"))
+print("SoftJAX Absolute (soft mode):", sj.abs(x))
+
+print("\nJAX Sign:", jnp.sign(x))
+print("SoftJAX Sign (hard mode):", sj.sign(x, mode="hard"))
+print("SoftJAX Sign (soft mode):", sj.sign(x))
+
+print("\nJAX round:", jnp.round(x))
+print("SoftJAX round (hard mode):", sj.round(x, mode="hard"))
+print("SoftJAX round (soft mode):", sj.round(x))
+
+print("\nJAX heaviside:", jnp.heaviside(x, 0.5))
+print("SoftJAX heaviside (hard mode):", sj.heaviside(x, mode="hard"))
+print("SoftJAX heaviside (soft mode):", sj.heaviside(x))</div>
 </div>
 </div>
 </div>
@@ -1239,30 +1240,42 @@ print("Soft heaviside:", sj.heaviside(x))</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard ReLU: [0.  0.  0.3 1. ]
-Soft ReLU: [1.26928011e-02 4.53988992e-06 3.04858735e-01 1.00000454e+00]
-Hard Clip: [-0.2 -0.5  0.3  0.5]
-Soft Clip: [-0.19523241 -0.4993285   0.28734074  0.4993285 ]
-Hard Absolute: [0.2 1.  0.3 1. ]
+<pre>
+JAX ReLU: [0.  0.  0.3 1. ]
+SoftJAX ReLU (hard mode): [0.  0.  0.3 1. ]
+SoftJAX ReLU (soft mode): [1.26928011e-02 4.53988992e-06 3.04858735e-01 1.00000454e+00]
+
+JAX Clip: [-0.2 -0.5  0.3  0.5]
+SoftJAX Clip (hard mode): [-0.2 -0.5  0.3  0.5]
+SoftJAX Clip (soft mode): [-0.19523241 -0.4993285   0.28734074  0.4993285 ]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft Absolute: [0.15231883 0.9999092  0.27154448 0.9999092 ]
-Hard Sign: [-1. -1.  1.  1.]
-Soft Sign: [-0.76159416 -0.9999092   0.90514825  0.9999092 ]
-Hard round: [-0. -1.  0.  1.]
+<pre>
+JAX Absolute: [0.2 1.  0.3 1. ]
+SoftJAX Absolute (hard mode): [0.2 1.  0.3 1. ]
+SoftJAX Absolute (soft mode): [0.15231883 0.9999092  0.27154448 0.9999092 ]
+
+JAX Sign: [-1. -1.  1.  1.]
+SoftJAX Sign (hard mode): [-1. -1.  1.  1.]
+SoftJAX Sign (soft mode): [-0.76159416 -0.9999092   0.90514825  0.9999092 ]
+
+JAX round: [-0. -1.  0.  1.]
+SoftJAX round (hard mode): [-0. -1.  0.  1.]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft round: [-0.04651704 -1.          0.1188737   1.        ]
-Hard heaviside: [0. 0. 1. 1.]
-Soft heaviside: [1.19202922e-01 4.53978687e-05 9.52574127e-01 9.99954602e-01]
+<pre>SoftJAX round (soft mode): [-0.04651704 -1.          0.1188737   1.        ]
+
+JAX heaviside: [0. 0. 1. 1.]
+SoftJAX heaviside (hard mode): [0. 0. 1. 1.]
+SoftJAX heaviside (soft mode): [1.19202922e-01 4.53978687e-05 9.52574127e-01 9.99954602e-01]
 </pre>
 </div>
 </div>
@@ -1289,32 +1302,54 @@ Soft heaviside: [1.19202922e-01 4.53978687e-05 9.52574127e-01 9.99954602e-01]
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Functions on arrays</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard max:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft max:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard min:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft min:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard median:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft median:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard top_k:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft top_k:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard sort:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft sort:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard ranking:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft ranking:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX max:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX max (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX max (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX min:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX min (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX min (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX median:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX median (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX median (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX top_k:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX top_k (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX top_k (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX sort:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX sort (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX sort (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX ranking:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX ranking (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX ranking (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3"># Functions on arrays
-print("Hard max:", jnp.max(x))
-print("Soft max:", sj.max(x))
-print("Hard min:", jnp.min(x))
-print("Soft min:", sj.min(x))
-print("Hard median:", jnp.median(x))
-print("Soft median:", sj.median(x))
-print("Hard top_k:", jax.lax.top_k(x, k=3)[0])
-print("Soft top_k:", sj.top_k(x, k=3)[0])
-print("Hard sort:", jnp.sort(x))
-print("Soft sort:", sj.sort(x))
-print("Hard ranking:", jnp.argsort(jnp.argsort(x)))
-print("Soft ranking:", sj.ranking(x, descending=False))</div>
+print("\nJAX max:", jnp.max(x))
+print("SoftJAX max (hard mode):", sj.max(x, mode="hard"))
+print("SoftJAX max (soft mode):", sj.max(x))
+
+print("\nJAX min:", jnp.min(x))
+print("SoftJAX min (hard mode):", sj.min(x, mode="hard"))
+print("SoftJAX min (soft mode):", sj.min(x))
+
+print("\nJAX median:", jnp.median(x))
+print("SoftJAX median (hard mode):", sj.median(x, mode="hard"))
+print("SoftJAX median (soft mode):", sj.median(x))
+
+print("\nJAX top_k:", jax.lax.top_k(x, k=3)[0])
+print("SoftJAX top_k (hard mode):", sj.top_k(x, k=3, mode="hard")[0])
+print("SoftJAX top_k (soft mode):", sj.top_k(x, k=3)[0])
+
+print("\nJAX sort:", jnp.sort(x))
+print("SoftJAX sort (hard mode):", sj.sort(x, mode="hard"))
+print("SoftJAX sort (soft mode):", sj.sort(x))
+
+print("\nJAX ranking:", jnp.argsort(jnp.argsort(x)))
+print("SoftJAX ranking (hard mode):", sj.ranking(x, mode="hard", descending=False))
+print("SoftJAX ranking (soft mode):", sj.ranking(x, descending=False))</div>
 </div>
 </div>
 </div>
@@ -1326,48 +1361,66 @@ print("Soft ranking:", sj.ranking(x, descending=False))</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard max: 1.0
+<pre>
+JAX max: 1.0
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft max: 0.9993548976691374
-Hard min: -1.0
+<pre>SoftJAX max (hard mode): 1.0
+SoftJAX max (soft mode): 0.9993548976691374
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft min: -0.9997287789452775
-Hard median: 0.04999999999999999
+<pre>
+JAX min: -1.0
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft median: 0.05000033589501627
-Hard top_k: [ 1.   0.3 -0.2]
+<pre>SoftJAX min (hard mode): -1.0
+SoftJAX min (soft mode): -0.9997287789452775
+
+JAX median: 0.04999999999999999
+SoftJAX median (hard mode): 0.04999999999999999
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft top_k: [ 0.9993549   0.29728716 -0.19691387]
-Hard sort: [-1.  -0.2  0.3  1. ]
-Soft sort: [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
-Hard ranking: [1 0 2 3]
+<pre>SoftJAX median (soft mode): 0.05000033589501627
+
+JAX top_k: [ 1.   0.3 -0.2]
+SoftJAX top_k (hard mode): [ 1.   0.3 -0.2]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft ranking: [1.00636968e+00 3.39874686e-04 1.99421369e+00 2.99907667e+00]
+<pre>SoftJAX top_k (soft mode): [ 0.9993549   0.29728716 -0.19691387]
+
+JAX sort: [-1.  -0.2  0.3  1. ]
+SoftJAX sort (hard mode): [-1.  -0.2  0.3  1. ]
+SoftJAX sort (soft mode): [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
+
+JAX ranking: [1 0 2 3]
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SoftJAX ranking (hard mode): [1. 0. 2. 3.]
+SoftJAX ranking (soft mode): [1.00636968e+00 3.39874686e-04 1.99421369e+00 2.99907667e+00]
 </pre>
 </div>
 </div>
@@ -1394,28 +1447,46 @@ Hard ranking: [1 0 2 3]
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Functions returning indices</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard argmax:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft argmax:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard argmin:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft argmin:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard argmedian:"</span><span class="p">,</span> <span class="s2">"Not implemented in standard JAX"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft argmedian:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard argtop_k:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft argtop_k:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard argsort:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft argsort:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX argmax:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmax (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmax (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX argmin:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmin (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmin (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX argmedian:"</span><span class="p">,</span> <span class="s2">"Not implemented in standard JAX"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmedian (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmedian (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX argtop_k:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argtop_k (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argtop_k (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX argsort:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argsort (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argsort (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4"># Functions returning indices
-print("Hard argmax:", jnp.argmax(x))
-print("Soft argmax:", sj.argmax(x))
-print("Hard argmin:", jnp.argmin(x))
-print("Soft argmin:", sj.argmin(x))
-print("Hard argmedian:", "Not implemented in standard JAX")
-print("Soft argmedian:", sj.argmedian(x))
-print("Hard argtop_k:", jax.lax.top_k(x, k=3)[1])
-print("Soft argtop_k:", sj.top_k(x, k=3)[1])
-print("Hard argsort:", jnp.argsort(x))
-print("Soft argsort:", sj.argsort(x))</div>
+print("\nJAX argmax:", jnp.argmax(x))
+print("SoftJAX argmax (hard mode):", sj.argmax(x, mode="hard"))
+print("SoftJAX argmax (soft mode):", sj.argmax(x))
+
+print("\nJAX argmin:", jnp.argmin(x))
+print("SoftJAX argmin (hard mode):", sj.argmin(x, mode="hard"))
+print("SoftJAX argmin (soft mode):", sj.argmin(x))
+
+print("\nJAX argmedian:", "Not implemented in standard JAX")
+print("SoftJAX argmedian (hard mode):", sj.argmedian(x, mode="hard"))
+print("SoftJAX argmedian (soft mode):", sj.argmedian(x))
+
+print("\nJAX argtop_k:", jax.lax.top_k(x, k=3)[1])
+print("SoftJAX argtop_k (hard mode):", sj.top_k(x, k=3, mode="hard")[1])
+print("SoftJAX argtop_k (soft mode):", sj.top_k(x, k=3)[1])
+
+print("\nJAX argsort:", jnp.argsort(x))
+print("SoftJAX argsort (hard mode):", sj.argsort(x, mode="hard"))
+print("SoftJAX argsort (soft mode):", sj.argsort(x))</div>
 </div>
 </div>
 </div>
@@ -1427,18 +1498,45 @@ print("Soft argsort:", sj.argsort(x))</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard argmax: 3
-Soft argmax: [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
-Hard argmin: 1
-Soft argmin: [3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
-Hard argmedian: Not implemented in standard JAX
-Soft argmedian: [4.99999764e-01 5.62675608e-08 4.99999764e-01 4.15764163e-07]
-Hard argtop_k: [3 2 0]
-Soft argtop_k: [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+<pre>
+JAX argmax: 3
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SoftJAX argmax (hard mode): [0. 0. 0. 1.]
+SoftJAX argmax (soft mode): [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+
+JAX argmin: 1
+SoftJAX argmin (hard mode): [0. 1. 0. 0.]
+SoftJAX argmin (soft mode): [3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
+
+JAX argmedian: Not implemented in standard JAX
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SoftJAX argmedian (hard mode): [0.5 0.  0.5 0. ]
+SoftJAX argmedian (soft mode): [4.99999764e-01 5.62675608e-08 4.99999764e-01 4.15764163e-07]
+
+JAX argtop_k: [3 2 0]
+SoftJAX argtop_k (hard mode): [[0. 0. 0. 1.]
+ [0. 0. 1. 0.]
+ [1. 0. 0. 0.]]
+SoftJAX argtop_k (soft mode): [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
  [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
  [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]]
-Hard argsort: [1 0 2 3]
-Soft argsort: [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
+
+JAX argsort: [1 0 2 3]
+SoftJAX argsort (hard mode): [[0. 1. 0. 0.]
+ [1. 0. 0. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 0. 1.]]
+SoftJAX argsort (soft mode): [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
  [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]
  [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
  [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]]
@@ -1467,37 +1565,67 @@ Soft argsort: [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1">## SoftBool generation</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard greater:"</span><span class="p">,</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft greater:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard greater equal:"</span><span class="p">,</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft greater equal:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard less:"</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft less:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard less equal:"</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft less equal:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard equal:"</span><span class="p">,</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft equal:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard not equal:"</span><span class="p">,</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft not equal:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hard isclose:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft isclose:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
+
+<span class="c1"># SoftBool generation</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX greater:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX greater (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX greater (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX greater equal:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX greater equal (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX greater equal (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX less:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX less (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX less (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX less equal:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX less equal (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX less equal (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX equal:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX equal (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX equal (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX not equal:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX not equal (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX not equal (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX isclose:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX isclose (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX isclose (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">## SoftBool generation
-print("Hard greater:", x &gt; y)
-print("Soft greater:", sj.greater(x, y))
-print("Hard greater equal:", x &gt;= y)
-print("Soft greater equal:", sj.greater_equal(x, y))
-print("Hard less:", x &lt; y)
-print("Soft less:", sj.less(x, y))
-print("Hard less equal:", x &lt;= y)
-print("Soft less equal:", sj.less_equal(x, y))
-print("Hard equal:", x == y)
-print("Soft equal:", sj.equal(x, y))
-print("Hard not equal:", x != y)
-print("Soft not equal:", sj.not_equal(x, y))
-print("Hard isclose:", jnp.isclose(x, y))
-print("Soft isclose:", sj.isclose(x, y))</div>
+<div class="clipboard-copy-txt" id="cell-5">y = jnp.array([0.2, -0.5, 0.5, -1.0])
+
+# SoftBool generation
+print("\nJAX greater:", jnp.greater(x, y))
+print("SoftJAX greater (hard mode):", sj.greater(x, y, mode="hard"))
+print("SoftJAX greater (soft mode):", sj.greater(x, y))
+
+print("\nJAX greater equal:", jnp.greater_equal(x, y))
+print("SoftJAX greater equal (hard mode):", sj.greater_equal(x, y, mode="hard"))
+print("SoftJAX greater equal (soft mode):", sj.greater_equal(x, y))
+
+print("\nJAX less:", jnp.less(x, y))
+print("SoftJAX less (hard mode):", sj.less(x, y, mode="hard"))
+print("SoftJAX less (soft mode):", sj.less(x, y))
+
+print("\nJAX less equal:", jnp.less_equal(x, y))
+print("SoftJAX less equal (hard mode):", sj.less_equal(x, y, mode="hard"))
+print("SoftJAX less equal (soft mode):", sj.less_equal(x, y))
+
+print("\nJAX equal:", jnp.equal(x, y))
+print("SoftJAX equal (hard mode):", sj.equal(x, y, mode="hard"))
+print("SoftJAX equal (soft mode):", sj.equal(x, y))
+
+print("\nJAX not equal:", jnp.not_equal(x, y))
+print("SoftJAX not equal (hard mode):", sj.not_equal(x, y, mode="hard"))
+print("SoftJAX not equal (soft mode):", sj.not_equal(x, y))
+
+print("\nJAX isclose:", jnp.isclose(x, y))
+print("SoftJAX isclose (hard mode):", sj.isclose(x, y, mode="hard"))
+print("SoftJAX isclose (soft mode):", sj.isclose(x, y))</div>
 </div>
 </div>
 </div>
@@ -1509,44 +1637,46 @@ print("Soft isclose:", sj.isclose(x, y))</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard greater: [False False False  True]
-Soft greater: [0.01798621 0.00669285 0.11920292 1.        ]
-Hard greater equal: [False False False  True]
-Soft greater equal: [0.01798621 0.00669285 0.11920292 1.        ]
+<pre>
+JAX greater: [False False False  True]
+SoftJAX greater (hard mode): [0. 0. 0. 1.]
+SoftJAX greater (soft mode): [0.01798621 0.00669285 0.11920292 1.        ]
+
+JAX greater equal: [False False False  True]
+SoftJAX greater equal (hard mode): [0. 0. 0. 1.]
+SoftJAX greater equal (soft mode): [0.01798621 0.00669285 0.11920292 1.        ]
+
+JAX less: [ True  True  True False]
+SoftJAX less (hard mode): [1. 1. 1. 0.]
+SoftJAX less (soft mode): [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard less: [ True  True  True False]
-Soft less: [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
+<pre>
+JAX less equal: [ True  True  True False]
+SoftJAX less equal (hard mode): [1. 1. 1. 0.]
+SoftJAX less equal (soft mode): [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
+
+JAX equal: [False False False False]
+SoftJAX equal (hard mode): [0. 0. 0. 0.]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Hard less equal: [ True  True  True False]
-Soft less equal: [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
-Hard equal: [False False False False]
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft equal: [1.79862100e-02 6.69285093e-03 1.19202922e-01 2.06115369e-09]
-Hard not equal: [ True  True  True  True]
-Soft not equal: [0.98201379 0.99330715 0.88079708 1.        ]
-Hard isclose: [False False False False]
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft isclose: [1.79865650e-02 6.69318401e-03 1.19208182e-01 2.06135997e-09]
+<pre>SoftJAX equal (soft mode): [1.79862100e-02 6.69285093e-03 1.19202922e-01 2.06115369e-09]
+
+JAX not equal: [ True  True  True  True]
+SoftJAX not equal (hard mode): [1. 1. 1. 1.]
+SoftJAX not equal (soft mode): [0.98201379 0.99330715 0.88079708 1.        ]
+
+JAX isclose: [False False False False]
+SoftJAX isclose (hard mode): [0. 0. 0. 0.]
+SoftJAX isclose (soft mode): [1.79865650e-02 6.69318401e-03 1.19208182e-01 2.06135997e-09]
 </pre>
 </div>
 </div>
@@ -1572,31 +1702,61 @@ Hard isclose: [False False False False]
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1">## SoftBool manipulation</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># SoftBool manipulation</span>
 <span class="n">fuzzy_a</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 <span class="n">fuzzy_b</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft AND:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft OR:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft NOT:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft XOR:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft ALL:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Soft ANY:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
+<span class="n">bool_a</span> <span class="o">=</span> <span class="n">fuzzy_a</span> <span class="o">&gt;=</span> <span class="mf">0.5</span>
+<span class="n">bool_b</span> <span class="o">=</span> <span class="n">fuzzy_b</span> <span class="o">&gt;=</span> <span class="mf">0.5</span>
 
-<span class="c1">## SoftBool selection</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Where:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX AND:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">bool_a</span><span class="p">,</span> <span class="n">bool_b</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX AND:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX OR:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">bool_a</span><span class="p">,</span> <span class="n">bool_b</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX OR:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX NOT:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">bool_a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX NOT:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX XOR:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">bool_a</span><span class="p">,</span> <span class="n">bool_b</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX XOR:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX ALL:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bool_a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX ALL:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX ANY:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">bool_a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX ANY:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
+
+<span class="c1"># SoftBool selection</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">JAX Where:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bool_a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX Where:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">## SoftBool manipulation
+<div class="clipboard-copy-txt" id="cell-6"># SoftBool manipulation
 fuzzy_a = jnp.array([0.1, 0.2, 0.8, 1.0])
 fuzzy_b = jnp.array([0.7, 0.3, 0.1, 0.9])
-print("Soft AND:", sj.logical_and(fuzzy_a, fuzzy_b))
-print("Soft OR:", sj.logical_or(fuzzy_a, fuzzy_b))
-print("Soft NOT:", sj.logical_not(fuzzy_a))
-print("Soft XOR:", sj.logical_xor(fuzzy_a, fuzzy_b))
-print("Soft ALL:", sj.all(fuzzy_a))
-print("Soft ANY:", sj.any(fuzzy_a))
+bool_a = fuzzy_a &gt;= 0.5
+bool_b = fuzzy_b &gt;= 0.5
 
-## SoftBool selection
-print("Where:", sj.where(fuzzy_a, x, y))</div>
+print("\nJAX AND:", jnp.logical_and(bool_a, bool_b))
+print("SoftJAX AND:", sj.logical_and(fuzzy_a, fuzzy_b))
+
+print("\nJAX OR:", jnp.logical_or(bool_a, bool_b))
+print("SoftJAX OR:", sj.logical_or(fuzzy_a, fuzzy_b))
+
+print("\nJAX NOT:", jnp.logical_not(bool_a))
+print("SoftJAX NOT:", sj.logical_not(fuzzy_a))
+
+print("\nJAX XOR:", jnp.logical_xor(bool_a, bool_b))
+print("SoftJAX XOR:", sj.logical_xor(fuzzy_a, fuzzy_b))
+
+print("\nJAX ALL:", jnp.all(bool_a))
+print("SoftJAX ALL:", sj.all(fuzzy_a))
+
+print("\nJAX ANY:", jnp.any(bool_a))
+print("SoftJAX ANY:", sj.any(fuzzy_a))
+
+# SoftBool selection
+print("\nJAX Where:", jnp.where(bool_a, x, y))
+print("SoftJAX Where:", sj.where(fuzzy_a, x, y))</div>
 </div>
 </div>
 </div>
@@ -1608,19 +1768,51 @@ print("Where:", sj.where(fuzzy_a, x, y))</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft AND: [0.26457513 0.24494897 0.28284271 0.9486833 ]
-Soft OR: [0.48038476 0.25166852 0.57573593 0.99999684]
-Soft NOT: [0.9 0.8 0.2 0. ]
-Soft XOR: [0.58702688 0.43498731 0.63937484 0.17309871]
+<pre>
+JAX AND: [False False False  True]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Soft ALL: 0.35565588200778464
-Soft ANY: 0.9980519925071494
-Where: [ 0.16 -0.6   0.34  1.  ]
+<pre>SoftJAX AND: [0.26457513 0.24494897 0.28284271 0.9486833 ]
+
+JAX OR: [ True False  True  True]
+SoftJAX OR: [0.48038476 0.25166852 0.57573593 0.99999684]
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+JAX NOT: [ True  True False False]
+SoftJAX NOT: [0.9 0.8 0.2 0. ]
+
+JAX XOR: [ True False  True False]
+SoftJAX XOR: [0.58702688 0.43498731 0.63937484 0.17309871]
+
+JAX ALL: False
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SoftJAX ALL: 0.35565588200778464
+
+JAX ANY: True
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SoftJAX ANY: 0.9980519925071494
+
+JAX Where: [ 0.2 -0.5  0.3  1. ]
+SoftJAX Where: [ 0.16 -0.6   0.34  1.  ]
 </pre>
 </div>
 </div>
@@ -1651,12 +1843,14 @@ Where: [ 0.16 -0.6   0.34  1.  ]
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Straight-through sort:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort_st</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Straight-through argtop_k:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k_st</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Straight-through greater:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_st</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="c1"># And many more...</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-7"># Straight-through estimation: Use hard function on forward and soft on backward
 print("Straight-through ReLU:", sj.relu_st(x))
 print("Straight-through sort:", sj.sort_st(x))
 print("Straight-through argtop_k:", sj.top_k_st(x, k=3)[1])
-print("Straight-through greater:", sj.greater_st(x, y))</div>
+print("Straight-through greater:", sj.greater_st(x, y))
+# And many more...</div>
 </div>
 </div>
 </div>
@@ -1669,13 +1863,7 @@ print("Straight-through greater:", sj.greater_st(x, y))</div>
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Straight-through ReLU: [0.  0.  0.3 1. ]
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Straight-through sort: [-1.  -0.2  0.3  1. ]
+Straight-through sort: [-1.  -0.2  0.3  1. ]
 </pre>
 </div>
 </div>
@@ -1685,388 +1873,7 @@ print("Straight-through greater:", sj.greater_st(x, y))</div>
 <pre>Straight-through argtop_k: [[0. 0. 0. 1.]
  [0. 0. 1. 0.]
  [1. 0. 0. 0.]]
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Straight-through greater: [0. 0. 0. 1.]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="hard-mode-of-softjax">"Hard" mode of Softjax<a class="anchor-link" href="#hard-mode-of-softjax">¶</a></h2>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>We can replicate the original JAX function outputs (plus some one-hot generation for index functions) by setting <code>mode=hard</code>. This is especially useful for straight-through estimators, where we want to easily switch between hard and soft modes.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-8">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
-
-<span class="c1"># Elementwise functions</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax ReLU:    "</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax ReLU:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax Clip:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="s2">"Softjax Clip:"</span><span class="p">,</span>
-    <span class="n">sj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span>
-        <span class="mf">0.5</span><span class="p">,</span>
-        <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">,</span>
-    <span class="p">),</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax Absolute:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax Absolute:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax Sign:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax Sign:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax round:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax round:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-8">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
-y = jnp.array([0.2, -0.5, 0.5, -1.0])
-
-# Elementwise functions
-print("Jax ReLU:    ", jax.nn.relu(x))
-print("Softjax ReLU:", sj.relu(x, mode="hard"))
-print("Jax Clip:    ", jnp.clip(x, -0.5, 0.5))
-print(
-    "Softjax Clip:",
-    sj.clip(
-        x,
-        -0.5,
-        0.5,
-        mode="hard",
-    ),
-)
-print("Jax Absolute:    ", jnp.abs(x))
-print("Softjax Absolute:", sj.abs(x, mode="hard"))
-print("Jax Sign:    ", jnp.sign(x))
-print("Softjax Sign:", sj.sign(x, mode="hard"))
-print("Jax round:    ", jnp.round(x))
-print("Softjax round:", sj.round(x, mode="hard"))</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Jax ReLU:     [0.  0.  0.3 1. ]
-Softjax ReLU: [0.  0.  0.3 1. ]
-Jax Clip:     [-0.2 -0.5  0.3  0.5]
-Softjax Clip: [-0.2 -0.5  0.3  0.5]
-Jax Absolute:     [0.2 1.  0.3 1. ]
-Softjax Absolute: [0.2 1.  0.3 1. ]
-Jax Sign:     [-1. -1.  1.  1.]
-Softjax Sign: [-1. -1.  1.  1.]
-Jax round:     [-0. -1.  0.  1.]
-Softjax round: [-0. -1.  0.  1.]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-9">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Functions on arrays</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax max:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax max:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax min:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax min:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax median:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax median:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax top_k:    "</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="s2">"Softjax top_k:"</span><span class="p">,</span>
-    <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span>
-        <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">,</span>
-    <span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax sort:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax sort:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax ranking:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax ranking:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-9"># Functions on arrays
-print("Jax max:    ", jnp.max(x))
-print("Softjax max:", sj.max(x, mode="hard"))
-print("Jax min:    ", jnp.min(x))
-print("Softjax min:", sj.min(x, mode="hard"))
-print("Jax median:    ", jnp.median(x))
-print("Softjax median:", sj.median(x, mode="hard"))
-print("Jax top_k:    ", jax.lax.top_k(x, k=3)[0])
-print(
-    "Softjax top_k:",
-    sj.top_k(
-        x,
-        k=3,
-        mode="hard",
-    )[0],
-)
-print("Jax sort:    ", jnp.sort(x))
-print("Softjax sort:", sj.sort(x, mode="hard"))
-print("Jax ranking:    ", jnp.argsort(jnp.argsort(x)))
-print("Softjax ranking:", sj.ranking(x, mode="hard", descending=False))</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Jax max:     1.0
-Softjax max: 1.0
-Jax min:     -1.0
-Softjax min: -1.0
-Jax median:     0.04999999999999999
-Softjax median: 0.04999999999999999
-Jax top_k:     [ 1.   0.3 -0.2]
-Softjax top_k: [ 1.   0.3 -0.2]
-Jax sort:     [-1.  -0.2  0.3  1. ]
-Softjax sort: [-1.  -0.2  0.3  1. ]
-Jax ranking:     [1 0 2 3]
-Softjax ranking: [1. 0. 2. 3.]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-10">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Functions returning indices</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax argmax:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax argmax:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax argmin:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax argmin:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax argmedian:    "</span><span class="p">,</span> <span class="s2">"Not implemented in standard JAX"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax argmedian:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax argtop_k:    "</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax argtop_k:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax argsort:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax argsort:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-10"># Functions returning indices
-print("Jax argmax:    ", jnp.argmax(x))
-print("Softjax argmax:", sj.argmax(x, mode="hard"))
-print("Jax argmin:    ", jnp.argmin(x))
-print("Softjax argmin:", sj.argmin(x, mode="hard"))
-print("Jax argmedian:    ", "Not implemented in standard JAX")
-print("Softjax argmedian:", sj.argmedian(x, mode="hard"))
-print("Jax argtop_k:    ", jax.lax.top_k(x, k=3)[1])
-print("Softjax argtop_k:", sj.top_k(x, k=3, mode="hard")[1])
-print("Jax argsort:    ", jnp.argsort(x))
-print("Softjax argsort:", sj.argsort(x, mode="hard"))</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Jax argmax:     3
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Softjax argmax: [0. 0. 0. 1.]
-Jax argmin:     1
-Softjax argmin: [0. 1. 0. 0.]
-Jax argmedian:     Not implemented in standard JAX
-Softjax argmedian: [0.5 0.  0.5 0. ]
-Jax argtop_k:     [3 2 0]
-Softjax argtop_k: [[0. 0. 0. 1.]
- [0. 0. 1. 0.]
- [1. 0. 0. 0.]]
-Jax argsort:     [1 0 2 3]
-Softjax argsort: [[0. 1. 0. 0.]
- [1. 0. 0. 0.]
- [0. 0. 1. 0.]
- [0. 0. 0. 1.]]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-11">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1">## SoftBool generation</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax heaviside:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax heaviside:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax greater:    "</span><span class="p">,</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax greater:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax greater equal:    "</span><span class="p">,</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax greater equal:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax less:    "</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax less:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax less equal:    "</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax less equal:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax equal:    "</span><span class="p">,</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax equal:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax not equal:    "</span><span class="p">,</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax not equal:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Jax isclose:    "</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Softjax isclose:"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-11">## SoftBool generation
-print("Jax heaviside:    ", jnp.heaviside(x, 0.5))
-print("Softjax heaviside:", sj.heaviside(x, mode="hard"))
-print("Jax greater:    ", x &gt; y)
-print("Softjax greater:", sj.greater(x, y, mode="hard"))
-print("Jax greater equal:    ", x &gt;= y)
-print("Softjax greater equal:", sj.greater_equal(x, y, mode="hard"))
-print("Jax less:    ", x &lt; y)
-print("Softjax less:", sj.less(x, y, mode="hard"))
-print("Jax less equal:    ", x &lt;= y)
-print("Softjax less equal:", sj.less_equal(x, y, mode="hard"))
-print("Jax equal:    ", x == y)
-print("Softjax equal:", sj.equal(x, y, mode="hard"))
-print("Jax not equal:    ", x != y)
-print("Softjax not equal:", sj.not_equal(x, y, mode="hard"))
-print("Jax isclose:    ", jnp.isclose(x, y))
-print("Softjax isclose:", sj.isclose(x, y, mode="hard"))</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Jax heaviside:     [0. 0. 1. 1.]
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Softjax heaviside: [0. 0. 1. 1.]
-Jax greater:     [False False False  True]
-Softjax greater: [0. 0. 0. 1.]
-Jax greater equal:     [False False False  True]
-Softjax greater equal: [0. 0. 0. 1.]
-Jax less:     [ True  True  True False]
-Softjax less: [1. 1. 1. 0.]
-Jax less equal:     [ True  True  True False]
-Softjax less equal: [1. 1. 1. 0.]
-Jax equal:     [False False False False]
-Softjax equal: [0. 0. 0. 0.]
-Jax not equal:     [ True  True  True  True]
-Softjax not equal: [1. 1. 1. 1.]
-Jax isclose:     [False False False False]
-Softjax isclose: [0. 0. 0. 0.]
+Straight-through greater: [0. 0. 0. 1.]
 </pre>
 </div>
 </div>
@@ -2082,7 +1889,7 @@ Softjax isclose: [0. 0. 0. 0.]
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-12">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-8">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -2094,7 +1901,482 @@ Softjax isclose: [0. 0. 0. 0.]
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12"></div>
+<div class="clipboard-copy-txt" id="cell-8"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="additional-code-snippets-for-docstrings">Additional code snippets for docstrings<a class="anchor-link" href="#additional-code-snippets-for-docstrings">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-9">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX argmax:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmax (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmax (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-9">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+print("JAX argmax:", jnp.argmax(x))
+print("SoftJAX argmax (hard mode):", sj.argmax(x, mode="hard"))
+print("SoftJAX argmax (soft mode):", sj.argmax(x))</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>JAX argmax: 3
+SoftJAX argmax (hard mode): [0. 0. 0. 1.]
+SoftJAX argmax (soft mode): [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-10">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX argsort:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argsort (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argsort (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-10">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+print("JAX argsort:", jnp.argsort(x))
+print("SoftJAX argsort (hard mode):", sj.argsort(x, mode="hard"))
+print("SoftJAX argsort (soft mode):", sj.argsort(x))</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>JAX argsort: [1 0 2 3]
+SoftJAX argsort (hard mode): [[0. 1. 0. 0.]
+ [1. 0. 0. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 0. 1.]]
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SoftJAX argsort (soft mode): [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
+ [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]
+ [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
+ [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-11">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX ranking:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX ranking (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX ranking (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-11">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+print("JAX ranking:", jnp.argsort(jnp.argsort(x)))
+print("SoftJAX ranking (hard mode):", sj.ranking(x, mode="hard", descending=False))
+print("SoftJAX ranking (soft mode):", sj.ranking(x, descending=False))</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>JAX ranking: [1 0 2 3]
+SoftJAX ranking (hard mode): [1. 0. 2. 3.]
+SoftJAX ranking (soft mode): [1.00636968e+00 3.39874686e-04 1.99421369e+00 2.99907667e+00]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-12">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmedian (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argmedian (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-12">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+print("SoftJAX argmedian (hard mode):", sj.argmedian(x, mode="hard"))
+print("SoftJAX argmedian (soft mode):", sj.argmedian(x))</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SoftJAX argmedian (hard mode): [0.5 0.  0.5 0. ]
+SoftJAX argmedian (soft mode): [4.99999764e-01 5.62675608e-08 4.99999764e-01 4.15764163e-07]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-13">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX max:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX max (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX max (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-13">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+print("JAX max:", jnp.max(x))
+print("SoftJAX max (hard mode):", sj.max(x, mode="hard"))
+print("SoftJAX max (soft mode):", sj.max(x))</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>JAX max: 1.0
+SoftJAX max (hard mode): 1.0
+SoftJAX max (soft mode): 0.9993548976691374
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-14">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX sort:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX sort (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX sort (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-14">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+print("JAX sort:", jnp.sort(x))
+print("SoftJAX sort (hard mode):", sj.sort(x, mode="hard"))
+print("SoftJAX sort (soft mode):", sj.sort(x))</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>JAX sort: [-1.  -0.2  0.3  1. ]
+SoftJAX sort (hard mode): [-1.  -0.2  0.3  1. ]
+SoftJAX sort (soft mode): [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-15">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX top_k:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX top_k (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX top_k (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX argtop_k:"</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argtop_k (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX argtop_k (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-15">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+
+print("JAX top_k:", jax.lax.top_k(x, k=3)[0])
+print("SoftJAX top_k (hard mode):", sj.top_k(x, k=3, mode="hard")[0])
+print("SoftJAX top_k (soft mode):", sj.top_k(x, k=3)[0])
+
+print("JAX argtop_k:", jax.lax.top_k(x, k=3)[1])
+print("SoftJAX argtop_k (hard mode):", sj.top_k(x, k=3, mode="hard")[1])
+print("SoftJAX argtop_k (soft mode):", sj.top_k(x, k=3)[1])</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>JAX top_k: [ 1.   0.3 -0.2]
+SoftJAX top_k (hard mode): [ 1.   0.3 -0.2]
+SoftJAX top_k (soft mode): [ 0.9993549   0.29728716 -0.19691387]
+JAX argtop_k: [3 2 0]
+SoftJAX argtop_k (hard mode): [[0. 0. 0. 1.]
+ [0. 0. 1. 0.]
+ [1. 0. 0. 0.]]
+SoftJAX argtop_k (soft mode): [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+ [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
+ [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-16">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX median:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX median (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX median (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-16">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+print("JAX median:", jnp.median(x))
+print("SoftJAX median (hard mode):", sj.median(x, mode="hard"))
+print("SoftJAX median (soft mode):", sj.median(x))</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>JAX median: 0.04999999999999999
+SoftJAX median (hard mode): 0.04999999999999999
+SoftJAX median (soft mode): 0.05000033589501627
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-17">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"JAX median:"</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX median_newton (hard mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median_newton</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"hard"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SoftJAX median_newton (soft mode):"</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median_newton</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-17">x = jnp.array([-0.2, -1.0, 0.3, 1.0])
+print("JAX median:", jnp.median(x))
+print("SoftJAX median_newton (hard mode):", sj.median_newton(x, mode="hard"))
+print("SoftJAX median_newton (soft mode):", sj.median_newton(x))</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>JAX median: 0.04999999999999999
+SoftJAX median_newton (hard mode): 0.04999999999999999
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SoftJAX median_newton (soft mode): 0.04996628137475152
+</pre>
 </div>
 </div>
 </div>

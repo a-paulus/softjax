@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#disclaimer" class="md-skip">
+        <a href="#softjax" class="md-skip">
           Skip to content
         </a>
       
@@ -122,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Disclaimer
+              Softjax
             
           </span>
         </div>
@@ -297,17 +297,154 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Softjax
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
-    Disclaimer
+    Softjax
     
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#disclaimer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disclaimer
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-a-nutshell" class="md-nav__link">
+    <span class="md-ellipsis">
+      In a nutshell
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Citation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See also
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="See also">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#other-libraries-in-the-jax-ecosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other libraries in the JAX ecosystem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-libraries-on-differentiable-programming" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other libraries on differentiable programming
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#papers-on-differentiable-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Papers on differentiable algorithms
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -612,18 +749,19 @@
 
 
 
-<h1 id="disclaimer">Disclaimer<a class="headerlink" href="#disclaimer" title="Permanent link">¤</a></h1>
+<h1 id="softjax">Softjax<a class="headerlink" href="#softjax" title="Permanent link">¤</a></h1>
+<h2 id="disclaimer">Disclaimer<a class="headerlink" href="#disclaimer" title="Permanent link">¤</a></h2>
 <p>Softjax is not yet fully released!
 We are currently finalizing the library, and are planning on releasing it (alongside a similar "<a href="https://github.com/a-paulus/softtorch">Softtorch</a>" library) officially until the end of the year.
 If you somehow stumbled upon this library already, feel free to use and test the github code, and please reach out if you encounter any issues or have suggestions for improvement. Thanks!</p>
 <p>Note also that some of the API and internals are still subject to potentially bigger changes until the official release.
 The pip install will also only be available after official release.</p>
-<h1 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">¤</a></h1>
+<h2 id="in-a-nutshell">In a nutshell<a class="headerlink" href="#in-a-nutshell" title="Permanent link">¤</a></h2>
 <p>Softjax provides soft differentiable drop-in replacements for traditionally non-differentiable functions in <a href="https://github.com/google/jax">JAX</a>, including</p>
 <ul>
 <li>simple elementwise functions: <code>abs</code>, <code>relu</code>, <code>clip</code>, <code>sign</code> and <code>round</code>;</li>
 <li>functions operating on arrays: <code>max</code>, <code>min</code>, <code>median</code>, <code>sort</code>, <code>ranking</code> and <code>top_k</code>;</li>
-<li>functions returning indices: <code>argmax</code>, <code>argmin</code>, <code>argmedian</code>, <code>argsort</code> and <code>argtop_k</code>;</li>
+<li>functions returning indices: <code>argmax</code>, <code>argmin</code>, <code>argmedian</code>, <code>argsort</code> and <code>top_k</code>;</li>
 <li>functions returning boolean values such as: <code>greater</code>, <code>equal</code> or <code>isclose</code>;</li>
 <li>functions for selection with indices such as: <code>take_along_axis</code>, <code>dynamic_index_in_dim</code> and <code>choose</code>;</li>
 <li>functions for logical manipulation such as: <code>logical_and</code>, <code>all</code> and <code>where</code>.</li>
@@ -642,147 +780,270 @@ However, keep in mind that special care needs to be taken when using functions o
 <span class="kn">import</span><span class="w"> </span><span class="nn">softjax</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sj</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
 
 <span class="c1"># Elementwise functions</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard ReLU:&quot;</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft ReLU:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard Clip:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft Clip:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard Absolute:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft Absolute:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard Sign:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft Sign:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard round:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft round:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard heaviside:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft heaviside:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX ReLU:&quot;</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX ReLU (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX ReLU (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX Clip:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX Clip (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX Clip (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX Absolute:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX Absolute (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX Absolute (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX Sign:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX Sign (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX Sign (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX round:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX round (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX round (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX heaviside:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX heaviside (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX heaviside (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Hard ReLU: [0.  0.  0.3 1. ]
-Soft ReLU: [1.26928011e-02 4.53988992e-06 3.04858735e-01 1.00000454e+00]
-Hard Clip: [-0.2 -0.5  0.3  0.5]
-Soft Clip: [-0.19523241 -0.4993285   0.28734074  0.4993285 ]
-Hard Absolute: [0.2 1.  0.3 1. ]
-Soft Absolute: [0.15231883 0.9999092  0.27154448 0.9999092 ]
-Hard Sign: [-1. -1.  1.  1.]
-Soft Sign: [-0.76159416 -0.9999092   0.90514825  0.9999092 ]
-Hard round: [-0. -1.  0.  1.]
-Soft round: [-0.04651704 -1.          0.1188737   1.        ]
-Hard heaviside: [0. 0. 1. 1.]
-Soft heaviside: [1.19202922e-01 4.53978687e-05 9.52574127e-01 9.99954602e-01]
+<div class="highlight"><pre><span></span><code>JAX ReLU: [0.  0.  0.3 1. ]
+SoftJAX ReLU (hard mode): [0.  0.  0.3 1. ]
+SoftJAX ReLU (soft mode): [1.26928011e-02 4.53988992e-06 3.04858735e-01 1.00000454e+00]
+
+JAX Clip: [-0.2 -0.5  0.3  0.5]
+SoftJAX Clip (hard mode): [-0.2 -0.5  0.3  0.5]
+SoftJAX Clip (soft mode): [-0.19523241 -0.4993285   0.28734074  0.4993285 ]
+
+JAX Absolute: [0.2 1.  0.3 1. ]
+SoftJAX Absolute (hard mode): [0.2 1.  0.3 1. ]
+SoftJAX Absolute (soft mode): [0.15231883 0.9999092  0.27154448 0.9999092 ]
+
+JAX Sign: [-1. -1.  1.  1.]
+SoftJAX Sign (hard mode): [-1. -1.  1.  1.]
+SoftJAX Sign (soft mode): [-0.76159416 -0.9999092   0.90514825  0.9999092 ]
+
+JAX round: [-0. -1.  0.  1.]
+SoftJAX round (hard mode): [-0. -1.  0.  1.]
+SoftJAX round (soft mode): [-0.04651704 -1.          0.1188737   1.        ]
+
+JAX heaviside: [0. 0. 1. 1.]
+SoftJAX heaviside (hard mode): [0. 0. 1. 1.]
+SoftJAX heaviside (soft mode): [1.19202922e-01 4.53978687e-05 9.52574127e-01 9.99954602e-01]
 </code></pre></div></p>
 <p><div class="highlight"><pre><span></span><code><span class="c1"># Functions on arrays</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard max:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft max:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard min:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft min:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard median:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft median:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard top_k:&quot;</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft top_k:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard sort:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft sort:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard ranking:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft ranking:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX max:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX max (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX max (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX min:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX min (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX min (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX median:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX median (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX median (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX top_k:&quot;</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX top_k (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX top_k (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX sort:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX sort (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX sort (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX ranking:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX ranking (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX ranking (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Hard max: 1.0
-Soft max: 0.9993548976691374
-Hard min: -1.0
-Soft min: -0.9997287789452775
-Hard median: 0.04999999999999999
-Soft median: 0.05000033589501627
-Hard top_k: [ 1.   0.3 -0.2]
-Soft top_k: [ 0.9993549   0.29728716 -0.19691387]
-Hard sort: [-1.  -0.2  0.3  1. ]
-Soft sort: [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
-Hard ranking: [1 0 2 3]
-Soft ranking: [1.00636968e+00 3.39874686e-04 1.99421369e+00 2.99907667e+00]
+<div class="highlight"><pre><span></span><code>JAX max: 1.0
+SoftJAX max (hard mode): 1.0
+SoftJAX max (soft mode): 0.9993548976691374
+
+JAX min: -1.0
+SoftJAX min (hard mode): -1.0
+SoftJAX min (soft mode): -0.9997287789452775
+
+JAX median: 0.04999999999999999
+SoftJAX median (hard mode): 0.04999999999999999
+SoftJAX median (soft mode): 0.05000033589501627
+
+JAX top_k: [ 1.   0.3 -0.2]
+SoftJAX top_k (hard mode): [ 1.   0.3 -0.2]
+SoftJAX top_k (soft mode): [ 0.9993549   0.29728716 -0.19691387]
+
+JAX sort: [-1.  -0.2  0.3  1. ]
+SoftJAX sort (hard mode): [-1.  -0.2  0.3  1. ]
+SoftJAX sort (soft mode): [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
+
+JAX ranking: [1 0 2 3]
+SoftJAX ranking (hard mode): [1. 0. 2. 3.]
+SoftJAX ranking (soft mode): [1.00636968e+00 3.39874686e-04 1.99421369e+00 2.99907667e+00]
 </code></pre></div></p>
 <p><div class="highlight"><pre><span></span><code><span class="c1"># Functions returning indices</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard argmax:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft argmax:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard argmin:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft argmin:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard argmedian:&quot;</span><span class="p">,</span> <span class="s2">&quot;Not implemented in standard JAX&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft argmedian:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard argtop_k:&quot;</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft argtop_k:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard argsort:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft argsort:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX argmax:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argmax (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argmax (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX argmin:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argmin (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argmin (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX argmedian:&quot;</span><span class="p">,</span> <span class="s2">&quot;Not implemented in standard JAX&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argmedian (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argmedian (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX argtop_k:&quot;</span><span class="p">,</span> <span class="n">jax</span><span class="o">.</span><span class="n">lax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argtop_k (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argtop_k (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX argsort:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argsort (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX argsort (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Hard argmax: 3
-Soft argmax: [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
-Hard argmin: 1
-Soft argmin: [3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
-Hard argmedian: Not implemented in standard JAX
-Soft argmedian: [4.99999764e-01 5.62675608e-08 4.99999764e-01 4.15764163e-07]
-Hard argtop_k: [3 2 0]
-Soft argtop_k: [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+<div class="highlight"><pre><span></span><code>JAX argmax: 3
+SoftJAX argmax (hard mode): [0. 0. 0. 1.]
+SoftJAX argmax (soft mode): [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+
+JAX argmin: 1
+SoftJAX argmin (hard mode): [0. 1. 0. 0.]
+SoftJAX argmin (soft mode): [3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
+
+JAX argmedian: Not implemented in standard JAX
+SoftJAX argmedian (hard mode): [0.5 0.  0.5 0. ]
+SoftJAX argmedian (soft mode): [4.99999764e-01 5.62675608e-08 4.99999764e-01 4.15764163e-07]
+
+JAX argtop_k: [3 2 0]
+SoftJAX argtop_k (hard mode): [[0. 0. 0. 1.]
+ [0. 0. 1. 0.]
+ [1. 0. 0. 0.]]
+SoftJAX argtop_k (soft mode): [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
  [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
  [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]]
-Hard argsort: [1 0 2 3]
-Soft argsort: [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
+
+JAX argsort: [1 0 2 3]
+SoftJAX argsort (hard mode): [[0. 1. 0. 0.]
+ [1. 0. 0. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 0. 1.]]
+SoftJAX argsort (soft mode): [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06045775e-09]
  [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]
  [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
  [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]]
 </code></pre></div></p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">## SoftBool generation</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard greater:&quot;</span><span class="p">,</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft greater:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard greater equal:&quot;</span><span class="p">,</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft greater equal:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard less:&quot;</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft less:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard less equal:&quot;</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft less equal:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard equal:&quot;</span><span class="p">,</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft equal:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard not equal:&quot;</span><span class="p">,</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft not equal:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hard isclose:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft isclose:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<p><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
+
+<span class="c1"># SoftBool generation</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX greater:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX greater (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX greater (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX greater equal:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX greater equal (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX greater equal (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX less:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX less (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX less (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX less equal:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX less equal (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX less equal (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX equal:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX equal (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX equal (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX not equal:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX not equal (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX not equal (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX isclose:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX isclose (hard mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hard&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX isclose (soft mode):&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Hard greater: [False False False  True]
-Soft greater: [0.01798621 0.00669285 0.11920292 1.        ]
-Hard greater equal: [False False False  True]
-Soft greater equal: [0.01798621 0.00669285 0.11920292 1.        ]
-Hard less: [ True  True  True False]
-Soft less: [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
-Hard less equal: [ True  True  True False]
-Soft less equal: [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
-Hard equal: [False False False False]
-Soft equal: [1.79862100e-02 6.69285093e-03 1.19202922e-01 2.06115369e-09]
-Hard not equal: [ True  True  True  True]
-Soft not equal: [0.98201379 0.99330715 0.88079708 1.        ]
-Hard isclose: [False False False False]
-Soft isclose: [1.79865650e-02 6.69318401e-03 1.19208182e-01 2.06135997e-09]
+<div class="highlight"><pre><span></span><code>JAX greater: [False False False  True]
+SoftJAX greater (hard mode): [0. 0. 0. 1.]
+SoftJAX greater (soft mode): [0.01798621 0.00669285 0.11920292 1.        ]
+
+JAX greater equal: [False False False  True]
+SoftJAX greater equal (hard mode): [0. 0. 0. 1.]
+SoftJAX greater equal (soft mode): [0.01798621 0.00669285 0.11920292 1.        ]
+
+JAX less: [ True  True  True False]
+SoftJAX less (hard mode): [1. 1. 1. 0.]
+SoftJAX less (soft mode): [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
+
+JAX less equal: [ True  True  True False]
+SoftJAX less equal (hard mode): [1. 1. 1. 0.]
+SoftJAX less equal (soft mode): [9.82013790e-01 9.93307149e-01 8.80797078e-01 2.06115369e-09]
+
+JAX equal: [False False False False]
+SoftJAX equal (hard mode): [0. 0. 0. 0.]
+SoftJAX equal (soft mode): [1.79862100e-02 6.69285093e-03 1.19202922e-01 2.06115369e-09]
+
+JAX not equal: [ True  True  True  True]
+SoftJAX not equal (hard mode): [1. 1. 1. 1.]
+SoftJAX not equal (soft mode): [0.98201379 0.99330715 0.88079708 1.        ]
+
+JAX isclose: [False False False False]
+SoftJAX isclose (hard mode): [0. 0. 0. 0.]
+SoftJAX isclose (soft mode): [1.79865650e-02 6.69318401e-03 1.19208182e-01 2.06135997e-09]
 </code></pre></div></p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">## SoftBool manipulation</span>
+<p><div class="highlight"><pre><span></span><code><span class="c1"># SoftBool manipulation</span>
 <span class="n">fuzzy_a</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 <span class="n">fuzzy_b</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft AND:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft OR:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft NOT:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft XOR:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft ALL:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Soft ANY:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
+<span class="n">bool_a</span> <span class="o">=</span> <span class="n">fuzzy_a</span> <span class="o">&gt;=</span> <span class="mf">0.5</span>
+<span class="n">bool_b</span> <span class="o">=</span> <span class="n">fuzzy_b</span> <span class="o">&gt;=</span> <span class="mf">0.5</span>
 
-<span class="c1">## SoftBool selection</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Where:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX AND:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">bool_a</span><span class="p">,</span> <span class="n">bool_b</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX AND:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX OR:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">bool_a</span><span class="p">,</span> <span class="n">bool_b</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX OR:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX NOT:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">bool_a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX NOT:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX XOR:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">bool_a</span><span class="p">,</span> <span class="n">bool_b</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX XOR:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">fuzzy_b</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX ALL:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">bool_a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX ALL:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX ANY:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">bool_a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX ANY:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">))</span>
+
+<span class="c1"># SoftBool selection</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">JAX Where:&quot;</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bool_a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoftJAX Where:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fuzzy_a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Soft AND: [0.26457513 0.24494897 0.28284271 0.9486833 ]
-Soft OR: [0.48038476 0.25166852 0.57573593 0.99999684]
-Soft NOT: [0.9 0.8 0.2 0. ]
-Soft XOR: [0.58702688 0.43498731 0.63937484 0.17309871]
-Soft ALL: 0.35565588200778464
-Soft ANY: 0.9980519925071494
-Where: [ 0.16 -0.6   0.34  1.  ]
+<div class="highlight"><pre><span></span><code>JAX AND: [False False False  True]
+SoftJAX AND: [0.26457513 0.24494897 0.28284271 0.9486833 ]
+
+JAX OR: [ True False  True  True]
+SoftJAX OR: [0.48038476 0.25166852 0.57573593 0.99999684]
+
+JAX NOT: [ True  True False False]
+SoftJAX NOT: [0.9 0.8 0.2 0. ]
+
+JAX XOR: [ True False  True False]
+SoftJAX XOR: [0.58702688 0.43498731 0.63937484 0.17309871]
+
+JAX ALL: False
+SoftJAX ALL: 0.35565588200778464
+
+JAX ANY: True
+SoftJAX ANY: 0.9980519925071494
+
+JAX Where: [ 0.2 -0.5  0.3  1. ]
+SoftJAX Where: [ 0.16 -0.6   0.34  1.  ]
 </code></pre></div></p>
 <p><div class="highlight"><pre><span></span><code><span class="c1"># Straight-through estimation: Use hard function on forward and soft on backward</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Straight-through ReLU:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">relu_st</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Straight-through sort:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">sort_st</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Straight-through argtop_k:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">top_k_st</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Straight-through greater:&quot;</span><span class="p">,</span> <span class="n">sj</span><span class="o">.</span><span class="n">greater_st</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="c1"># And many more...</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Straight-through ReLU: [0.  0.  0.3 1. ]
 Straight-through sort: [-1.  -0.2  0.3  1. ]
