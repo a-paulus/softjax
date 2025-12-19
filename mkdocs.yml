@@ -127,7 +127,5 @@ nav:
         - 'plots.ipynb'
         - 'manifold_points.ipynb'
     - API:
-        - 'api/soft_functions.md'
-        - 'api/soft_indices.md'
-        - 'api/soft_bools.md'
+        - 'api/softjax_operators.md'
         - 'api/straight_through.md'

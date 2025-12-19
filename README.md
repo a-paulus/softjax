@@ -14,14 +14,14 @@ The pip install will also only be available after official release.
 
 Softjax provides soft differentiable drop-in replacements for traditionally non-differentiable functions in [JAX](https://github.com/google/jax), including
 
-- simple elementwise functions: `abs`, `relu`, `clip`, `sign` and `round`;
-- functions operating on arrays: `max`, `min`, `median`, `sort`, `ranking` and `top_k`;
-- functions returning indices: `argmax`, `argmin`, `argmedian`, `argsort` and `top_k`;
-- functions returning boolean values such as: `greater`, `equal` or `isclose`;
-- functions for selection with indices such as: `take_along_axis`, `dynamic_index_in_dim` and `choose`;
-- functions for logical manipulation such as: `logical_and`, `all` and `where`.
+- elementwise operators: `abs`, `relu`, `clip`, `sign`, `round` and `heaviside`;
+- array-valued operators: `(arg)max`, `(arg)min`, `(arg)median`, `(arg)sort`, `(arg)top_k` and `ranking`;
+- comparison operators such as: `greater`, `equal` or `isclose`;
+- logical operators such as: `logical_and`, `all` or `where`;
+- selection operators such as: `where`, `take_along_axis`, `dynamic_index_in_dim` or `choose`.
 
-Many functions offer multiple modes for softening, allowing for e.g. smoothness of the soft function or boundedness of the softened region, depending on the user needs.
+All operators offer multiple modes and adjustable strength of softening, allowing for e.g. smoothness of the soft function or boundedness of the softened region, depending on the user needs.
+
 Moreover, we tightly integrate functionality for deploying functions using [straight-through-estimation](https://docs.jax.dev/en/latest/advanced-autodiff.html#straight-through-estimator-using-stop-gradient), where we use non-differentiable functions in the forward pass and their differentiable replacements in the backward pass.
 
 The Softjax library is designed to require minimal user effort, by simply replacing the non-differentiable JAX function with the Softjax counterparts.
@@ -48,59 +48,59 @@ import softjax as sj
 
 x = jnp.array([-0.2, -1.0, 0.3, 1.0])
 
-# Elementwise functions
+# Elementwise operators
+print("\nJAX absolute:", jnp.abs(x))
+print("SoftJAX absolute (hard mode):", sj.abs(x, mode="hard"))
+print("SoftJAX absolute (soft mode):", sj.abs(x))
+
+print("\nJAX clip:", jnp.clip(x, -0.5, 0.5))
+print("SoftJAX clip (hard mode):", sj.clip(x, -0.5, 0.5, mode="hard"))
+print("SoftJAX clip (soft mode):", sj.clip(x, -0.5, 0.5))
+
+print("\nJAX heaviside:", jnp.heaviside(x, 0.5))
+print("SoftJAX heaviside (hard mode):", sj.heaviside(x, mode="hard"))
+print("SoftJAX heaviside (soft mode):", sj.heaviside(x))
+
 print("\nJAX ReLU:", jax.nn.relu(x))
 print("SoftJAX ReLU (hard mode):", sj.relu(x, mode="hard"))
 print("SoftJAX ReLU (soft mode):", sj.relu(x))
-
-print("\nJAX Clip:", jnp.clip(x, -0.5, 0.5))
-print("SoftJAX Clip (hard mode):", sj.clip(x, -0.5, 0.5, mode="hard"))
-print("SoftJAX Clip (soft mode):", sj.clip(x, -0.5, 0.5))
-
-print("\nJAX Absolute:", jnp.abs(x))
-print("SoftJAX Absolute (hard mode):", sj.abs(x, mode="hard"))
-print("SoftJAX Absolute (soft mode):", sj.abs(x))
-
-print("\nJAX Sign:", jnp.sign(x))
-print("SoftJAX Sign (hard mode):", sj.sign(x, mode="hard"))
-print("SoftJAX Sign (soft mode):", sj.sign(x))
 
 print("\nJAX round:", jnp.round(x))
 print("SoftJAX round (hard mode):", sj.round(x, mode="hard"))
 print("SoftJAX round (soft mode):", sj.round(x))
 
-print("\nJAX heaviside:", jnp.heaviside(x, 0.5))
-print("SoftJAX heaviside (hard mode):", sj.heaviside(x, mode="hard"))
-print("SoftJAX heaviside (soft mode):", sj.heaviside(x))
+print("\nJAX sign:", jnp.sign(x))
+print("SoftJAX sign (hard mode):", sj.sign(x, mode="hard"))
+print("SoftJAX sign (soft mode):", sj.sign(x))
 ```
 ```
+JAX absolute: [0.2 1.  0.3 1. ]
+SoftJAX absolute (hard mode): [0.2 1.  0.3 1. ]
+SoftJAX absolute (soft mode): [0.15231883 0.9999092  0.27154448 0.9999092 ]
+
+JAX clip: [-0.2 -0.5  0.3  0.5]
+SoftJAX clip (hard mode): [-0.2 -0.5  0.3  0.5]
+SoftJAX clip (soft mode): [-0.19523241 -0.4993285   0.28734074  0.4993285 ]
+
+JAX heaviside: [0. 0. 1. 1.]
+SoftJAX heaviside (hard mode): [0. 0. 1. 1.]
+SoftJAX heaviside (soft mode): [1.19202922e-01 4.53978687e-05 9.52574127e-01 9.99954602e-01]
+
 JAX ReLU: [0.  0.  0.3 1. ]
 SoftJAX ReLU (hard mode): [0.  0.  0.3 1. ]
 SoftJAX ReLU (soft mode): [1.26928011e-02 4.53988992e-06 3.04858735e-01 1.00000454e+00]
-
-JAX Clip: [-0.2 -0.5  0.3  0.5]
-SoftJAX Clip (hard mode): [-0.2 -0.5  0.3  0.5]
-SoftJAX Clip (soft mode): [-0.19523241 -0.4993285   0.28734074  0.4993285 ]
-
-JAX Absolute: [0.2 1.  0.3 1. ]
-SoftJAX Absolute (hard mode): [0.2 1.  0.3 1. ]
-SoftJAX Absolute (soft mode): [0.15231883 0.9999092  0.27154448 0.9999092 ]
-
-JAX Sign: [-1. -1.  1.  1.]
-SoftJAX Sign (hard mode): [-1. -1.  1.  1.]
-SoftJAX Sign (soft mode): [-0.76159416 -0.9999092   0.90514825  0.9999092 ]
 
 JAX round: [-0. -1.  0.  1.]
 SoftJAX round (hard mode): [-0. -1.  0.  1.]
 SoftJAX round (soft mode): [-0.04651704 -1.          0.1188737   1.        ]
 
-JAX heaviside: [0. 0. 1. 1.]
-SoftJAX heaviside (hard mode): [0. 0. 1. 1.]
-SoftJAX heaviside (soft mode): [1.19202922e-01 4.53978687e-05 9.52574127e-01 9.99954602e-01]
+JAX sign: [-1. -1.  1.  1.]
+SoftJAX sign (hard mode): [-1. -1.  1.  1.]
+SoftJAX sign (soft mode): [-0.76159416 -0.9999092   0.90514825  0.9999092 ]
 ```
 
 ```python
-# Functions on arrays
+# Array-valued operators
 print("\nJAX max:", jnp.max(x))
 print("SoftJAX max (hard mode):", sj.max(x, mode="hard"))
 print("SoftJAX max (soft mode):", sj.max(x))
@@ -109,6 +109,10 @@ print("\nJAX min:", jnp.min(x))
 print("SoftJAX min (hard mode):", sj.min(x, mode="hard"))
 print("SoftJAX min (soft mode):", sj.min(x))
 
+print("\nJAX sort:", jnp.sort(x))
+print("SoftJAX sort (hard mode):", sj.sort(x, mode="hard"))
+print("SoftJAX sort (soft mode):", sj.sort(x))
+
 print("\nJAX median:", jnp.median(x))
 print("SoftJAX median (hard mode):", sj.median(x, mode="hard"))
 print("SoftJAX median (soft mode):", sj.median(x))
@@ -116,10 +120,6 @@ print("SoftJAX median (soft mode):", sj.median(x))
 print("\nJAX top_k:", jax.lax.top_k(x, k=3)[0])
 print("SoftJAX top_k (hard mode):", sj.top_k(x, k=3, mode="hard")[0])
 print("SoftJAX top_k (soft mode):", sj.top_k(x, k=3)[0])
-
-print("\nJAX sort:", jnp.sort(x))
-print("SoftJAX sort (hard mode):", sj.sort(x, mode="hard"))
-print("SoftJAX sort (soft mode):", sj.sort(x))
 
 print("\nJAX ranking:", jnp.argsort(jnp.argsort(x)))
 print("SoftJAX ranking (hard mode):", sj.ranking(x, mode="hard", descending=False))
@@ -134,6 +134,10 @@ JAX min: -1.0
 SoftJAX min (hard mode): -1.0
 SoftJAX min (soft mode): -0.9997287789452775
 
+JAX sort: [-1.  -0.2  0.3  1. ]
+SoftJAX sort (hard mode): [-1.  -0.2  0.3  1. ]
+SoftJAX sort (soft mode): [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
+
 JAX median: 0.04999999999999999
 SoftJAX median (hard mode): 0.04999999999999999
 SoftJAX median (soft mode): 0.05000033589501627
@@ -142,17 +146,13 @@ JAX top_k: [ 1.   0.3 -0.2]
 SoftJAX top_k (hard mode): [ 1.   0.3 -0.2]
 SoftJAX top_k (soft mode): [ 0.9993549   0.29728716 -0.19691387]
 
-JAX sort: [-1.  -0.2  0.3  1. ]
-SoftJAX sort (hard mode): [-1.  -0.2  0.3  1. ]
-SoftJAX sort (soft mode): [-0.99972878 -0.19691387  0.29728716  0.9993549 ]
-
 JAX ranking: [1 0 2 3]
 SoftJAX ranking (hard mode): [1. 0. 2. 3.]
 SoftJAX ranking (soft mode): [1.00636968e+00 3.39874686e-04 1.99421369e+00 2.99907667e+00]
 ```
 
 ```python
-# Functions returning indices
+# Operators returning indices
 print("\nJAX argmax:", jnp.argmax(x))
 print("SoftJAX argmax (hard mode):", sj.argmax(x, mode="hard"))
 print("SoftJAX argmax (soft mode):", sj.argmax(x))
@@ -165,13 +165,13 @@ print("\nJAX argmedian:", "Not implemented in standard JAX")
 print("SoftJAX argmedian (hard mode):", sj.argmedian(x, mode="hard"))
 print("SoftJAX argmedian (soft mode):", sj.argmedian(x))
 
-print("\nJAX argtop_k:", jax.lax.top_k(x, k=3)[1])
-print("SoftJAX argtop_k (hard mode):", sj.top_k(x, k=3, mode="hard")[1])
-print("SoftJAX argtop_k (soft mode):", sj.top_k(x, k=3)[1])
-
 print("\nJAX argsort:", jnp.argsort(x))
 print("SoftJAX argsort (hard mode):", sj.argsort(x, mode="hard"))
 print("SoftJAX argsort (soft mode):", sj.argsort(x))
+
+print("\nJAX argtop_k:", jax.lax.top_k(x, k=3)[1])
+print("SoftJAX argtop_k (hard mode):", sj.top_k(x, k=3, mode="hard")[1])
+print("SoftJAX argtop_k (soft mode):", sj.top_k(x, k=3)[1])
 ```
 ```
 JAX argmax: 3
@@ -186,14 +186,6 @@ JAX argmedian: Not implemented in standard JAX
 SoftJAX argmedian (hard mode): [0.5 0.  0.5 0. ]
 SoftJAX argmedian (soft mode): [4.99999764e-01 5.62675608e-08 4.99999764e-01 4.15764163e-07]
 
-JAX argtop_k: [3 2 0]
-SoftJAX argtop_k (hard mode): [[0. 0. 0. 1.]
- [0. 0. 1. 0.]
- [1. 0. 0. 0.]]
-SoftJAX argtop_k (soft mode): [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
- [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
- [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]]
-
 JAX argsort: [1 0 2 3]
 SoftJAX argsort (hard mode): [[0. 1. 0. 0.]
  [1. 0. 0. 0.]
@@ -203,12 +195,20 @@ SoftJAX argsort (soft mode): [[3.35349372e-04 9.99662389e-01 2.25956629e-06 2.06
  [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]
  [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
  [6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]]
+
+JAX argtop_k: [3 2 0]
+SoftJAX argtop_k (hard mode): [[0. 0. 0. 1.]
+ [0. 0. 1. 0.]
+ [1. 0. 0. 0.]]
+SoftJAX argtop_k (soft mode): [[6.13857697e-06 2.05926316e-09 9.11045600e-04 9.99082814e-01]
+ [6.68677917e-03 2.24316451e-06 9.92406021e-01 9.04957153e-04]
+ [9.92970214e-01 3.33104397e-04 6.69058067e-03 6.10101985e-06]]
 ```
 
 ```python
 y = jnp.array([0.2, -0.5, 0.5, -1.0])
 
-# SoftBool generation
+# Comparison operators
 print("\nJAX greater:", jnp.greater(x, y))
 print("SoftJAX greater (hard mode):", sj.greater(x, y, mode="hard"))
 print("SoftJAX greater (soft mode):", sj.greater(x, y))
@@ -268,7 +268,7 @@ SoftJAX isclose (soft mode): [1.79865650e-02 6.69318401e-03 1.19208182e-01 2.061
 ```
 
 ```python
-# SoftBool manipulation
+# Logical operators
 fuzzy_a = jnp.array([0.1, 0.2, 0.8, 1.0])
 fuzzy_b = jnp.array([0.7, 0.3, 0.1, 0.9])
 bool_a = fuzzy_a >= 0.5
@@ -292,7 +292,7 @@ print("SoftJAX ALL:", sj.all(fuzzy_a))
 print("\nJAX ANY:", jnp.any(bool_a))
 print("SoftJAX ANY:", sj.any(fuzzy_a))
 
-# SoftBool selection
+# Selection operators
 print("\nJAX Where:", jnp.where(bool_a, x, y))
 print("SoftJAX Where:", sj.where(fuzzy_a, x, y))
 ```
@@ -320,7 +320,7 @@ SoftJAX Where: [ 0.16 -0.6   0.34  1.  ]
 ```
 
 ```python
-# Straight-through estimation: Use hard function on forward and soft on backward
+# Straight-through operators: Use hard function on forward and soft on backward
 print("Straight-through ReLU:", sj.relu_st(x))
 print("Straight-through sort:", sj.sort_st(x))
 print("Straight-through argtop_k:", sj.top_k_st(x, k=3)[1])
@@ -377,6 +377,7 @@ This project is still relatively young, if you have any suggestions for improvem
 [paramax](https://github.com/danielward27/paramax): parameterizations and constraints for PyTrees.  
 
 **Scientific computing**  
+[Diffrax](https://github.com/patrick-kidger/diffrax): numerical differential equation solvers.  
 [Optimistix](https://github.com/patrick-kidger/optimistix): root finding, minimisation, fixed points, and least squares.  
 [Lineax](https://github.com/patrick-kidger/lineax): linear solvers.  
 [BlackJAX](https://github.com/blackjax-devs/blackjax): probabilistic+Bayesian sampling.  
@@ -410,5 +411,6 @@ Softjax builds on / implements various different algoithms for e.g. differentiab
 [SoftSort: A Continuous Relaxation for the argsort Operator](https://arxiv.org/pdf/2006.16038)  
 [Sinkhorn Distances: Lightspeed Computation of Optimal Transportation Distances](https://arxiv.org/abs/1306.0895)  
 [Smooth and Sparse Optimal Transport](https://arxiv.org/abs/1710.06276)  
+[Smooth Approximations of the Rounding Function](https://arxiv.org/pdf/2504.19026v1)  
 
 Please check the [API Documentation](https://docs.a-paulus.github.io/softjax/api/soft_indices) for implementation details.
