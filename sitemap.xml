@@ -2,42 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://a-paulus.github.io/softjax/</loc>
-         <lastmod>2025-12-18</lastmod>
+         <lastmod>2025-12-19</lastmod>
     </url>
     <url>
          <loc>https://a-paulus.github.io/softjax/all-of-softjax/</loc>
-         <lastmod>2025-12-18</lastmod>
+         <lastmod>2025-12-19</lastmod>
     </url>
     <url>
          <loc>https://a-paulus.github.io/softjax/manifold_points/</loc>
-         <lastmod>2025-12-18</lastmod>
+         <lastmod>2025-12-19</lastmod>
     </url>
     <url>
          <loc>https://a-paulus.github.io/softjax/plots/</loc>
-         <lastmod>2025-12-18</lastmod>
+         <lastmod>2025-12-19</lastmod>
     </url>
     <url>
          <loc>https://a-paulus.github.io/softjax/quick-example/</loc>
-         <lastmod>2025-12-18</lastmod>
+         <lastmod>2025-12-19</lastmod>
     </url>
     <url>
          <loc>https://a-paulus.github.io/softjax/_static/Readme/</loc>
-         <lastmod>2025-12-18</lastmod>
+         <lastmod>2025-12-19</lastmod>
     </url>
     <url>
-         <loc>https://a-paulus.github.io/softjax/api/soft_bools/</loc>
-         <lastmod>2025-12-18</lastmod>
-    </url>
-    <url>
-         <loc>https://a-paulus.github.io/softjax/api/soft_functions/</loc>
-         <lastmod>2025-12-18</lastmod>
-    </url>
-    <url>
-         <loc>https://a-paulus.github.io/softjax/api/soft_indices/</loc>
-         <lastmod>2025-12-18</lastmod>
+         <loc>https://a-paulus.github.io/softjax/api/softjax_operators/</loc>
+         <lastmod>2025-12-19</lastmod>
     </url>
     <url>
          <loc>https://a-paulus.github.io/softjax/api/straight_through/</loc>
-         <lastmod>2025-12-18</lastmod>
+         <lastmod>2025-12-19</lastmod>
     </url>
 </urlset>
