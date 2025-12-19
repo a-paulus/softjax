@@ -837,8 +837,8 @@ def argsort(
             and then transporting the ith-largest value to the ith-largest anchor.
             Can be slow for large `max_iter`.
         - `fast=False` and `mode="euclidean"`: Similar to entropic case, but using an
-            L2-regularizer (implemented via LBFGS projection onto Birkhoff polytope) as
-            in [Fast Differentiable Sorting and Ranking](https://arxiv.org/pdf/2002.08871).
+            L2-regularizer (implemented via LBFGS projection onto Birkhoff polytope,
+            see [Smooth and Sparse Optimal Transport](https://arxiv.org/abs/1710.06276)).
         - `fast=True` and `mode="entropic"`: Uses the "SoftSort" operator proposed in
             [SoftSort: A Continuous Relaxation for the argsort Operator](https://arxiv.org/pdf/2006.16038).
             This initializes the cost matrix based on the absolute difference of `x` to
@@ -986,7 +986,7 @@ def top_k(
             Can be slow for large `max_iter`.
         - `fast=False` and `mode="euclidean"`: Similar to entropic case, but using an
             L2-regularizer (implemented via projection onto Birkhoff polytope).
-            This version combines the approaches in [Fast Differentiable Sorting and Ranking](https://arxiv.org/pdf/2002.08871)
+            This version combines the approaches in [Smooth and Sparse Optimal Transport](https://arxiv.org/abs/1710.06276))
             (L2 regularizer for sorting) and [Differentiable Top-k with Optimal Transport](https://papers.nips.cc/paper/2020/file/ec24a54d62ce57ba93a531b460fa8d18-Paper.pdf)
             (entropic regularizer for top-k).
         - `fast=True` and `mode="entropic"`: Uses the "SoftSort" operator proposed  in
@@ -1091,8 +1091,8 @@ def ranking(
             ranks of the original values.
             Can be slow for large `max_iter`.
         - `fast=False` and `mode="euclidean"`: Similar to entropic case, but using an
-            L2-regularizer (implemented via projection onto Birkhoff polytope) as in
-            [Fast Differentiable Sorting and Ranking](https://arxiv.org/pdf/2002.08871).
+            L2-regularizer (implemented via projection onto Birkhoff polytope, see
+            [Smooth and Sparse Optimal Transport](https://arxiv.org/abs/1710.06276)).
         - `fast=True` and `mode="entropic"`: Uses an adaptation of the "SoftSort"
             operator proposed in [SoftSort: A Continuous Relaxation for the argsort Operator](https://arxiv.org/pdf/2006.16038).
             This initializes the cost matrix based on the absolute difference of `x` to
