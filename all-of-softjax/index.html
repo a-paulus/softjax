@@ -295,7 +295,7 @@
   
   
   <span class="md-ellipsis">
-    Softjax
+    Home
     
   </span>
   
@@ -2570,15 +2570,15 @@ sj.argsort(x): [[1.14092958e-01 8.61461280e-01 4.81124140e-04 2.39646378e-02]
  [7.42554231e-01 9.83447670e-02 3.13131302e-03 1.55969689e-01]
  [1.66975269e-01 2.21144035e-02 1.59597616e-02 7.94950566e-01]
  [4.11469085e-03 5.44954558e-04 9.75750772e-01 1.95895826e-02]]
-
-jax.lax.top_k(x, k=3)[1]: [2 3 0]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>sj.top_k(x, k=3)[1]: [[4.11469085e-03 5.44954558e-04 9.75750772e-01 1.95895826e-02]
+<pre>
+jax.lax.top_k(x, k=3)[1]: [2 3 0]
+sj.top_k(x, k=3)[1]: [[4.11469085e-03 5.44954558e-04 9.75750772e-01 1.95895826e-02]
  [1.66975269e-01 2.21144035e-02 1.59597616e-02 7.94950566e-01]
  [7.42554231e-01 9.83447670e-02 3.13131302e-03 1.55969689e-01]]
 </pre>
@@ -2678,13 +2678,7 @@ print(
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>x.shape: (3, 4)
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
+
 jax.lax.top_k(x, k=2, axis=1)[1].shape: (3, 2)
 </pre>
 </div>
@@ -2693,14 +2687,14 @@ jax.lax.top_k(x, k=2, axis=1)[1].shape: (3, 2)
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>sj.top_k(x, k=2, axis=1)[1].shape: (3, 2, 4)
-sj.top_k(x, k=2, axis=0)[1].shape: (2, 3, 4)
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
+<pre>sj.top_k(x, k=2, axis=0)[1].shape: (2, 3, 4)
+
 jnp.argsort(x, axis=1).shape: (3, 4)
 sj.argsort(x, axis=1).shape: (3, 4, 4)
 jnp.argsort(x, axis=0).shape: (3, 4)
@@ -2839,13 +2833,7 @@ print("min_sj_soft:\n", sj.take_along_axis(x, indices_soft, axis=1))</div>
 <pre>min_sj_hard:
  [[0.21629545]
  [0.35490518]]
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>min_sj_soft:
+min_sj_soft:
  [[0.24029622]
  [0.39747788]]
 </pre>
@@ -2955,7 +2943,13 @@ sj.median(x, mode='hard'): 0.49647882272194555
 sj.median(x): 0.494137017678798
 
 jax.lax.top_k(x, k=2)[0]: [0.96532146 0.57450053]
-sj.top_k(x, k=2, mode='hard')[0]: [0.96532146 0.57450053]
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>sj.top_k(x, k=2, mode='hard')[0]: [0.96532146 0.57450053]
 </pre>
 </div>
 </div>
@@ -2966,7 +2960,13 @@ sj.top_k(x, k=2, mode='hard')[0]: [0.96532146 0.57450053]
 
 jnp.sort(x): [0.21629545 0.41845711 0.57450053 0.96532146]
 sj.sort(x, mode='hard'): [0.21629545 0.41845711 0.57450053 0.96532146]
-sj.sort(x): [0.24830531 0.42462602 0.54676106 0.95500708]
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>sj.sort(x): [0.24830531 0.42462602 0.54676106 0.95500708]
 </pre>
 </div>
 </div>
@@ -3037,7 +3037,13 @@ print("sj.ranking(x, descending=False):\n", sj.ranking(x, descending=False))</di
  [0.41845711 0.21629545 0.96532146 0.57450053 0.53222649]
 jnp.argsort(jnp.argsort(x)):
  [1 0 4 3 2]
-sj.ranking(x, descending=False, mode='hard'):
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>sj.ranking(x, descending=False, mode='hard'):
  [1. 0. 4. 3. 2.]
 </pre>
 </div>

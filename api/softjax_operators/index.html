@@ -295,7 +295,7 @@
   
   
   <span class="md-ellipsis">
-    Softjax
+    Home
     
   </span>
   
@@ -1019,7 +1019,7 @@
 
 <h4 id="softjax.abs" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1362-L1386"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1362-L1386"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.abs" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1049,7 +1049,7 @@
 
 <h4 id="softjax.clip" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;quartic&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_quintic&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_pseudohuber&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1424-L1462"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1424-L1462"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.clip" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1081,7 +1081,7 @@
 
 <h4 id="softjax.heaviside" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1269-L1293"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1269-L1293"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.heaviside" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1111,7 +1111,7 @@ elementwise Heaviside step function.</p>
 
 <h4 id="softjax.relu" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;quartic&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_quintic&#39;</span><span class="p">,</span> <span class="s1">&#39;gated_pseudohuber&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1389-L1421"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1389-L1421"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.relu" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1141,7 +1141,7 @@ elementwise Heaviside step function.</p>
 
 <h4 id="softjax.round" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">neighbor_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1296-L1333"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1296-L1333"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.round" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1175,7 +1175,7 @@ elementwise Heaviside step function.</p>
 
 <h4 id="softjax.sign" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1336-L1359"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1336-L1359"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.sign" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1205,7 +1205,7 @@ elementwise Heaviside step function.</p>
 
 <h4 id="softjax.argmax" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L448-L511"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L448-L511"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.argmax" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1268,7 +1268,7 @@ because it moves the probability dimension into the last axis
 
 <h4 id="softjax.max" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L514-L550"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L514-L550"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.max" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1296,7 +1296,7 @@ specified axis.</p>
 
 <h4 id="softjax.argmin" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L553-L571"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L553-L571"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.argmin" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1320,7 +1320,7 @@ details.</p>
 
 <h4 id="softjax.min" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L574-L590"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L574-L590"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.min" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1346,7 +1346,7 @@ specified axis.</p>
 
 <h4 id="softjax.argmedian" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">argmedian</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">fast</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L593-L695"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L593-L695"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.argmedian" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1410,7 +1410,7 @@ the median along the specified axis.</p>
 
 <h4 id="softjax.median" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">fast</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L698-L738"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L698-L738"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.median" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1438,7 +1438,7 @@ specified axis.</p>
 
 <h4 id="softjax.median_newton" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">median_newton</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-12</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L741-L808"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L741-L808"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.median_newton" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1480,7 +1480,7 @@ specified axis.</p>
 
 <h4 id="softjax.argsort" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">fast</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L811-L915"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L811-L915"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.argsort" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1507,8 +1507,8 @@ of <code>x</code> along the specified axis.</p>
     and then transporting the ith-largest value to the ith-largest anchor.
     Can be slow for large <code>max_iter</code>.</li>
 <li><code>fast=False</code> and <code>mode="euclidean"</code>: Similar to entropic case, but using an
-    L2-regularizer (implemented via LBFGS projection onto Birkhoff polytope) as
-    in <a href="https://arxiv.org/pdf/2002.08871">Fast Differentiable Sorting and Ranking</a>.</li>
+    L2-regularizer (implemented via LBFGS projection onto Birkhoff polytope,
+    see <a href="https://arxiv.org/abs/1710.06276">Smooth and Sparse Optimal Transport</a>).</li>
 <li><code>fast=True</code> and <code>mode="entropic"</code>: Uses the "SoftSort" operator proposed in
     <a href="https://arxiv.org/pdf/2006.16038">SoftSort: A Continuous Relaxation for the argsort Operator</a>.
     This initializes the cost matrix based on the absolute difference of <code>x</code> to
@@ -1553,7 +1553,7 @@ This is what is done in <a class="autorefs autorefs-internal" title="           
 
 <h4 id="softjax.sort" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">fast</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L918-L956"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L918-L956"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.sort" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1581,7 +1581,7 @@ specified axis.</p>
 
 <h4 id="softjax.top_k" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">fast</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L959-L1061"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L959-L1061"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.top_k" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1609,7 +1609,7 @@ of <code>x</code> along the specified axis.</p>
     Can be slow for large <code>max_iter</code>.</li>
 <li><code>fast=False</code> and <code>mode="euclidean"</code>: Similar to entropic case, but using an
     L2-regularizer (implemented via projection onto Birkhoff polytope).
-    This version combines the approaches in <a href="https://arxiv.org/pdf/2002.08871">Fast Differentiable Sorting and Ranking</a>
+    This version combines the approaches in <a href="https://arxiv.org/abs/1710.06276">Smooth and Sparse Optimal Transport</a>)
     (L2 regularizer for sorting) and <a href="https://papers.nips.cc/paper/2020/file/ec24a54d62ce57ba93a531b460fa8d18-Paper.pdf">Differentiable Top-k with Optimal Transport</a>
     (entropic regularizer for top-k).</li>
 <li><code>fast=True</code> and <code>mode="entropic"</code>: Uses the "SoftSort" operator proposed  in
@@ -1647,7 +1647,7 @@ of <code>x</code> along the specified axis.</p>
 
 <h4 id="softjax.ranking" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">ranking</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">fast</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1064-L1165"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1064-L1165"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.ranking" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1675,8 +1675,8 @@ of <code>x</code> along the specified axis.</p>
     ranks of the original values.
     Can be slow for large <code>max_iter</code>.</li>
 <li><code>fast=False</code> and <code>mode="euclidean"</code>: Similar to entropic case, but using an
-    L2-regularizer (implemented via projection onto Birkhoff polytope) as in
-    <a href="https://arxiv.org/pdf/2002.08871">Fast Differentiable Sorting and Ranking</a>.</li>
+    L2-regularizer (implemented via projection onto Birkhoff polytope, see
+    <a href="https://arxiv.org/abs/1710.06276">Smooth and Sparse Optimal Transport</a>).</li>
 <li><code>fast=True</code> and <code>mode="entropic"</code>: Uses an adaptation of the "SoftSort"
     operator proposed in <a href="https://arxiv.org/pdf/2006.16038">SoftSort: A Continuous Relaxation for the argsort Operator</a>.
     This initializes the cost matrix based on the absolute difference of <code>x</code> to
@@ -1711,7 +1711,7 @@ specified axis.</p>
 
 <h4 id="softjax.greater" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1468-L1498"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1468-L1498"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.greater" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1745,7 +1745,7 @@ elementwise <code>x &gt; y</code>.</p>
 
 <h4 id="softjax.greater_equal" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1501-L1532"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1501-L1532"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.greater_equal" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1780,7 +1780,7 @@ elementwise <code>x &gt;= y</code>.</p>
 
 <h4 id="softjax.less" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1535-L1567"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1535-L1567"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.less" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1814,7 +1814,7 @@ elementwise <code>x &lt; y</code>.</p>
 
 <h4 id="softjax.less_equal" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1570-L1600"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1570-L1600"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.less_equal" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1848,7 +1848,7 @@ elementwise <code>x &lt;= y</code>.</p>
 
 <h4 id="softjax.equal" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1603-L1636"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1603-L1636"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.equal" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1882,7 +1882,7 @@ elementwise <code>x == y</code>.</p>
 
 <h4 id="softjax.not_equal" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1639-L1672"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1639-L1672"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.not_equal" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1916,7 +1916,7 @@ elementwise <code>x != y</code>.</p>
 
 <h4 id="softjax.isclose" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">softness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-08</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;hard&#39;</span><span class="p">,</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudohuber&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="s1">&#39;quintic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;entropic&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1675-L1715"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1675-L1715"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.isclose" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1953,7 +1953,7 @@ elementwise <code>isclose(x, y)</code>.</p>
 
 <h4 id="softjax.logical_and" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1769-L1783"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1769-L1783"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.logical_and" class="headerlink" title="Permanent link">¤</a></h4>
@@ -1982,7 +1982,7 @@ elementwise logical AND.</p>
 
 <h4 id="softjax.logical_not" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1721-L1733"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1721-L1733"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.logical_not" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2008,7 +2008,7 @@ elementwise logical NOT.</p>
 
 <h4 id="softjax.logical_or" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1786-L1799"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1786-L1799"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.logical_or" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2035,7 +2035,7 @@ elementwise logical OR.</p>
 
 <h4 id="softjax.logical_xor" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1802-L1814"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1802-L1814"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.logical_xor" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2061,7 +2061,7 @@ elementwise logical XOR.</p>
 
 <h4 id="softjax.all" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1736-L1750"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1736-L1750"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.all" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2089,7 +2089,7 @@ the logical ALL along that axis.</p>
 
 <h4 id="softjax.any" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L1753-L1766"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L1753-L1766"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.any" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2117,7 +2117,7 @@ he logical ANY along that axis.</p>
 
 <h4 id="softjax.where" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L29-L43"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L29-L43"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.where" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2145,7 +2145,7 @@ to <code>condition</code> in [0, 1].</p>
 
 <h4 id="softjax.take_along_axis" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">take_along_axis</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">soft_index</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L46-L144"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L46-L144"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.take_along_axis" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2237,7 +2237,7 @@ the specified axis.</p>
 
 <h4 id="softjax.take" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">soft_index</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L147-L183"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L147-L183"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.take" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2268,7 +2268,7 @@ via a weighted dot product.</p>
 
 <h4 id="softjax.choose" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">soft_index</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">choices</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L186-L213"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L186-L213"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.choose" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2297,7 +2297,7 @@ via a weighted dot product.</p>
 
 <h4 id="softjax.dynamic_index_in_dim" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">dynamic_index_in_dim</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">soft_index</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L216-L249"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L216-L249"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.dynamic_index_in_dim" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2328,7 +2328,7 @@ via a weighted dot product.</p>
 
 <h4 id="softjax.dynamic_slice_in_dim" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">dynamic_slice_in_dim</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">soft_start_index</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="n">slice_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L252-L287"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L252-L287"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.dynamic_slice_in_dim" class="headerlink" title="Permanent link">¤</a></h4>
@@ -2359,7 +2359,7 @@ via a weighted dot product.</p>
 
 <h4 id="softjax.dynamic_slice" class="doc doc-heading">
   <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">softjax</span><span class="o">.</span><span class="n">dynamic_slice</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">soft_start_indices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]],</span> <span class="n">slice_sizes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span></code>
-  <a href="https://github.com/a-paulus/softjax/blob/a5f9d204d8f61ab20066ab9d774cbfc9f4fc749b/src/softjax/functions.py#L290-L322"><code class='hippogriffe-repo-url'></code></a>
+  <a href="https://github.com/a-paulus/softjax/blob/d32ca85b5d3001013c3bf14981108e11860a58b4/src/softjax/functions.py#L290-L322"><code class='hippogriffe-repo-url'></code></a>
 
 
 <a href="#softjax.dynamic_slice" class="headerlink" title="Permanent link">¤</a></h4>

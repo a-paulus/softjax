@@ -295,7 +295,7 @@
   
   
   <span class="md-ellipsis">
-    Softjax
+    Home
     
   </span>
   
@@ -1173,10 +1173,6 @@ SoftJAX clip (hard mode): [-0.2 -0.5  0.3  0.5]
 JAX heaviside: [0. 0. 1. 1.]
 SoftJAX heaviside (hard mode): [0. 0. 1. 1.]
 SoftJAX heaviside (soft mode): [0.1192 0.     0.9526 1.    ]
-
-JAX ReLU: [0.  0.  0.3 1. ]
-SoftJAX ReLU (hard mode): [0.  0.  0.3 1. ]
-SoftJAX ReLU (soft mode): [0.0127 0.     0.3049 1.    ]
 </pre>
 </div>
 </div>
@@ -1184,6 +1180,10 @@ SoftJAX ReLU (soft mode): [0.0127 0.     0.3049 1.    ]
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>
+JAX ReLU: [0.  0.  0.3 1. ]
+SoftJAX ReLU (hard mode): [0.  0.  0.3 1. ]
+SoftJAX ReLU (soft mode): [0.0127 0.     0.3049 1.    ]
+
 JAX round: [-0. -1.  0.  1.]
 SoftJAX round (hard mode): [-0. -1.  0.  1.]
 </pre>
@@ -1315,14 +1315,14 @@ SoftJAX sort (hard mode): [-1.  -0.2  0.3  1. ]
 
 JAX median: 0.04999999999999999
 SoftJAX median (hard mode): 0.04999999999999999
+SoftJAX median (soft mode): 0.05000033589501627
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>SoftJAX median (soft mode): 0.05000033589501627
-
+<pre>
 JAX top_k: [ 1.   0.3 -0.2]
 SoftJAX top_k (hard mode): [ 1.   0.3 -0.2]
 </pre>
