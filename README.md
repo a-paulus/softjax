@@ -1,3 +1,11 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/_static/logo/softjax_logo_white_transparent.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/_static/logo/softjax_logo_black_transparent.png">
+    <img alt="SoftJAX logo" src="softjax_logo_black_transparent.png" style="width:60%; max-width:320px; height:auto;">
+  </picture>
+</p>
+
 # Softjax
 
 ## Disclaimer
@@ -405,7 +413,6 @@ This project is still relatively young, if you have any suggestions for improvem
 Softjax builds on / implements various different algoithms for e.g. differentiable `argtop_k`, `sorting` and `ranking`, including:
 
 [Projection onto the probability simplex: An efficient algorithm with a simple proof, and an application](https://arxiv.org/pdf/1309.1541)  
-[Fast Differentiable Sorting and Ranking](https://arxiv.org/pdf/2002.08871).  
 [Differentiable Ranks and Sorting using Optimal Transport](https://arxiv.org/pdf/1905.11885)  
 [Differentiable Top-k with Optimal Transport](https://papers.nips.cc/paper/2020/file/ec24a54d62ce57ba93a531b460fa8d18-Paper.pdf)  
 [SoftSort: A Continuous Relaxation for the argsort Operator](https://arxiv.org/pdf/2006.16038)  
@@ -414,3 +421,6 @@ Softjax builds on / implements various different algoithms for e.g. differentiab
 [Smooth Approximations of the Rounding Function](https://arxiv.org/pdf/2504.19026v1)  
 
 Please check the [API Documentation](https://docs.a-paulus.github.io/softjax/api/soft_indices) for implementation details.
+
+We also plan to support in the future:  
+[Fast Differentiable Sorting and Ranking](https://arxiv.org/pdf/2002.08871)  

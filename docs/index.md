@@ -1,3 +1,9 @@
+<p style="text-align:center;">
+  <img src="_static/logo/softjax_logo_black_transparent.png#only-light" style="width:50%; max-width:360px; height:auto;">
+  <img src="_static/logo/softjax_logo_white_transparent.png#only-dark" style="width:50%; max-width:360px; height:auto;">
+</p>
+
+
 # Softjax
 
 ## Disclaimer

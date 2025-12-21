@@ -66,6 +66,7 @@ markdown_extensions:
     - toc:
         permalink: "¤"  # Adds a clickable permalink to each section heading
         toc_depth: 4  # Prevents h5, h6 (i.e. methods) from showing up in the TOC.
+    - attr_list
 
 plugins:
     - search:
