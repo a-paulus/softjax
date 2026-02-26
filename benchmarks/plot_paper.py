@@ -1,4 +1,4 @@
-"""Generate publication-quality benchmark figures for the ICML paper.
+"""Generate benchmark figures for the paper.
 
 Usage:
     uv run python benchmarks/plot_paper.py benchmarks/results/softjax_benchmark_combined.csv
@@ -69,9 +69,9 @@ MODE_DISPLAY = {
     "c2": "C2",
 }
 
-# ICML 2026 page geometry
-ICML_TEXT_WIDTH = 6.75  # inches
-ICML_COLUMN_WIDTH = (ICML_TEXT_WIDTH - 0.25) / 2  # 3.25 inches
+# Page geometry
+TEXT_WIDTH = 6.75  # inches
+COLUMN_WIDTH = (TEXT_WIDTH - 0.25) / 2  # 3.25 inches
 
 
 # ---------------------------------------------------------------------------
@@ -80,7 +80,7 @@ ICML_COLUMN_WIDTH = (ICML_TEXT_WIDTH - 0.25) / 2  # 3.25 inches
 
 
 def configure_paper_style():
-    """Set rcParams for publication-quality figures.
+    """Set rcParams for paper figures.
 
     Font sizes are set so that when the figure width matches the target
     LaTeX width (column or text width), text renders at the same size as
@@ -238,7 +238,7 @@ def plot_main_figure(df, output_dir, fmt="pdf", functions=None):
 
     sizes = np.sort(smooth["problem_size"].unique())
 
-    fig, (ax_time, ax_mem) = plt.subplots(1, 2, figsize=(ICML_COLUMN_WIDTH, 1.6))
+    fig, (ax_time, ax_mem) = plt.subplots(1, 2, figsize=(COLUMN_WIDTH, 1.6))
 
     # Time panel
     _plot_method_lines(ax_time, smooth, "total_ms", METHOD_ORDER)
@@ -323,7 +323,7 @@ def plot_appendix_figure(df, output_dir, fmt="pdf", functions=None):
     fig, axes = plt.subplots(
         nrows,
         3,
-        figsize=(ICML_TEXT_WIDTH, 1.1 * nrows),
+        figsize=(TEXT_WIDTH, 1.1 * nrows),
         squeeze=False,
         sharey="col",
         sharex=True,
@@ -433,7 +433,7 @@ def plot_elementwise_figure(df, output_dir, fmt="pdf", functions=None):
     ]
     fig, axes = plt.subplots(
         nrows, 3,
-        figsize=(ICML_TEXT_WIDTH, 1.1 * nrows),
+        figsize=(TEXT_WIDTH, 1.1 * nrows),
         squeeze=False,
         sharey="col",
         sharex=True,
@@ -506,7 +506,7 @@ def plot_elementwise_figure(df, output_dir, fmt="pdf", functions=None):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate paper-quality benchmark figures.",
+        description="Generate benchmark figures for the paper.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("csv_path", type=Path, help="Path to benchmark CSV")
