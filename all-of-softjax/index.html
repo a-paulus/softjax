@@ -3032,13 +3032,7 @@ print(
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>x.shape: (3, 4)
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
+
 jax.lax.top_k(x, k=2, axis=1)[1].shape: (3, 2)
 </pre>
 </div>
@@ -3071,13 +3065,7 @@ jnp.argsort(x, axis=0).shape: (3, 4)
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>sj.argsort(x, axis=0).shape: (3, 4, 3)
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
+
 sj.argmedian(x, axis=1).shape: (3, 4)
 </pre>
 </div>
@@ -3187,7 +3175,13 @@ print("min_sj_soft:\n", sj.take_along_axis(x, indices_soft, axis=1))</div>
 <pre>x:
  [[0.41845711 0.21629545 0.96532146]
  [0.57450053 0.53222649 0.35490518]]
-min_jnp:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>min_jnp:
  [[0.21629545]
  [0.35490518]]
 </pre>
@@ -3305,25 +3299,25 @@ sj.max(x, mode='hard'): 0.9653214611189975
 <pre>sj.max(x): 0.9375883761565286
 
 jnp.median(x): 0.49647882272194555
+sj.median(x, mode='hard'): 0.49647882272194555
+sj.median(x): 0.4862129625709338
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>sj.median(x, mode='hard'): 0.49647882272194555
-sj.median(x): 0.4862129625709338
-
+<pre>
 jax.lax.top_k(x, k=2)[0]: [0.96532146 0.57450053]
 sj.top_k(x, k=2, mode='hard')[0]: [0.96532146 0.57450053]
+sj.top_k(x, k=2)[0]: [0.92707357 0.55003473]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>sj.top_k(x, k=2)[0]: [0.92707357 0.55003473]
-
+<pre>
 jnp.sort(x): [0.21629545 0.41845711 0.57450053 0.96532146]
 sj.sort(x, mode='hard'): [0.21629545 0.41845711 0.57450053 0.96532146]
 </pre>
@@ -3556,7 +3550,13 @@ print("Grad sj.norm at zeros:        ", jax.grad(lambda v: sj.norm(v))(z), " (fi
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>sj.arcsin:  [-1.57079633 -0.52359878  0.          0.52359878  1.57079633]
-Grad jnp.arcsin at x=1: inf  (inf!)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Grad jnp.arcsin at x=1: inf  (inf!)
 </pre>
 </div>
 </div>
@@ -3564,9 +3564,6 @@ Grad jnp.arcsin at x=1: inf  (inf!)
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Grad sj.arcsin  at x=1: 0.0  (finite)
-
-jnp.arccos: [3.14159265 2.0943951  1.57079633 1.04719755 0.        ]
-sj.arccos:  [3.14159265 2.0943951  1.57079633 1.04719755 0.        ]
 </pre>
 </div>
 </div>
@@ -3574,16 +3571,25 @@ sj.arccos:  [3.14159265 2.0943951  1.57079633 1.04719755 0.        ]
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>
+jnp.arccos: [3.14159265 2.0943951  1.57079633 1.04719755 0.        ]
+sj.arccos:  [3.14159265 2.0943951  1.57079633 1.04719755 0.        ]
+
 jnp.log: [       -inf -0.69314718  0.          0.69314718]
-sj.log:  [ 0.         -0.69314718  0.          0.69314718]
-Grad jnp.log at x=0: inf  (inf!)
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Grad sj.log  at x=0: 0.0  (finite)
+<pre>sj.log:  [ 0.         -0.69314718  0.          0.69314718]
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Grad jnp.log at x=0: inf  (inf!)
+Grad sj.log  at x=0: 0.0  (finite)
 
 1.0 / 0.0:     inf
 sj.div(1, 0):  0.0
@@ -3595,14 +3601,14 @@ sj.div(1, 0):  0.0
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>
 jnp.linalg.norm(zeros): 0.0
+sj.norm(zeros):         0.0
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>sj.norm(zeros):         0.0
-Grad jnp.linalg.norm at zeros: [nan nan nan]  (NaN!)
+<pre>Grad jnp.linalg.norm at zeros: [nan nan nan]  (NaN!)
 </pre>
 </div>
 </div>
