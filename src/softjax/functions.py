@@ -1656,8 +1656,10 @@ def top_k(
                 ot_kwargs=ot_kwargs,
             )  # (..., k, ..., [n])
             if not gated_grad:
-                soft_index = jax.lax.stop_gradient(soft_index)
-            values = take_along_axis(x, soft_index, axis=axis)  # (..., k, ...)
+                soft_index_tmp = jax.lax.stop_gradient(soft_index)
+            else:
+                soft_index_tmp = soft_index
+            values = take_along_axis(x, soft_index_tmp, axis=axis)  # (..., k, ...)
     return values, soft_index
 
 
