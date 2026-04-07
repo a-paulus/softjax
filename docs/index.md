@@ -115,7 +115,7 @@ Soft grad: -0.6600359275215457
 Learned threshold: 0.6211048323197621
 ```
 
-**Rule-based classifier:** Learn decision boundaries `[lo, hi]` for a rule using soft logic and straight-through estimation.
+**Rule-based classifier:** Learn decision boundaries `[lo, hi]` for a rule using soft logic and straight-through estimation. The rule is true if any element of a feature is inside `[lo, hi]`.
 ```python
 x = jnp.array([[0.2, 0.8], [0.5, 0.3], [0.9, 0.1], [0.4, 0.7],
                [0.1, 0.4], [0.2, 0.7], [0.4, 0.1], [0.4, 0.7],

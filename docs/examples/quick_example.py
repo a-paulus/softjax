@@ -92,6 +92,7 @@ print("Learned threshold:", t)
 
 # 4. Differentiable rule-based classifier
 # Learn decision boundaries: classify positive if ANY feature is in [lo, hi].
+# The rule is true if any element of a feature is inside `[lo, hi]`.
 x_rules = jnp.array([[0.2, 0.8], [0.5, 0.3], [0.9, 0.1], [0.4, 0.7],
                      [0.1, 0.4], [0.2, 0.7], [0.4, 0.1], [0.4, 0.7],
                      [0.7, 0.29], [0.3, 0.3], [0.61, 0.25], [0.4, 0.6],
