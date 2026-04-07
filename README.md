@@ -11,7 +11,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/softjax)](https://pypi.org/project/softjax/)
 [![Python version](https://img.shields.io/pypi/pyversions/softjax)](https://pypi.org/project/softjax/)
 [![License](https://img.shields.io/pypi/l/softjax)](https://github.com/a-paulus/softjax/blob/main/LICENSE)
-[![arXiv paper](https://arxiv.org/abs/2603.08824)](https://arxiv.org/abs/2603.08824)
+[![arXiv paper](https://img.shields.io/badge/arXiv-paper-salmon)](https://arxiv.org/abs/2603.08824)
 
 Looking for PyTorch? See [SoftTorch](https://github.com/a-paulus/softtorch).
 
@@ -129,16 +129,12 @@ Learned threshold: 0.6211048323197621
 ```
 
 **Rule-based classifier:**
-Learn decision boundaries `[lo, hi]` for a rule using soft logic and straight-through estimation.
+Learn decision boundaries `[lo, hi]` for a rule using soft logic and straight-through estimation. The rule is true if any element of a feature is inside `[lo, hi]`.
 ```python
-x = jnp.array([[0.2, 0.8], [0.5, 0.3], [0.9, 0.1], [0.4, 0.7],
-               [0.1, 0.4], [0.2, 0.7], [0.4, 0.1], [0.4, 0.7],
-               [0.7, 0.29], [0.3, 0.3], [0.61, 0.25], [0.4, 0.6],
-               [0.0, 0.1], [0.5, 0.3], [0.4, 0.9], [0.1, 0.57]])
-labels = jnp.array([0.0, 1.0, 0.0, 1.0,
-                    1.0, 0.0, 1.0, 1.0,
-                    0.0, 1.0, 0.0, 1.0,
-                    0.0, 1.0, 1.0, 1.0])
+x = jnp.array([[0.2, 0.8], [0.5, 0.3], [0.9, 0.1], [0.4, 0.7], [0.1, 0.4], [0.2, 0.7], [0.4, 0.1], [0.4, 0.7],
+               [0.7, 0.29], [0.3, 0.3], [0.61, 0.25], [0.4, 0.6], [0.0, 0.1], [0.5, 0.3], [0.4, 0.9], [0.1, 0.57]])
+labels = jnp.array([0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0,
+                    0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0])
 
 @sj.st
 def rule_loss(params, x, labels, mode="smooth"):
