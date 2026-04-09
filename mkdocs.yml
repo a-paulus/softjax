@@ -77,8 +77,6 @@ plugins:
         exclude:
             - "_overrides"
             - "_static/README.md"
-            - "examples/.ipynb_checkpoints"
-            - "examples/"
     - mkdocs-jupyter:
         include_requirejs: false
         custom_mathjax_url: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML-full,Safe"
@@ -125,7 +123,7 @@ nav:
     - All of Softjax: 'all-of-softjax.ipynb'
     - Examples:
         - 'plots.ipynb'
-        - 'manifold_points.ipynb'
+        - 'examples/manifold_points.ipynb'
     - API:
         - 'api/softjax_operators.md'
         - 'api/straight_through.md'
