@@ -3,9 +3,20 @@ import inspect
 from collections.abc import Callable
 
 import jax
+import jax.numpy as jnp
 from jax import tree_util as jtu
 
 import softjax as sj
+
+
+def _replace_value_keep_grad(forward, backward):
+    if forward is None or backward is None:
+        return forward
+    y = jax.lax.stop_gradient(forward - backward) + backward
+    if hasattr(y, "dtype") and jnp.issubdtype(y.dtype, jnp.inexact):
+        same_nonfinite = (forward == backward) & ~jnp.isfinite(forward)
+        y = jnp.where(jnp.isnan(y) & same_nonfinite, jax.lax.stop_gradient(forward), y)
+    return y
 
 
 def grad_replace(fn: Callable) -> Callable:
@@ -26,10 +37,7 @@ def grad_replace(fn: Callable) -> Callable:
         bw_y = fn(*args, **kwargs, forward=False)
         fw_leaves, fw_treedef = jtu.tree_flatten(fw_y, is_leaf=lambda x: x is None)
         bw_leaves, bw_treedef = jtu.tree_flatten(bw_y, is_leaf=lambda x: x is None)
-        out_leaves = [
-            f if f is None or b is None else jax.lax.stop_gradient(f - b) + b
-            for f, b in zip(fw_leaves, bw_leaves)
-        ]
+        out_leaves = [_replace_value_keep_grad(f, b) for f, b in zip(fw_leaves, bw_leaves)]
         return jtu.tree_unflatten(fw_treedef, out_leaves)
 
     return wrapped
@@ -67,10 +75,7 @@ def st(fn: Callable) -> Callable:
         bw_y = fn(*args, **kwargs, mode=mode)
         fw_leaves, fw_treedef = jtu.tree_flatten(fw_y, is_leaf=lambda x: x is None)
         bw_leaves, bw_treedef = jtu.tree_flatten(bw_y, is_leaf=lambda x: x is None)
-        out_leaves = [
-            f if f is None or b is None else jax.lax.stop_gradient(f - b) + b
-            for f, b in zip(fw_leaves, bw_leaves)
-        ]
+        out_leaves = [_replace_value_keep_grad(f, b) for f, b in zip(fw_leaves, bw_leaves)]
         return jtu.tree_unflatten(fw_treedef, out_leaves)
 
     return wrapped

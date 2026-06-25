@@ -22,6 +22,7 @@ def _proj_transport_polytope_entropic_sinkhorn(
     tol: float = 1e-6,
     max_iter: int = 1000,
     epsilon: float = 1.0,
+    return_log_probs: bool = False,
 ) -> jax.Array:
     # Upcast to float64 for numerical stability of implicit differentiation.
     orig_dtype = C.dtype
@@ -52,6 +53,9 @@ def _proj_transport_polytope_entropic_sinkhorn(
     )
 
     out = solver(prob)
+    if return_log_probs:
+        log_gamma = (out.f[:, None] + out.g[None, :] - C) / epsilon
+        return log_gamma.astype(orig_dtype)
     return out.matrix.astype(orig_dtype)
 
 
@@ -64,6 +68,7 @@ def _proj_transport_polytope_entropic_lbfgs(
     max_steps: int,
     gauge_fix: bool = True,
     implicit_diff: bool = True,
+    return_log_probs: bool = False,
 ):
     # Upcast to float64 to avoid dtype mismatch in optimistix L-BFGS
     # when jax_enable_x64=True (L-BFGS history becomes float64, causing scan dtype errors).
@@ -116,7 +121,10 @@ def _proj_transport_polytope_entropic_lbfgs(
         g = jnp.concatenate([jnp.zeros((1,), C.dtype), g_rest], axis=0)
     else:
         f, g = sol.value
-    Gamma = jnp.exp((f[:, None] + g[None, :] - C) / epsilon)
+    log_gamma = (f[:, None] + g[None, :] - C) / epsilon
+    if return_log_probs:
+        return log_gamma.astype(orig_dtype)
+    Gamma = jnp.exp(log_gamma)
     return Gamma.astype(orig_dtype)
 
 
@@ -204,6 +212,7 @@ def _proj_transport_polytope(
     lbfgs_tol: float = 1e-5,
     lbfgs_max_iter: int = 10000,
     implicit_diff: bool = True,
+    return_log_probs: bool = False,
 ) -> Array:  # (..., [n], m)
     """Projects a cost matrix onto the transport polytope between `mu` and `nu`.
 
@@ -229,6 +238,7 @@ def _proj_transport_polytope(
     - `lbfgs_tol`: Tolerance for convergence of the LBFGS solver.
     - `lbfgs_max_iter`: Maximum number of iterations for the LBFGS solver.
     - `implicit_diff`: If True (default), use implicit differentiation (ImplicitAdjoint) instead of recursive checkpointing for LBFGS backward pass. More numerically stable gradients, especially at low softness.
+    - `return_log_probs`: If True, returns log probabilities instead of probabilities. Exact zero probabilities are represented as `-inf`.
 
     !!! note "Numerical precision"
 
@@ -256,6 +266,7 @@ def _proj_transport_polytope(
                 max_iter=sinkhorn_max_iter,
                 tol=sinkhorn_tol,
                 epsilon=softness,
+                return_log_probs=return_log_probs,
             )
         else:
             proj_fn = lambda c: _proj_transport_polytope_entropic_lbfgs(
@@ -266,6 +277,7 @@ def _proj_transport_polytope(
                 tol=lbfgs_tol,
                 max_steps=lbfgs_max_iter,
                 implicit_diff=implicit_diff,
+                return_log_probs=return_log_probs,
             )
 
     else:
@@ -289,7 +301,14 @@ def _proj_transport_polytope(
             implicit_diff=implicit_diff,
         )
 
-    Gamma = jax.vmap(proj_fn, in_axes=(0,))(C)  # (B, n, m)
-
-    y = (Gamma * n).reshape(*batch_sizes, n, m)  # (..., [n], m)
+    results = jax.vmap(proj_fn, in_axes=(0,))(C)  # (B, n, m)
+    if return_log_probs:
+        log_n = jnp.log(jnp.asarray(n, dtype=results.dtype))
+        if mode == "smooth":
+            y = results + log_n
+        else:
+            y = jnp.log(results) + log_n
+    else:
+        y = results * n
+    y = y.reshape(*batch_sizes, n, m)  # (..., [n], m)
     return y

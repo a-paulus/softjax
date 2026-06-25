@@ -29,7 +29,80 @@ from softjax.utils import (
 
 
 SoftBool = Float[Array, "..."]  # probability in [0, 1]
-SoftIndex = Float[Array, "..."]  # probabilities summing to 1 along the last axis
+SoftIndex = Float[Array, "..."]  # probabilities, or log probabilities, along the last axis
+
+
+def _validate_log_prob_request(
+    return_log_probs: bool,
+    log_prob_eps: float | Array | None,
+) -> None:
+    if log_prob_eps is None:
+        return
+    if not return_log_probs:
+        raise ValueError("log_prob_eps can only be set when return_log_probs=True")
+    if isinstance(log_prob_eps, jax.core.Tracer):
+        return
+
+    eps = jnp.asarray(log_prob_eps)
+    if eps.shape != ():
+        raise ValueError(f"log_prob_eps must be scalar, got shape {eps.shape}")
+    eps_value = float(eps)
+    if eps_value <= 0 or eps_value > 1:
+        raise ValueError(f"log_prob_eps must be in (0, 1], got {log_prob_eps}")
+
+
+def _log_soft_index_from_probs(
+    soft_index: SoftIndex,
+    log_prob_eps: float | Array | None,
+) -> SoftIndex:
+    if log_prob_eps is not None:
+        eps = jnp.asarray(log_prob_eps, dtype=soft_index.dtype)
+        soft_index = jnp.clip(soft_index, eps, 1.0)
+        soft_index = soft_index / jnp.sum(soft_index, axis=-1, keepdims=True)
+    return jnp.log(soft_index)
+
+
+def _renormalize_log_soft_index(
+    soft_index: SoftIndex,
+    log_prob_eps: float | Array | None,
+) -> SoftIndex:
+    if log_prob_eps is None:
+        return soft_index
+    log_eps = jnp.log(jnp.asarray(log_prob_eps, dtype=soft_index.dtype))
+    soft_index = jnp.maximum(soft_index, log_eps)
+    return soft_index - jax.nn.logsumexp(soft_index, axis=-1, keepdims=True)
+
+
+def _maybe_log_soft_index(
+    soft_index: SoftIndex | None,
+    return_log_probs: bool,
+    already_log: bool = False,
+    log_prob_eps: float | Array | None = None,
+) -> SoftIndex | None:
+    if soft_index is None:
+        return None
+    if return_log_probs:
+        if already_log:
+            return _renormalize_log_soft_index(soft_index, log_prob_eps)
+        return _log_soft_index_from_probs(soft_index, log_prob_eps)
+    return soft_index
+
+
+def _soft_index_probs(soft_index: SoftIndex, is_log: bool) -> SoftIndex:
+    if is_log:
+        return jnp.exp(soft_index)
+    return soft_index
+
+
+def _logaddexp_weighted(
+    x_log: SoftIndex,
+    y_log: SoftIndex,
+    y_weight: Array,
+) -> SoftIndex:
+    return jnp.logaddexp(
+        jnp.log1p(-y_weight) + x_log,
+        jnp.log(y_weight) + y_log,
+    )
 
 
 def _neuralsort_A_sum(x_last, mode, softness):
@@ -480,6 +553,8 @@ def argmax(
     method: Literal["ot", "softsort", "neuralsort", "sorting_network"] = "softsort",
     standardize: bool = True,
     ot_kwargs: dict | None = None,
+    return_log_probs: bool = False,
+    log_prob_eps: float | Array | None = None,
 ) -> SoftIndex:  # (..., {1}, ..., [n])
     """Performs a soft version of [jax.numpy.argmax](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.argmax.html) of `x` along the specified axis.
 
@@ -501,10 +576,16 @@ def argmax(
         - `neuralsort`: Computes the max element of the "NeuralSort" operator from [Stochastic Optimization of Sorting Networks via Continuous Relaxations](https://arxiv.org/abs/1903.08850).
     - `standardize`: If True, standardizes and squashes the input `x` along the specified axis before applying the softargmax operation. This can improve numerical stability and performance, especially when the values in `x` vary widely in scale.
     - `ot_kwargs`: Additional optional keyword arguments to pass to the OT projection operator, e.g., to control the number of max iterations or tolerance.
+    - `return_log_probs`: If True, returns log probabilities instead of probabilities. Exact zero probabilities are represented as `-inf`.
+    - `log_prob_eps`: Optional probability floor used only with `return_log_probs=True`. When set, probabilities are floored before taking `log` and renormalized along the soft-index axis.
 
     **Returns:**
 
-    A SoftIndex of shape (..., {1}, ..., [n]) (positive Array which sums to 1 over the last dimension). Represents the probability of an index corresponding to the argmax along the specified axis.
+    A SoftIndex of shape (..., {1}, ..., [n]) representing the distribution over indices corresponding to the argmax along the specified axis.
+    By default this contains probabilities that sum to 1 over the last dimension; if `return_log_probs=True`, it contains log probabilities instead.
+
+    !!! warning "Log probabilities and sparse modes"
+        For differentiable objectives over exact log probabilities, prefer `mode="smooth"`. Sparse modes (`"c0"`, `"c1"`, `"c2"`) can produce exact zero probabilities, whose exact log is `-inf`; replacing `-inf` after the log does not generally make gradients finite. For bounded sparse-mode logs, set `log_prob_eps` with `return_log_probs=True` to floor before `log` and renormalize along the soft-index axis.
 
     !!! tip "Usage"
         This function can be used as a differentiable relaxation to [jax.numpy.argmax](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.argmax.html), enabling backpropagation through index selection steps in neural networks or optimization routines. However, note that the output is not a discrete index but a `SoftIndex`, which is a distribution over indices. Therefore, functions which operate on indices have to be adjusted accordingly to accept a SoftIndex, see e.g. [`softjax.max`][] for an example of using [`softjax.take_along_axis`][] to retrieve the soft maximum value via the `SoftIndex`.
@@ -512,11 +593,14 @@ def argmax(
     !!! caveat "Difference to jax.nn.softmax"
         Note that [`softjax.argmax`][] in `smooth` mode is not fully equivalent to [jax.nn.softmax](https://docs.jax.dev/en/latest/_autosummary/jax.nn.softmax.html) because it moves the probability dimension into the last axis (this is a convention in the `SoftIndex` data type).
     """
+    _validate_log_prob_request(return_log_probs, log_prob_eps)
+    project_return_log = return_log_probs and log_prob_eps is None
 
     if mode == "hard" or mode == "_hard":
         indices = jnp.argmax(x, axis=axis, keepdims=keepdims)
         num_classes = jnp.size(x, axis=axis)
         soft_index = jax.nn.one_hot(indices, num_classes=num_classes, axis=-1)
+        soft_index_is_log = False
     else:
         x = _ensure_float(x)
         if axis is None:
@@ -533,14 +617,24 @@ def argmax(
         *batch_dims, n = x_last.shape
         if method == "softsort":
             soft_index = _proj_simplex(
-                x_last, axis=-1, softness=softness, mode=mode
+                x_last,
+                axis=-1,
+                softness=softness,
+                mode=mode,
+                return_log_probs=project_return_log,
             )  # (..., ..., [n])
+            soft_index_is_log = project_return_log
         elif method == "neuralsort":
             A_sum = _neuralsort_A_sum(x_last=x_last, mode=mode, softness=softness)  # (..., n)
             z = (n - 1) * x_last - A_sum  # (..., ..., n)
             soft_index = _proj_simplex(
-                z, axis=-1, softness=softness, mode=mode
+                z,
+                axis=-1,
+                softness=softness,
+                mode=mode,
+                return_log_probs=project_return_log,
             )  # (..., ..., [n])
+            soft_index_is_log = project_return_log
         elif method == "ot":
             anchors = jnp.array([0.0, 1.0], dtype=x.dtype)  # (2,)
             anchors = jnp.broadcast_to(anchors, (*batch_dims, 2))  # (..., ..., 2)
@@ -560,14 +654,17 @@ def argmax(
                 nu=nu,
                 softness=softness,
                 mode=mode,
+                return_log_probs=project_return_log,
                 **ot_kwargs,
             )  # (..., ..., [n], 2)
             soft_index = out[..., :, 1]  # (..., ..., [n])
+            soft_index_is_log = project_return_log
         elif method == "sorting_network":
             P = _argsort_via_sorting_network(
                 x_last, softness, mode, descending=True, standardized=standardize
             )  # (..., ..., n, [n])
             soft_index = P[..., 0, :]  # (..., ..., [n])
+            soft_index_is_log = False
         else:
             raise ValueError(f"Invalid method: {method}")
 
@@ -580,7 +677,12 @@ def argmax(
                 soft_index = jnp.expand_dims(
                     soft_index, axis=_axis
                 )  # (..., 1, ..., [n])
-    return soft_index
+    return _maybe_log_soft_index(
+        soft_index,
+        return_log_probs,
+        already_log=soft_index_is_log,
+        log_prob_eps=log_prob_eps,
+    )
 
 
 def max(
@@ -664,6 +766,8 @@ def argmin(
     method: Literal["ot", "softsort", "neuralsort", "sorting_network"] = "softsort",
     standardize: bool = True,
     ot_kwargs: dict | None = None,
+    return_log_probs: bool = False,
+    log_prob_eps: float | Array | None = None,
 ) -> SoftIndex:  # (..., {1}, ..., [n])
     """Performs a soft version of [jax.numpy.argmin](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.argmin.html) of `x` along the specified axis.
     Implemented as [`softjax.argmax`][] on `-x`, see respective documentation for details.
@@ -677,6 +781,8 @@ def argmin(
         keepdims=keepdims,
         standardize=standardize,
         ot_kwargs=ot_kwargs,
+        return_log_probs=return_log_probs,
+        log_prob_eps=log_prob_eps,
     )
 
 
@@ -722,6 +828,8 @@ def argsort(
     method: Literal["ot", "softsort", "neuralsort", "sorting_network"] = "neuralsort",
     standardize: bool = True,
     ot_kwargs: dict | None = None,
+    return_log_probs: bool = False,
+    log_prob_eps: float | Array | None = None,
 ) -> SoftIndex:  # (..., n, ..., [n])
     """Performs a soft version of [jax.numpy.argsort](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.argsort.html) of `x` along the specified axis.
 
@@ -749,11 +857,17 @@ def argsort(
         - `neuralsort`: Computes the "NeuralSort" operator from [Stochastic Optimization of Sorting Networks via Continuous Relaxations](https://arxiv.org/abs/1903.08850).
     - `standardize`: If True, standardizes and squashes the input `x` along the specified axis before applying the softargsort operation. This can improve numerical stability and performance, especially when the values in `x` vary widely in scale.
     - `ot_kwargs`: Additional optional keyword arguments to pass to the OT projection operator, e.g., to control the number of max iterations or tolerance.
+    - `return_log_probs`: If True, returns log probabilities instead of probabilities. Exact zero probabilities are represented as `-inf`.
+    - `log_prob_eps`: Optional probability floor used only with `return_log_probs=True`. When set, probabilities are floored before taking `log` and renormalized along the soft-index axis.
 
     **Returns:**
 
-    A SoftIndex of shape (..., n, ..., [n]) (positive Array which sums to 1 over the last dimension).
+    A SoftIndex of shape (..., n, ..., [n]).
+    By default this contains probabilities that sum to 1 over the last dimension; if `return_log_probs=True`, it contains log probabilities instead.
     The elements in (..., i, ..., [n]) represent a distribution over values in x for the ith smallest element along the specified axis.
+
+    !!! warning "Log probabilities and sparse modes"
+        For differentiable objectives over exact log probabilities, prefer `mode="smooth"`. Sparse modes (`"c0"`, `"c1"`, `"c2"`) can produce exact zero probabilities, whose exact log is `-inf`; replacing `-inf` after the log does not generally make gradients finite. For bounded sparse-mode logs, set `log_prob_eps` with `return_log_probs=True` to floor before `log` and renormalize along the soft-index axis.
 
     !!! tip "Computing the expectation"
         Computing the soft sorted values means taking the expectation of `x` under the SoftIndex distribution. Similar to how with normal indices you would do
@@ -766,12 +880,16 @@ def argsort(
             ```
         This is what is done in [`softjax.sort`][].
     """
+    _validate_log_prob_request(return_log_probs, log_prob_eps)
+    project_return_log = return_log_probs and log_prob_eps is None
+
     if mode == "hard" or mode == "_hard":
         indices = jnp.argsort(x, axis=axis, descending=descending)  # (..., n, ...)
         num_classes = jnp.size(x, axis=axis)
         soft_index = jax.nn.one_hot(
             indices, num_classes=num_classes, axis=-1
         )  # (..., n, ..., [n])
+        soft_index_is_log = False
     else:
         x = _ensure_float(x)
         if axis is None:
@@ -789,7 +907,14 @@ def argsort(
         if method == "softsort":
             anchors = jnp.sort(x_last, axis=-1, descending=descending)  # (..., ..., n)
             diff = jnp.abs(anchors[..., :, None] - x_last[..., None, :])  # (..., n, n)
-            soft_index = _proj_simplex(-diff, axis=-1, softness=softness, mode=mode)  # (..., n, [n])
+            soft_index = _proj_simplex(
+                -diff,
+                axis=-1,
+                softness=softness,
+                mode=mode,
+                return_log_probs=project_return_log,
+            )  # (..., n, [n])
+            soft_index_is_log = project_return_log
         elif method == "neuralsort":
             A_sum = _neuralsort_A_sum(x_last=x_last, mode=mode, softness=softness)  # (..., n)
             i = jnp.arange(1, n + 1)  # (n,)
@@ -798,7 +923,14 @@ def argsort(
             coef = n + 1 - 2 * i  # (n,)
             coef = jnp.broadcast_to(coef, (*batch_dims, n))  # (..., n)
             z = -(coef[..., :, None] * x_last[..., None, :] + A_sum[..., None, :])  # (..., n, n)
-            soft_index = _proj_simplex(z, axis=-1, softness=softness, mode=mode)  # (..., n, [n])
+            soft_index = _proj_simplex(
+                z,
+                axis=-1,
+                softness=softness,
+                mode=mode,
+                return_log_probs=project_return_log,
+            )  # (..., n, [n])
+            soft_index_is_log = project_return_log
         elif method == "ot":
             anchors = jnp.linspace(0, n, n, dtype=x.dtype) / n  # (n,)
             if descending:
@@ -820,18 +952,26 @@ def argsort(
                 nu=nu,
                 softness=softness,
                 mode=mode,
+                return_log_probs=project_return_log,
                 **ot_kwargs,
             )  # (..., ..., [n], n)
             soft_index = jnp.swapaxes(out, -2, -1)  # (..., ..., n, [n])
+            soft_index_is_log = project_return_log
         elif method == "sorting_network":
             soft_index = _argsort_via_sorting_network(
                 x_last, softness, mode, descending, standardized=standardize
             )  # (..., ..., n, [n])
+            soft_index_is_log = False
         else:
             raise ValueError(f"Invalid method: {method}")
 
         soft_index = jnp.moveaxis(soft_index, -2, axis)  # (..., n, ..., [n])
-    return soft_index
+    return _maybe_log_soft_index(
+        soft_index,
+        return_log_probs,
+        already_log=soft_index_is_log,
+        log_prob_eps=log_prob_eps,
+    )
 
 
 def sort(
@@ -976,6 +1116,8 @@ def argquantile(
     ] = "linear",
     standardize: bool = True,
     ot_kwargs: dict | None = None,
+    return_log_probs: bool = False,
+    log_prob_eps: float | Array | None = None,
 ) -> SoftIndex:  # (..., {1}, ..., [n])
     """Performs a soft version of [jax.numpy.quantile](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.quantile.html) of `x` along the specified axis.
 
@@ -1005,11 +1147,20 @@ def argquantile(
     - `quantile_method`: Method to compute the quantile, following the options in [jax.numpy.quantile](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.quantile.html).
     - `standardize`: If True, standardizes and squashes the input `x` along the specified axis before applying the softargquantile operation. This can improve numerical stability and performance, especially when the values in `x` vary widely in scale.
     - `ot_kwargs`: Additional optional keyword arguments to pass to the OT projection operator, e.g., to control the number of max iterations or tolerance.
+    - `return_log_probs`: If True, returns log probabilities instead of probabilities. Exact zero probabilities are represented as `-inf`.
+    - `log_prob_eps`: Optional probability floor used only with `return_log_probs=True`. When set, probabilities are floored before taking `log` and renormalized along the soft-index axis.
 
     **Returns:**
 
-    A SoftIndex of shape (..., {1}, ..., [n]) for scalar q, or (k, ..., {1}, ..., [n]) for vector q of length k (q dimension prepended). Positive Array which sums to 1 over the last dimension. It represents a distribution over values in x being the q-quantile along the specified axis.
+    A SoftIndex of shape (..., {1}, ..., [n]) for scalar q, or (k, ..., {1}, ..., [n]) for vector q of length k (q dimension prepended). It represents a distribution over values in x being the q-quantile along the specified axis.
+    By default this contains probabilities that sum to 1 over the last dimension; if `return_log_probs=True`, it contains log probabilities instead.
+
+    !!! warning "Log probabilities and sparse modes"
+        For differentiable objectives over exact log probabilities, prefer `mode="smooth"`. Sparse modes (`"c0"`, `"c1"`, `"c2"`) can produce exact zero probabilities, whose exact log is `-inf`; replacing `-inf` after the log does not generally make gradients finite. For bounded sparse-mode logs, set `log_prob_eps` with `return_log_probs=True` to floor before `log` and renormalize along the soft-index axis.
     """
+    _validate_log_prob_request(return_log_probs, log_prob_eps)
+    project_return_log = return_log_probs and log_prob_eps is None
+
     q_arr = jnp.asarray(q)
     if q_arr.ndim > 1:
         raise ValueError(
@@ -1029,6 +1180,8 @@ def argquantile(
                 quantile_method=quantile_method,
                 standardize=standardize,
                 ot_kwargs=ot_kwargs,
+                return_log_probs=return_log_probs,
+                log_prob_eps=log_prob_eps,
             )
 
         return jax.vmap(_single)(q_arr)
@@ -1053,6 +1206,7 @@ def argquantile(
     k, a, take_next = _quantile_interpolation_params(q, n, quantile_method)
     a_b = jnp.expand_dims(a, axis=-1)  # (..., ..., 1)
     kp1 = jnp.minimum(k + 1, n - 1)
+    soft_index_is_log = False
 
     if mode == "hard" or mode == "_hard":
         indices = jnp.argsort(x_last, axis=-1, descending=False)  # (..., ..., n)
@@ -1082,19 +1236,32 @@ def argquantile(
                     anchors[..., :, None] - x_last[..., None, :]
                 )  # (..., ..., 2, n)
                 proj = _proj_simplex(
-                    -abs_diff, axis=-1, softness=softness, mode=mode
+                    -abs_diff,
+                    axis=-1,
+                    softness=softness,
+                    mode=mode,
+                    return_log_probs=project_return_log,
                 )  # (..., ..., 2, [n])
                 idx_k = proj[..., 0, :]  # (..., ..., [n])
                 idx_kp1 = proj[..., 1, :]  # (..., ..., [n])
-                soft_index = (1.0 - a_b) * idx_k + a_b * idx_kp1  # (..., ..., [n])
+                if project_return_log:
+                    soft_index = _logaddexp_weighted(idx_k, idx_kp1, a_b)
+                    soft_index_is_log = True
+                else:
+                    soft_index = (1.0 - a_b) * idx_k + a_b * idx_kp1  # (..., ..., [n])
             else:
                 anchors = x_sorted[..., k, None]  # (..., ..., 1)
                 abs_diff = jnp.abs(
                     anchors[..., :, None] - x_last[..., None, :]
                 )  # (..., ..., 1, n)
                 soft_index = _proj_simplex(
-                    -abs_diff, axis=-1, softness=softness, mode=mode
+                    -abs_diff,
+                    axis=-1,
+                    softness=softness,
+                    mode=mode,
+                    return_log_probs=project_return_log,
                 )[..., 0, :]  # (..., ..., [n])
+                soft_index_is_log = project_return_log
         elif method == "neuralsort":
             A_sum = _neuralsort_A_sum(x_last=x_last, mode=mode, softness=softness)  # (..., n)
             if take_next:
@@ -1105,20 +1272,33 @@ def argquantile(
                     coef[..., :, None] * x_last[..., None, :] + A_sum[..., None, :]
                 )  # (..., 2, n)
                 proj = _proj_simplex(
-                    z, axis=-1, softness=softness, mode=mode
+                    z,
+                    axis=-1,
+                    softness=softness,
+                    mode=mode,
+                    return_log_probs=project_return_log,
                 )  # (..., ..., 2, [n])
                 idx_k = proj[..., 0, :]  # (..., ..., [n])
                 idx_k1 = proj[..., 1, :]  # (..., ..., [n])
-                soft_index = (1.0 - a_b) * idx_k + a_b * idx_k1  # (..., ..., [n])
+                if project_return_log:
+                    soft_index = _logaddexp_weighted(idx_k, idx_k1, a_b)
+                    soft_index_is_log = True
+                else:
+                    soft_index = (1.0 - a_b) * idx_k + a_b * idx_k1  # (..., ..., [n])
             else:
                 coef = jnp.array([n + 1 - 2 * (k + 1)])  # (1,)
                 coef = jnp.broadcast_to(coef, (*batch_dims, 1))  # (..., 1)
                 z = -(
                     coef[..., :, None] * x_last[..., None, :] + A_sum[..., None, :]
                 )  # (..., 1, n)
-                soft_index = _proj_simplex(z, axis=-1, softness=softness, mode=mode)[
-                    ..., 0, :
-                ]  # (..., ..., [n])
+                soft_index = _proj_simplex(
+                    z,
+                    axis=-1,
+                    softness=softness,
+                    mode=mode,
+                    return_log_probs=project_return_log,
+                )[..., 0, :]  # (..., ..., [n])
+                soft_index_is_log = project_return_log
         elif method == "ot":
             if take_next:
                 mu = jnp.ones((n,), dtype=x.dtype) / n  # ([n],)
@@ -1141,13 +1321,18 @@ def argquantile(
                     nu=nu,
                     softness=softness,
                     mode=mode,
+                    return_log_probs=project_return_log,
                     **ot_kwargs,
                 )  # (..., ..., [n], 4)
 
                 soft_index = jnp.swapaxes(out, -2, -1)  # (..., ..., 4, [n])
                 idx_k = soft_index[..., 1, :]  # (...,  ..., [n])
                 idx_k1 = soft_index[..., 2, :]  # (..., ..., [n])
-                soft_index = (1.0 - a_b) * idx_k + a_b * idx_k1  # (..., ..., [n])
+                if project_return_log:
+                    soft_index = _logaddexp_weighted(idx_k, idx_k1, a_b)
+                    soft_index_is_log = True
+                else:
+                    soft_index = (1.0 - a_b) * idx_k + a_b * idx_k1  # (..., ..., [n])
             else:
                 mu = jnp.ones((n,), dtype=x.dtype) / n  # ([n],)
                 nu = jnp.array([k / n, 1 / n, (n - k - 1) / n], dtype=x.dtype)  # (3,)
@@ -1167,12 +1352,14 @@ def argquantile(
                     nu=nu,
                     softness=softness,
                     mode=mode,
+                    return_log_probs=project_return_log,
                     **ot_kwargs,
                 )  # (..., ..., [n], 3)
 
                 soft_index = jnp.swapaxes(out, -2, -1)  # (..., ..., 3, [n])
                 idx_k = soft_index[..., 1, :]  # (...,  ..., [n])
                 soft_index = idx_k  # (..., ..., [n]))
+                soft_index_is_log = project_return_log
         elif method == "sorting_network":
             P = _argsort_via_sorting_network(
                 x_last, softness, mode, descending=False, standardized=standardize
@@ -1190,7 +1377,12 @@ def argquantile(
         else:
             soft_index = jnp.expand_dims(soft_index, axis=axis)  # (..., {1}, ..., [n])
 
-    return soft_index
+    return _maybe_log_soft_index(
+        soft_index,
+        return_log_probs,
+        already_log=soft_index_is_log,
+        log_prob_eps=log_prob_eps,
+    )
 
 
 def quantile(
@@ -1315,6 +1507,8 @@ def argmedian(
     method: Literal["ot", "softsort", "neuralsort", "sorting_network"] = "neuralsort",
     standardize: bool = True,
     ot_kwargs: dict | None = None,
+    return_log_probs: bool = False,
+    log_prob_eps: float | Array | None = None,
 ) -> SoftIndex:  # (..., {1}, ..., [n])
     """Computes the soft argmedian of `x` along the specified axis.
     Implemented as [`softjax.argquantile`][] with q=0.5, see respective documentation for details.
@@ -1330,6 +1524,8 @@ def argmedian(
         quantile_method="midpoint",  # same as jnp.median
         standardize=standardize,
         ot_kwargs=ot_kwargs,
+        return_log_probs=return_log_probs,
+        log_prob_eps=log_prob_eps,
     )
 
 
@@ -1377,6 +1573,8 @@ def argpercentile(
     ] = "linear",
     standardize: bool = True,
     ot_kwargs: dict | None = None,
+    return_log_probs: bool = False,
+    log_prob_eps: float | Array | None = None,
 ) -> SoftIndex:  # (..., {1}, ..., [n])
     """Computes the soft p-argpercentile of `x` along the specified axis.
     Implemented as [`softjax.argquantile`][] with q=p/100, see respective documentation for details.
@@ -1393,6 +1591,8 @@ def argpercentile(
         quantile_method=quantile_method,
         standardize=standardize,
         ot_kwargs=ot_kwargs,
+        return_log_probs=return_log_probs,
+        log_prob_eps=log_prob_eps,
     )
 
 
@@ -1441,6 +1641,8 @@ def _argtop_k(
     method: Literal["ot", "softsort", "neuralsort", "sorting_network"] = "neuralsort",
     standardize: bool = True,
     ot_kwargs: dict | None = None,
+    return_log_probs: bool = False,
+    log_prob_eps: float | Array | None = None,
 ) -> SoftIndex:  # (..., k, ..., [n])
     """Performs a soft version of argtop_k of `x` along the specified axis.
 
@@ -1468,11 +1670,20 @@ def _argtop_k(
         - `neuralsort`: Computes the top-k elements of the "NeuralSort" operator from [Stochastic Optimization of Sorting Networks via Continuous Relaxations](https://arxiv.org/abs/1903.08850).
     - `standardize`: If True, standardizes and squashes the input `x` along the specified axis before applying the softtop_k operation. This can improve numerical stability and performance, especially when the values in `x` vary widely in scale.
     - `ot_kwargs`: Additional optional keyword arguments to pass to the OT projection operator, e.g., to control the number of max iterations or tolerance.
+    - `return_log_probs`: If True, returns log probabilities instead of probabilities. Exact zero probabilities are represented as `-inf`.
+    - `log_prob_eps`: Optional probability floor used only with `return_log_probs=True`. When set, probabilities are floored before taking `log` and renormalized along the soft-index axis.
 
     **Returns:**
 
-    SoftIndex of shape (..., k, ..., [n]) (positive Array which sums to 1 over the last dimension). Represents the soft indices of the top-k values.
+    SoftIndex of shape (..., k, ..., [n]) representing the soft indices of the top-k values.
+    By default this contains probabilities that sum to 1 over the last dimension; if `return_log_probs=True`, it contains log probabilities instead.
+
+    !!! warning "Log probabilities and sparse modes"
+        For differentiable objectives over exact log probabilities, prefer `mode="smooth"`. Sparse modes (`"c0"`, `"c1"`, `"c2"`) can produce exact zero probabilities, whose exact log is `-inf`; replacing `-inf` after the log does not generally make gradients finite. For bounded sparse-mode logs, set `log_prob_eps` with `return_log_probs=True` to floor before `log` and renormalize along the soft-index axis.
     """
+    _validate_log_prob_request(return_log_probs, log_prob_eps)
+    project_return_log = return_log_probs and log_prob_eps is None
+
     if k <= 0:
         raise ValueError(f"k must be positive, got k={k}")
     n = x.shape[_canonicalize_axis(axis, x.ndim)]
@@ -1487,6 +1698,7 @@ def _argtop_k(
         soft_index = jax.nn.one_hot(
             indices, num_classes=num_classes, axis=-1
         )  # (..., ..., k, [n])
+        soft_index_is_log = False
     else:
         x = _ensure_float(x)
         axis = _canonicalize_axis(axis, x.ndim)
@@ -1497,7 +1709,14 @@ def _argtop_k(
         if method == "softsort":
             anchors, _ = jax.lax.top_k(x_last, k=k)  # (..., ..., k)
             diff = jnp.abs(anchors[..., :, None] - x_last[..., None, :])  # (..., k, n)
-            soft_index = _proj_simplex(-diff, axis=-1, softness=softness, mode=mode)  # (..., k, [n])
+            soft_index = _proj_simplex(
+                -diff,
+                axis=-1,
+                softness=softness,
+                mode=mode,
+                return_log_probs=project_return_log,
+            )  # (..., k, [n])
+            soft_index_is_log = project_return_log
         elif method == "neuralsort":
             A_sum = _neuralsort_A_sum(x_last=x_last, mode=mode, softness=softness)  # (..., n)
 
@@ -1508,7 +1727,14 @@ def _argtop_k(
             coef = jnp.broadcast_to(coef, (*batch_dims, k))  # (..., ..., k)
 
             z = -(coef[..., :, None] * x_last[..., None, :] + A_sum[..., None, :])  # (..., k, n)
-            soft_index = _proj_simplex(z, axis=-1, softness=softness, mode=mode)  # (..., k, [n])
+            soft_index = _proj_simplex(
+                z,
+                axis=-1,
+                softness=softness,
+                mode=mode,
+                return_log_probs=project_return_log,
+            )  # (..., k, [n])
+            soft_index_is_log = project_return_log
         elif method == "ot":
             if k == n:
                 soft_index = argsort(
@@ -1520,7 +1746,9 @@ def _argtop_k(
                     method=method,
                     standardize=False,
                     ot_kwargs=ot_kwargs,
+                    return_log_probs=project_return_log,
                 )  # (..., ..., k, [n])
+                soft_index_is_log = project_return_log
             else:
                 anchors = jnp.linspace(0, k, k + 1, dtype=x.dtype) / k  # (k+1,)
                 anchors = anchors[::-1]  # (k+1,)
@@ -1540,20 +1768,33 @@ def _argtop_k(
                 if ot_kwargs is None:
                     ot_kwargs = {}
                 out = _proj_transport_polytope(
-                    cost=cost, mu=mu, nu=nu, softness=softness, mode=mode, **ot_kwargs
+                    cost=cost,
+                    mu=mu,
+                    nu=nu,
+                    softness=softness,
+                    mode=mode,
+                    return_log_probs=project_return_log,
+                    **ot_kwargs,
                 )  # (..., ..., [n], k+1)
                 soft_index = jnp.swapaxes(out, -2, -1)  # (..., ..., k+1, [n])
                 soft_index = soft_index[..., :k, :]  # (..., ..., k, [n])
+                soft_index_is_log = project_return_log
         elif method == "sorting_network":
             P = _argsort_via_sorting_network(
                 x_last, softness, mode, descending=True, standardized=standardize
             )  # (..., ..., n, [n])
             soft_index = P[..., :k, :]  # (..., ..., k, [n])
+            soft_index_is_log = False
         else:
             raise ValueError(f"Invalid method: {method}")
 
         soft_index = jnp.moveaxis(soft_index, -2, axis)  # (..., k, ..., [n])
-    return soft_index
+    return _maybe_log_soft_index(
+        soft_index,
+        return_log_probs,
+        already_log=soft_index_is_log,
+        log_prob_eps=log_prob_eps,
+    )
 
 
 def top_k(
@@ -1568,6 +1809,8 @@ def top_k(
     standardize: bool = True,
     ot_kwargs: dict | None = None,
     gated_grad: bool = True,
+    return_log_probs: bool = False,
+    log_prob_eps: float | Array | None = None,
 ) -> tuple[Array, SoftIndex | None]:  # (..., k, ...), (..., k, ..., [n])
     """Performs a soft version of [jax.lax.top_k](https://docs.jax.dev/en/latest/_autosummary/jax.lax.top_k.html) of `x` along the specified axis.
 
@@ -1600,12 +1843,19 @@ def top_k(
     - `standardize`: If True, standardizes and squashes the input `x` along the specified axis before applying the softtop_k operation. This can improve numerical stability and performance, especially when the values in `x` vary widely in scale.
     - `ot_kwargs`: Additional optional keyword arguments to pass to the OT projection operator, e.g., to control the number of max iterations or tolerance.
     - `gated_grad`: If `False`, stops the gradient flow through the soft index. True gives gated 'SiLU-style' gradients, while False gives integrated 'Softplus-style' gradients.
+    - `return_log_probs`: If True, returns `soft_index` as log probabilities instead of probabilities. `soft_values` are unchanged.
+    - `log_prob_eps`: Optional probability floor used only with `return_log_probs=True`. When set, probabilities are floored before taking `log` and renormalized along the soft-index axis.
 
     **Returns:**
 
     - `soft_values`: Top-k values of `x`, shape (..., k, ...).
-    - `soft_index`: SoftIndex of shape (..., k, ..., [n]) (positive Array which sums to 1 over the last dimension). Represents the soft indices of the top-k values.
+    - `soft_index`: SoftIndex of shape (..., k, ..., [n]) representing the soft indices of the top-k values. By default this contains probabilities that sum to 1 over the last dimension; if `return_log_probs=True`, it contains log probabilities instead.
+
+    !!! warning "Log probabilities and sparse modes"
+        For differentiable objectives over exact log probabilities, prefer `mode="smooth"`. Sparse modes (`"c0"`, `"c1"`, `"c2"`) can produce exact zero probabilities, whose exact log is `-inf`; replacing `-inf` after the log does not generally make gradients finite. For bounded sparse-mode logs, set `log_prob_eps` with `return_log_probs=True` to floor before `log` and renormalize along the soft-index axis.
     """
+    _validate_log_prob_request(return_log_probs, log_prob_eps)
+
     if k <= 0:
         raise ValueError(f"k must be positive, got k={k}")
     _axis = _canonicalize_axis(axis if axis is not None else -1, x.ndim)
@@ -1626,6 +1876,9 @@ def top_k(
         soft_index = jax.nn.one_hot(
             indices, num_classes=num_classes, axis=-1
         )  # (..., k, ..., [n])
+        soft_index = _maybe_log_soft_index(
+            soft_index, return_log_probs, log_prob_eps=log_prob_eps
+        )
     else:
         if axis is None:
             x = jnp.ravel(x)
@@ -1645,6 +1898,9 @@ def top_k(
             values = jnp.take(soft_sorted, jnp.arange(k), axis=axis)  # (..., k, ...)
             soft_index = None
         else:
+            soft_index_is_log = (
+                return_log_probs and log_prob_eps is None and mode == "smooth"
+            )
             soft_index = _argtop_k(
                 x=x,
                 k=k,
@@ -1654,12 +1910,21 @@ def top_k(
                 method=method,
                 standardize=standardize,
                 ot_kwargs=ot_kwargs,
+                return_log_probs=soft_index_is_log,
             )  # (..., k, ..., [n])
             if not gated_grad:
                 soft_index_tmp = jax.lax.stop_gradient(soft_index)
             else:
                 soft_index_tmp = soft_index
-            values = take_along_axis(x, soft_index_tmp, axis=axis)  # (..., k, ...)
+            values = take_along_axis(
+                x, _soft_index_probs(soft_index_tmp, soft_index_is_log), axis=axis
+            )  # (..., k, ...)
+            soft_index = _maybe_log_soft_index(
+                soft_index,
+                return_log_probs,
+                already_log=soft_index_is_log,
+                log_prob_eps=log_prob_eps,
+            )
     return values, soft_index
 
 
