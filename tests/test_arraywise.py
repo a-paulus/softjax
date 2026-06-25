@@ -1204,6 +1204,523 @@ def test_single_element_quantile():
 
 
 # ---------------------------------------------------------------------------
+# return_log_probs parameter for SoftIndex outputs
+# ---------------------------------------------------------------------------
+
+
+def _assert_log_probs_match_probs(log_probs, probs, msg, tol=1e-6):
+    assert not jnp.any(jnp.isnan(log_probs)), f"NaN in {msg}"
+    common.assert_allclose(jnp.exp(log_probs), probs, tol=tol)
+
+
+def _manual_log_prob_eps(probs, eps):
+    probs = jnp.clip(probs, eps, 1.0)
+    probs = probs / jnp.sum(probs, axis=-1, keepdims=True)
+    return jnp.log(probs)
+
+
+_LOG_PROB_INDEX_CASES = [
+    (
+        "argmax",
+        lambda x, method, mode, **kwargs: sj.argmax(
+            x, axis=-1, method=method, mode=mode, **kwargs
+        ),
+    ),
+    (
+        "argmin",
+        lambda x, method, mode, **kwargs: sj.argmin(
+            x, axis=-1, method=method, mode=mode, **kwargs
+        ),
+    ),
+    (
+        "argsort",
+        lambda x, method, mode, **kwargs: sj.argsort(
+            x, axis=-1, method=method, mode=mode, **kwargs
+        ),
+    ),
+    (
+        "argquantile",
+        lambda x, method, mode, **kwargs: sj.argquantile(
+            x, q=0.35, axis=-1, method=method, mode=mode, **kwargs
+        ),
+    ),
+    (
+        "argmedian",
+        lambda x, method, mode, **kwargs: sj.argmedian(
+            x, axis=-1, method=method, mode=mode, **kwargs
+        ),
+    ),
+    (
+        "argpercentile",
+        lambda x, method, mode, **kwargs: sj.argpercentile(
+            x, p=35.0, axis=-1, method=method, mode=mode, **kwargs
+        ),
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    "case_name, call",
+    _LOG_PROB_INDEX_CASES,
+    ids=[case_name for case_name, _ in _LOG_PROB_INDEX_CASES],
+)
+@pytest.mark.parametrize("method", ("softsort", "neuralsort", "sorting_network"))
+@pytest.mark.parametrize("mode", ("hard", "smooth", "c0", "c1", "c2"))
+def test_return_log_probs_softindex_outputs(case_name, call, method, mode):
+    x = jnp.array([[0.2, 1.7, -0.5, 0.9]], dtype=jnp.float64)
+
+    probs = call(x, method, mode, softness=1.0)
+    log_probs = call(x, method, mode, softness=1.0, return_log_probs=True)
+
+    _assert_log_probs_match_probs(log_probs, probs, f"{case_name}/{method}/{mode}")
+
+
+@pytest.mark.parametrize(
+    "case_name, call",
+    [
+        (
+            "argmax",
+            lambda x, mode, **kwargs: sj.argmax(
+                x, axis=-1, method="ot", mode=mode, **kwargs
+            ),
+        ),
+        (
+            "argsort",
+            lambda x, mode, **kwargs: sj.argsort(
+                x, axis=-1, method="ot", mode=mode, **kwargs
+            ),
+        ),
+        (
+            "argquantile",
+            lambda x, mode, **kwargs: sj.argquantile(
+                x, q=0.35, axis=-1, method="ot", mode=mode, **kwargs
+            ),
+        ),
+    ],
+)
+@pytest.mark.parametrize("mode", ("smooth", "c0", "c1", "c2"))
+def test_return_log_probs_ot_softindex_outputs(case_name, call, mode):
+    x = jnp.array([[0.2, 1.7, -0.5]], dtype=jnp.float64)
+
+    probs = call(x, mode, softness=1.0)
+    log_probs = call(x, mode, softness=1.0, return_log_probs=True)
+
+    _assert_log_probs_match_probs(log_probs, probs, f"{case_name}/ot/{mode}", tol=1e-5)
+
+
+@pytest.mark.parametrize("method", ("softsort", "neuralsort", "ot", "sorting_network"))
+def test_return_log_probs_smooth_outputs_have_finite_gradients(method):
+    x = jnp.array([[0.2, 1.7, -0.5, 0.9]], dtype=jnp.float64)
+
+    def loss(z):
+        log_probs = sj.argsort(
+            z,
+            axis=-1,
+            mode="smooth",
+            method=method,
+            softness=1.0,
+            return_log_probs=True,
+        )
+        weights = jnp.arange(1, log_probs.shape[-1] + 1, dtype=log_probs.dtype)
+        return jnp.sum(log_probs * weights)
+
+    log_probs = sj.argsort(
+        x,
+        axis=-1,
+        mode="smooth",
+        method=method,
+        softness=1.0,
+        return_log_probs=True,
+    )
+    grad = jax.grad(loss)(x)
+
+    common.assert_finite(log_probs, msg=f"{method} smooth log_probs")
+    common.assert_finite(grad, msg=f"{method} smooth log_probs gradient")
+
+
+def test_return_log_probs_smooth_simplex_avoids_softmax_underflow():
+    x = jnp.array([1000.0, 0.0, -1000.0], dtype=jnp.float32)
+
+    probs = sj.argmax(
+        x,
+        axis=0,
+        mode="smooth",
+        method="softsort",
+        softness=1.0,
+        standardize=False,
+    )
+    log_probs = sj.argmax(
+        x,
+        axis=0,
+        mode="smooth",
+        method="softsort",
+        softness=1.0,
+        standardize=False,
+        return_log_probs=True,
+    )
+
+    assert jnp.isneginf(jnp.log(probs)).any()
+    common.assert_finite(log_probs, msg="smooth simplex log_probs")
+    _assert_log_probs_match_probs(log_probs, probs, "argmax smooth softsort")
+
+
+def test_return_log_probs_sparse_mode_nan_to_num_does_not_fix_gradients():
+    x = jnp.array([0.2, 1.7, -0.5, 0.9], dtype=jnp.float64)
+    weights = jnp.arange(1, 5, dtype=jnp.float64)
+
+    def loss(z):
+        log_probs = sj.argmax(
+            z,
+            axis=0,
+            mode="c0",
+            softness=1.0,
+            return_log_probs=True,
+        )
+        return jnp.sum(jnp.nan_to_num(log_probs, neginf=-1e9) * weights)
+
+    grad = jax.grad(loss)(x)
+
+    assert not jnp.all(jnp.isfinite(grad))
+
+
+@pytest.mark.parametrize(
+    "case_name, call",
+    _LOG_PROB_INDEX_CASES,
+    ids=[case_name for case_name, _ in _LOG_PROB_INDEX_CASES],
+)
+def test_return_log_probs_log_prob_eps_matches_manual_floor_renormalize(
+    case_name, call
+):
+    x = jnp.array([[0.2, 1.7, -0.5, 0.9]], dtype=jnp.float64)
+    eps = 1e-3
+
+    probs = call(x, "softsort", "c0", softness=0.01)
+    log_probs = call(
+        x,
+        "softsort",
+        "c0",
+        softness=0.01,
+        return_log_probs=True,
+        log_prob_eps=eps,
+    )
+    expected = _manual_log_prob_eps(probs, eps)
+
+    common.assert_finite(log_probs, msg=f"{case_name} log_prob_eps")
+    common.assert_allclose(log_probs, expected, tol=1e-6)
+    common.assert_allclose(
+        jnp.sum(jnp.exp(log_probs), axis=-1),
+        jnp.ones(log_probs.shape[:-1], dtype=log_probs.dtype),
+        tol=1e-6,
+    )
+
+
+def test_return_log_probs_log_prob_eps_matches_manual_ot():
+    x = jnp.array([[0.2, 1.7, -0.5]], dtype=jnp.float64)
+    eps = 1e-3
+
+    probs = sj.argsort(x, axis=-1, method="ot", mode="c1", softness=1.0)
+    log_probs = sj.argsort(
+        x,
+        axis=-1,
+        method="ot",
+        mode="c1",
+        softness=1.0,
+        return_log_probs=True,
+        log_prob_eps=eps,
+    )
+    expected = _manual_log_prob_eps(probs, eps)
+
+    common.assert_finite(log_probs, msg="ot argsort log_prob_eps")
+    common.assert_allclose(log_probs, expected, tol=1e-5)
+
+
+@pytest.mark.parametrize("method", ("softsort", "neuralsort"))
+@pytest.mark.parametrize("mode", ("c0", "c1", "c2"))
+def test_return_log_probs_log_prob_eps_has_finite_sparse_gradients(method, mode):
+    x = jnp.array([0.2, 1.7, -0.5, 0.9], dtype=jnp.float64)
+    weights = jnp.arange(1, 5, dtype=jnp.float64)
+
+    def loss(z):
+        log_probs = sj.argmax(
+            z,
+            axis=0,
+            method=method,
+            mode=mode,
+            softness=0.01,
+            return_log_probs=True,
+            log_prob_eps=1e-12,
+        )
+        return jnp.sum(log_probs * weights)
+
+    grad = jax.grad(loss)(x)
+
+    common.assert_finite(grad, msg=f"{method}/{mode} log_prob_eps gradient")
+
+
+def test_return_log_probs_log_prob_eps_requires_return_log_probs():
+    x = jnp.array([0.2, 1.7, -0.5, 0.9], dtype=jnp.float64)
+
+    with pytest.raises(ValueError, match="return_log_probs=True"):
+        sj.argmax(x, axis=0, log_prob_eps=1e-3)
+
+    with pytest.raises(ValueError, match="return_log_probs=True"):
+        sj.top_k(x, k=2, axis=0, log_prob_eps=1e-3)
+
+
+@pytest.mark.parametrize("eps", (0.0, -1.0, 1.5))
+def test_return_log_probs_log_prob_eps_validates_range(eps):
+    x = jnp.array([0.2, 1.7, -0.5, 0.9], dtype=jnp.float64)
+
+    with pytest.raises(ValueError, match="log_prob_eps must be in"):
+        sj.argmax(x, axis=0, return_log_probs=True, log_prob_eps=eps)
+
+
+@pytest.mark.parametrize("method", ("softsort", "neuralsort", "ot"))
+def test_return_log_probs_log_prob_eps_top_k_indices_and_values(method):
+    x = jnp.array([[0.2, 1.7, -0.5, 0.9]], dtype=jnp.float64)
+    eps = 1e-3
+
+    values, probs = sj.top_k(
+        x, k=2, axis=-1, method=method, mode="c0", softness=1.0
+    )
+    log_values, log_probs = sj.top_k(
+        x,
+        k=2,
+        axis=-1,
+        method=method,
+        mode="c0",
+        softness=1.0,
+        return_log_probs=True,
+        log_prob_eps=eps,
+    )
+    expected = _manual_log_prob_eps(probs, eps)
+
+    common.assert_allclose(log_values, values, tol=1e-6)
+    common.assert_finite(log_probs, msg=f"top_k/{method} log_prob_eps")
+    common.assert_allclose(log_probs, expected, tol=1e-5)
+
+
+def test_return_log_probs_log_prob_eps_vector_q_matches_manual():
+    x = make_array((6,), "float64", "jax")
+    eps = 1e-3
+
+    probs = sj.argquantile(
+        x, _VECTOR_Q, axis=0, method="softsort", mode="c0", softness=0.01
+    )
+    log_probs = sj.argquantile(
+        x,
+        _VECTOR_Q,
+        axis=0,
+        method="softsort",
+        mode="c0",
+        softness=0.01,
+        return_log_probs=True,
+        log_prob_eps=eps,
+    )
+    expected = _manual_log_prob_eps(probs, eps)
+
+    common.assert_finite(log_probs, msg="argquantile vector q log_prob_eps")
+    common.assert_allclose(log_probs, expected, tol=1e-6)
+
+
+@pytest.mark.parametrize("mode", ("c0", "c1", "c2"))
+def test_sparse_mode_safe_log_probabilities_have_finite_gradients(mode):
+    x = jnp.array([0.2, 1.7, -0.5, 0.9], dtype=jnp.float64)
+    weights = jnp.arange(1, 5, dtype=jnp.float64)
+
+    def loss(z):
+        safe_log_probs = sj.argmax(
+            z,
+            axis=0,
+            mode=mode,
+            softness=0.01,
+            return_log_probs=True,
+            log_prob_eps=1e-12,
+        )
+        return jnp.sum(safe_log_probs * weights)
+
+    grad = jax.grad(loss)(x)
+
+    common.assert_finite(grad, msg=f"{mode} safe log probability gradient")
+
+
+def test_return_log_probs_hard_zeros_are_negative_infinity():
+    x = jnp.array([3.0, 1.0, 2.0])
+
+    probs = sj.argsort(x, axis=0, mode="hard")
+    log_probs = sj.argsort(x, axis=0, mode="hard", return_log_probs=True)
+
+    _assert_log_probs_match_probs(log_probs, probs, "argsort hard")
+    assert jnp.all(log_probs[probs == 1] == 0)
+    assert jnp.all(jnp.isneginf(log_probs[probs == 0]))
+
+
+@pytest.mark.parametrize("method", ("softsort", "neuralsort", "ot"))
+@pytest.mark.parametrize("mode", ("smooth", "c0"))
+def test_return_log_probs_top_k_indices_and_values(method, mode):
+    x = jnp.array([[0.2, 1.7, -0.5, 0.9]], dtype=jnp.float64)
+
+    values, probs = sj.top_k(x, k=2, axis=-1, method=method, mode=mode, softness=1.0)
+    log_values, log_probs = sj.top_k(
+        x,
+        k=2,
+        axis=-1,
+        method=method,
+        mode=mode,
+        softness=1.0,
+        return_log_probs=True,
+    )
+
+    common.assert_allclose(log_values, values, tol=1e-6)
+    _assert_log_probs_match_probs(log_probs, probs, f"top_k/{method}/{mode}", tol=1e-5)
+
+
+@pytest.mark.parametrize("method", ("softsort", "neuralsort", "ot"))
+def test_return_log_probs_top_k_preserves_value_gradients(method):
+    x0 = jnp.array([[0.2, 1.7, -0.5, 0.9]], dtype=jnp.float64)
+
+    def value_and_grad(return_log_probs):
+        def loss(z):
+            values, _ = sj.top_k(
+                z,
+                k=2,
+                axis=-1,
+                method=method,
+                mode="smooth",
+                softness=1.0,
+                standardize=False,
+                return_log_probs=return_log_probs,
+            )
+            return jnp.sum(values)
+
+        return loss(x0), jax.grad(loss)(x0)
+
+    values, grad = value_and_grad(False)
+    log_values, log_grad = value_and_grad(True)
+
+    common.assert_allclose(log_values, values, tol=1e-6)
+    common.assert_allclose(log_grad, grad, tol=1e-5)
+
+
+@pytest.mark.parametrize("method", ("fast_soft_sort", "smooth_sort", "sorting_network"))
+def test_return_log_probs_top_k_preserves_none_indices(method):
+    x = jnp.array([[0.2, 1.7, -0.5, 0.9]], dtype=jnp.float64)
+
+    values, idx = sj.top_k(x, k=2, axis=-1, method=method, mode="smooth", softness=1.0)
+    log_values, log_idx = sj.top_k(
+        x,
+        k=2,
+        axis=-1,
+        method=method,
+        mode="smooth",
+        softness=1.0,
+        return_log_probs=True,
+    )
+
+    assert idx is None
+    assert log_idx is None
+    common.assert_allclose(log_values, values, tol=1e-6)
+
+
+@pytest.mark.parametrize("method", ("softsort", "neuralsort", "ot", "sorting_network"))
+def test_argquantile_vector_q_return_log_probs(method):
+    x = make_array((6,), "float64", "jax")
+    q_vec = _VECTOR_Q
+
+    probs = sj.argquantile(
+        x, q_vec, axis=0, mode="smooth", method=method, softness=1.0
+    )
+    log_probs = sj.argquantile(
+        x,
+        q_vec,
+        axis=0,
+        mode="smooth",
+        method=method,
+        softness=1.0,
+        return_log_probs=True,
+    )
+
+    _assert_log_probs_match_probs(log_probs, probs, f"argquantile vector q/{method}")
+
+
+@pytest.mark.parametrize("keepdims", (False, True))
+def test_return_log_probs_axis_none_shapes(keepdims):
+    x = jnp.array([[0.2, 1.7], [-0.5, 0.9]], dtype=jnp.float64)
+
+    argmax_probs = sj.argmax(x, axis=None, keepdims=keepdims)
+    argmax_log_probs = sj.argmax(
+        x, axis=None, keepdims=keepdims, return_log_probs=True
+    )
+    _assert_log_probs_match_probs(argmax_log_probs, argmax_probs, "argmax axis=None")
+
+    argquantile_probs = sj.argquantile(x, q=0.35, axis=None, keepdims=keepdims)
+    argquantile_log_probs = sj.argquantile(
+        x, q=0.35, axis=None, keepdims=keepdims, return_log_probs=True
+    )
+    _assert_log_probs_match_probs(
+        argquantile_log_probs, argquantile_probs, "argquantile axis=None"
+    )
+    assert argmax_log_probs.shape == argmax_probs.shape
+    assert argquantile_log_probs.shape == argquantile_probs.shape
+
+
+@pytest.mark.parametrize(
+    "case_name, st_call, hard_call",
+    [
+        (
+            "argmax_st",
+            lambda x, mode: sj.argmax_st(
+                x, axis=0, mode=mode, return_log_probs=True
+            ),
+            lambda x: sj.argmax(x, axis=0, mode="hard"),
+        ),
+        (
+            "argsort_st",
+            lambda x, mode: sj.argsort_st(
+                x, axis=0, mode=mode, return_log_probs=True
+            ),
+            lambda x: sj.argsort(x, axis=0, mode="hard"),
+        ),
+        (
+            "argquantile_st",
+            lambda x, mode: sj.argquantile_st(
+                x, q=0.35, axis=0, mode=mode, return_log_probs=True
+            ),
+            lambda x: sj.argquantile(x, q=0.35, axis=0, mode="hard"),
+        ),
+        (
+            "argpercentile_st",
+            lambda x, mode: sj.argpercentile_st(
+                x, p=35.0, axis=0, mode=mode, return_log_probs=True
+            ),
+            lambda x: sj.argpercentile(x, p=35.0, axis=0, mode="hard"),
+        ),
+    ],
+)
+@pytest.mark.parametrize("mode", ("smooth", "c0", "c1", "c2"))
+def test_return_log_probs_st_outputs_handle_negative_infinity(
+    case_name, st_call, hard_call, mode
+):
+    x = jnp.array([0.2, 1.7, -0.5, 0.9], dtype=jnp.float64)
+
+    log_probs = st_call(x, mode)
+
+    assert not jnp.any(jnp.isnan(log_probs)), f"NaN in {case_name}/{mode}"
+    _assert_log_probs_match_probs(log_probs, hard_call(x), f"{case_name}/{mode}")
+
+
+@pytest.mark.parametrize("mode", ("smooth", "c0", "c1", "c2"))
+def test_return_log_probs_top_k_st_handles_negative_infinity(mode):
+    x = jnp.array([0.2, 1.7, -0.5, 0.9], dtype=jnp.float64)
+
+    _, log_probs = sj.top_k_st(x, k=2, axis=0, mode=mode, return_log_probs=True)
+    _, hard_probs = sj.top_k(x, k=2, axis=0, mode="hard")
+
+    assert not jnp.any(jnp.isnan(log_probs)), f"NaN in top_k_st/{mode}"
+    _assert_log_probs_match_probs(log_probs, hard_probs, f"top_k_st/{mode}")
+
+
+# ---------------------------------------------------------------------------
 # Vector q support for quantile / argquantile
 # ---------------------------------------------------------------------------
 

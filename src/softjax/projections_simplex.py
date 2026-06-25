@@ -167,6 +167,7 @@ def _proj_simplex(
     axis: int,
     softness: float | Array = 0.1,
     mode: Literal["smooth", "c0", "c1", "c2"] = "smooth",
+    return_log_probs: bool = False,
 ) -> Array:  # (..., [n], ...)
     """Projects `x` onto the unit simplex along the specified axis.
 
@@ -185,6 +186,7 @@ def _proj_simplex(
         - `c0`: C0 continuous (based on euclidean/L2 regularizer). Solved via the algorithm in https://arxiv.org/pdf/1309.1541.
         - `c1`: C1 differentiable (p=3/2 p-norm). P-norm regularizer is inspired by https://arxiv.org/abs/2302.01425. Solved in closed form via quadratic formula.
         - `c2`: C2 twice differentiable (p=4/3 p-norm). P-norm regularizer is inspired by https://arxiv.org/abs/2302.01425. Solved in closed form via Cardano's method.
+    - `return_log_probs`: If True, returns log probabilities instead of probabilities. Exact zero probabilities are represented as `-inf`.
 
     **Returns:**
 
@@ -195,7 +197,10 @@ def _proj_simplex(
     n = x.shape[axis]
     _x = x / softness
     if mode == "smooth":
-        soft_index = jax.nn.softmax(_x, axis=axis)  # (..., [n], ...)
+        if return_log_probs:
+            soft_index = jax.nn.log_softmax(_x, axis=axis)  # (..., [n], ...)
+        else:
+            soft_index = jax.nn.softmax(_x, axis=axis)  # (..., [n], ...)
     elif mode == "c0":
         _x = jnp.moveaxis(_x, axis, -1)  # (..., ..., n)
         *batch_sizes, n = _x.shape
@@ -217,4 +222,6 @@ def _proj_simplex(
         soft_index = jax.vmap(proj)(_x)
         soft_index = soft_index.reshape(*batch_sizes, n)
         soft_index = jnp.moveaxis(soft_index, -1, axis)
+    if return_log_probs and mode != "smooth":
+        soft_index = jnp.log(soft_index)
     return soft_index
