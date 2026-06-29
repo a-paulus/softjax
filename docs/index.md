@@ -15,6 +15,7 @@ SoftJAX provides soft differentiable drop-in replacements for traditionally non-
 
 - elementwise operators: `abs`, `relu`, `clip`, `sign`, `round` and `heaviside`;
 - array-valued operators: `(arg)max`, `(arg)min`, `(arg)quantile`, `(arg)median`, `(arg)sort`, `(arg)top_k` and `rank`;
+- random sampling operators under `softjax.random`;
 - comparison operators such as: `greater`, `equal` or `isclose`;
 - logical operators such as: `logical_and`, `all` or `any`;
 - selection operators such as: `where`, `take_along_axis`, `dynamic_index_in_dim` or `choose`.

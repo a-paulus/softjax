@@ -3,6 +3,7 @@ from importlib.metadata import version as _version
 
 __version__ = _version("softjax")
 
+from . import random
 from .functions import (
     abs,
     all,
@@ -149,6 +150,7 @@ __all__ = [
     "percentile_st",
     "quantile",
     "quantile_st",
+    "random",
     "rank",
     "rank_st",
     "relu",

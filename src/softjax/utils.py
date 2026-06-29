@@ -1,8 +1,10 @@
+import operator
 from typing import Literal
 
 import equinox.internal as eqi
 import jax
 import jax.numpy as jnp
+from jax import lax
 
 
 def _validate_softness(softness: jnp.ndarray) -> None:
@@ -17,6 +19,41 @@ def _ensure_float(x: jnp.ndarray) -> jnp.ndarray:
     """Cast to default float dtype if not already floating point."""
     x = jnp.asarray(x)
     return x if jnp.issubdtype(x.dtype, jnp.floating) else x.astype(jnp.result_type(float))
+
+
+def _canonicalize_shape(shape: int | tuple[int, ...] | None) -> tuple[int, ...] | None:
+    """Canonicalize a user-provided shape without silently truncating dimensions."""
+    if shape is None:
+        return None
+    if isinstance(shape, int):
+        shape = (shape,)
+    try:
+        return tuple(operator.index(dim) for dim in shape)
+    except TypeError as exc:
+        raise TypeError(
+            "Shapes must be 1D sequences of concrete values of integer type, "
+            f"got {shape}."
+        ) from exc
+
+
+def _check_broadcast_shape(name: str, shape: tuple[int, ...], *param_shapes) -> None:
+    if not param_shapes:
+        return
+    try:
+        broadcast_shape = lax.broadcast_shapes(shape, *param_shapes)
+    except ValueError as exc:
+        raise ValueError(
+            f"{name} parameter shapes must be broadcast-compatible with shape "
+            f"argument, got parameter shapes {param_shapes} and shape argument "
+            f"{shape}."
+        ) from exc
+    if broadcast_shape != shape:
+        raise ValueError(
+            f"{name} parameter shapes must be broadcast-compatible with shape "
+            f"argument, and the result of broadcasting the shapes must equal "
+            f"the shape argument, but got result {broadcast_shape} for shape "
+            f"argument {shape}."
+        )
 
 
 def _standardize_and_squash(
