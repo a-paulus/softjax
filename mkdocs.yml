@@ -122,8 +122,10 @@ nav:
     - 'index.md'
     - All of Softjax: 'all-of-softjax.ipynb'
     - Examples:
+        - Function overview: 'examples/long_example.ipynb'
         - 'plots.ipynb'
         - 'examples/manifold_points.ipynb'
     - API:
         - 'api/softjax_operators.md'
+        - 'api/random.md'
         - 'api/straight_through.md'
